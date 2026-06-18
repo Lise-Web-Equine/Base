@@ -16,6 +16,8 @@ import {
   type DocumentLocation,
 } from 'sanity/presentation'
 import {assist} from '@sanity/assist'
+import {defineConfig} from 'sanity'
+import {frFRLocale} from '@sanity/locale-fr-fr'
 
 // Environment variables for project configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
@@ -47,12 +49,14 @@ function resolveHref(documentType?: string, slug?: string): string | undefined {
 // Main Sanity configuration
 export default defineConfig({
   name: 'default',
-  title: 'Clean Nuxt + Sanity',
+  title: 'Base',
 
   projectId,
   dataset,
-
   plugins: [
+    frFRLocale({
+      title: 'French',
+    }),
     // Presentation tool configuration for Visual Editing
     presentationTool({
       previewUrl: {

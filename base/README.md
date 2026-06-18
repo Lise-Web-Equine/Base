@@ -1,8 +1,6 @@
-# Clean Nuxt + Sanity app
+# Base app
 
 This template includes a [Nuxt](https://nuxt.com/) app with a [Sanity Studio](https://www.sanity.io/) – an open-source Vue application that connects to your Sanity project's hosted dataset. The Studio is configured locally and can then be deployed for content collaboration.
-
-![Screenshot of Sanity Studio using Presentation Tool to do Visual Editing](./nuxt-sanity-preview.webp)
 
 ## Features
 
@@ -15,7 +13,7 @@ This template includes a [Nuxt](https://nuxt.com/) app with a [Sanity Studio](ht
 
 ## Demo
 
-https://template-nuxt-clean.sanity.dev
+https://base.dev
 
 ## Getting Started
 
