@@ -470,77 +470,68 @@
       "primary": {
         "type": "objectAttribute",
         "value": {
-          "type": "string"
+          "type": "inline",
+          "name": "simplerColor"
         },
         "optional": false
       },
       "secondary": {
         "type": "objectAttribute",
         "value": {
-          "type": "string"
+          "type": "inline",
+          "name": "simplerColor"
         },
         "optional": false
       },
-      "background": {
+      "accent": {
         "type": "objectAttribute",
         "value": {
-          "type": "string"
+          "type": "inline",
+          "name": "simplerColor"
         },
         "optional": false
       },
-      "text": {
+      "bgMain": {
         "type": "objectAttribute",
         "value": {
-          "type": "string"
+          "type": "inline",
+          "name": "simplerColor"
         },
         "optional": false
       },
-      "headingFont": {
+      "bgSurface": {
         "type": "objectAttribute",
         "value": {
-          "type": "union",
-          "of": [
-            {
-              "type": "string",
-              "value": "\"Inter\", sans-serif"
-            },
-            {
-              "type": "string",
-              "value": "system-ui, sans-serif"
-            },
-            {
-              "type": "string",
-              "value": "\"Roboto\", sans-serif"
-            },
-            {
-              "type": "string",
-              "value": "\"Open Sans\", sans-serif"
-            },
-            {
-              "type": "string",
-              "value": "\"Poppins\", sans-serif"
-            },
-            {
-              "type": "string",
-              "value": "\"Montserrat\", sans-serif"
-            },
-            {
-              "type": "string",
-              "value": "\"Lato\", sans-serif"
-            },
-            {
-              "type": "string",
-              "value": "Georgia, serif"
-            },
-            {
-              "type": "string",
-              "value": "\"Playfair Display\", serif"
-            }
-          ]
+          "type": "inline",
+          "name": "simplerColor"
         },
         "optional": false
       },
-      "bodyFont": {
+      "textMain": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "simplerColor"
+        },
+        "optional": false
+      },
+      "textMuted": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "simplerColor"
+        },
+        "optional": false
+      },
+      "border": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "simplerColor"
+        },
+        "optional": false
+      },
+      "fontDisplay": {
         "type": "objectAttribute",
         "value": {
           "type": "union",
@@ -585,19 +576,125 @@
         },
         "optional": false
       },
-      "baseFontSize": {
+      "fontBody": {
         "type": "objectAttribute",
         "value": {
-          "type": "number"
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "\"Inter\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "system-ui, sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Roboto\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Open Sans\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Poppins\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Montserrat\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Lato\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "Georgia, serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Playfair Display\", serif"
+            }
+          ]
         },
         "optional": false
       },
-      "lineHeight": {
+      "fontAccent": {
         "type": "objectAttribute",
         "value": {
-          "type": "number"
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "\"Inter\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "system-ui, sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Roboto\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Open Sans\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Poppins\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Montserrat\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Lato\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "Georgia, serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Playfair Display\", serif"
+            }
+          ]
         },
         "optional": false
+      }
+    }
+  },
+  {
+    "name": "simplerColor",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "simplerColor"
+          }
+        },
+        "label": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "value": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
       }
     }
   },
@@ -2171,6 +2268,66 @@
                 "name": "sanity.assist.instruction"
               }
             }
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "highlightColor",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "highlightColor"
+          }
+        },
+        "label": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "value": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "name": "textColor",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "textColor"
+          }
+        },
+        "label": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "value": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
           },
           "optional": true
         }

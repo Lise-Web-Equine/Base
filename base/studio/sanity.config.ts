@@ -17,6 +17,7 @@ import {
 } from 'sanity/presentation'
 import {assist} from '@sanity/assist'
 import {frFRLocale} from '@sanity/locale-fr-fr'
+import { simplerColorInput } from 'sanity-plugin-simpler-color-input'
 
 // Environment variables for project configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
@@ -124,6 +125,11 @@ export default defineConfig({
     }),
     // Additional plugins for enhanced functionality
     // unsplashImageAsset(),
+    simplerColorInput({
+      defaultColorFormat: 'hex',
+      enableSearch: true,
+      showColorValue: true,
+    }),
     assist(),
     visionTool(),
   ],

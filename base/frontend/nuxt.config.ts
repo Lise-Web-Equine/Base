@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     token: process.env.NUXT_SANITY_API_READ_TOKEN, // Only required when using a private dataset
     typegen: {
       enabled: true,
-      schemaTypesPath: "../studio/src/schemaTypes",
+      schemaTypesPath: "../studio/src/schemaTypes/typegen",
     },
     visualEditing: {
       token: process.env.NUXT_SANITY_API_READ_TOKEN,

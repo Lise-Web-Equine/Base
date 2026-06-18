@@ -67,14 +67,17 @@ export const pageQuery = defineQuery(/* groq */ `
 
 export const themeSettingsQuery = defineQuery(/* groq */ `
 		*[_type == "themeSettings"][0]{
-			primary,
-			secondary,
-			background,
-			text,
-			headingFont,
-			bodyFont,
-			baseFontSize,
-			lineHeight
+			"primary": primary.value,
+			"secondary": secondary.value,
+			"accent": accent.value,
+			"bgMain": bgMain.value,
+			"bgSurface": bgSurface.value,
+			"textMain": textMain.value,
+			"textMuted": textMuted.value,
+			"border": border.value,
+			fontDisplay,
+			fontBody,
+			fontAccent
 		}`);
 
 export const settingsQuery = defineQuery(/* groq */ `

@@ -2,7 +2,7 @@
 // The theme is loaded globally in app.vue via useTheme(); calling it here again
 // reuses the same Sanity query (deduped) and gives us the resolved values to
 // display next to each swatch.
-const { theme, cssVariables } = await useTheme();
+const { cssVariables } = await useTheme();
 
 useSiteMetadata({
   title: "Charte graphique",
@@ -12,38 +12,87 @@ useSiteMetadata({
 
 const swatches = computed(() => [
   {
-    name: "Primary",
+    name: "Couleur Principale",
     token: "--color-primary",
-    value: theme.value?.primary ?? cssVariables.value["--theme-primary"],
+    value: cssVariables.value["--theme-primary"],
     swatchClass: "bg-primary",
     onColor: "text-white",
   },
   {
-    name: "Secondary",
+    name: "Couleur Secondaire",
     token: "--color-secondary",
-    value: theme.value?.secondary ?? cssVariables.value["--theme-secondary"],
+    value: cssVariables.value["--theme-secondary"],
     swatchClass: "bg-secondary",
     onColor: "text-white",
   },
   {
-    name: "Background",
-    token: "--color-background",
-    value: theme.value?.background ?? cssVariables.value["--theme-background"],
-    swatchClass: "bg-background border border-gray-200",
-    onColor: "text-text",
+    name: "Couleur d'Accent",
+    token: "--color-accent",
+    value: cssVariables.value["--theme-accent"],
+    swatchClass: "bg-accent",
+    onColor: "text-white",
   },
   {
-    name: "Text",
-    token: "--color-text",
-    value: theme.value?.text ?? cssVariables.value["--theme-text"],
-    swatchClass: "bg-text",
+    name: "Fond Principal",
+    token: "--color-bg-main",
+    value: cssVariables.value["--theme-bg-main"],
+    swatchClass: "bg-bg-main border border-border",
+    onColor: "text-text-main",
+  },
+  {
+    name: "Fond de Surface",
+    token: "--color-bg-surface",
+    value: cssVariables.value["--theme-bg-surface"],
+    swatchClass: "bg-bg-surface border border-border",
+    onColor: "text-text-main",
+  },
+  {
+    name: "Texte Principal",
+    token: "--color-text-main",
+    value: cssVariables.value["--theme-text-main"],
+    swatchClass: "bg-text-main",
     onColor: "text-white",
+  },
+  {
+    name: "Texte Secondaire",
+    token: "--color-text-muted",
+    value: cssVariables.value["--theme-text-muted"],
+    swatchClass: "bg-text-muted",
+    onColor: "text-white",
+  },
+  {
+    name: "Bordures et Séparateurs",
+    token: "--color-border",
+    value: cssVariables.value["--theme-border"],
+    swatchClass: "bg-border",
+    onColor: "text-text-main",
+  },
+]);
+
+const fonts = computed(() => [
+  {
+    name: "Police des Titres",
+    value: cssVariables.value["--theme-font-display"],
+    sampleClass: "font-display",
+    sample: "Aa Bb Cc 123",
+  },
+  {
+    name: "Police du Texte",
+    value: cssVariables.value["--theme-font-body"],
+    sampleClass: "font-sans",
+    sample: "The quick brown fox jumps over the lazy dog.",
+  },
+  {
+    name: "Police d'Accent",
+    value: cssVariables.value["--theme-font-accent"],
+    sampleClass: "font-accent",
+    sample: "Élégance & caractère",
   },
 ]);
 </script>
 
 <template>
-  <div class="bg-background text-text min-h-screen transition-colors">
+  <div class="bg-bg-main text-text-main min-h-screen transition-colors">
     <div class="container mx-auto max-w-5xl py-16 space-y-12">
       <header class="space-y-3">
         <p class="uppercase tracking-widest text-sm text-secondary">
@@ -61,7 +110,7 @@ const swatches = computed(() => [
 
       <section>
         <h2 class="text-xl font-semibold mb-6">Couleurs</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           <div
             v-for="swatch in swatches"
             :key="swatch.name"
@@ -81,31 +130,17 @@ const swatches = computed(() => [
 
       <section class="space-y-6">
         <h2 class="text-xl font-semibold">Typographie</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="rounded-xl border border-gray-200 p-6 space-y-2">
-            <p class="text-xs uppercase tracking-widest text-gray-500">
-              Police des titres
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            v-for="font in fonts"
+            :key="font.name"
+            class="rounded-xl border border-border p-6 space-y-2">
+            <p class="text-xs uppercase tracking-widest text-text-muted">
+              {{ font.name }}
             </p>
-            <p class="font-display text-3xl font-bold">Aa Bb Cc 123</p>
-            <p class="font-mono text-xs text-gray-500">
-              {{ theme?.headingFont ?? cssVariables["--theme-heading-font"] }}
-            </p>
+            <p :class="font.sampleClass" class="text-2xl">{{ font.sample }}</p>
+            <p class="font-mono text-xs text-text-muted">{{ font.value }}</p>
           </div>
-          <div class="rounded-xl border border-gray-200 p-6 space-y-2">
-            <p class="text-xs uppercase tracking-widest text-gray-500">
-              Police du corps
-            </p>
-            <p class="font-sans text-lg">
-              The quick brown fox jumps over the lazy dog.
-            </p>
-            <p class="font-mono text-xs text-gray-500">
-              {{ theme?.bodyFont ?? cssVariables["--theme-body-font"] }}
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-wrap gap-6 font-mono text-sm text-gray-600">
-          <span>Taille de base : {{ cssVariables["--theme-base-font-size"] }}</span>
-          <span>Hauteur de ligne : {{ cssVariables["--theme-line-height"] }}</span>
         </div>
       </section>
 
@@ -126,13 +161,14 @@ const swatches = computed(() => [
           </button>
         </div>
 
-        <div class="bg-background border border-gray-200 rounded-xl p-6 space-y-3">
-          <h3 class="text-2xl font-bold text-primary">Titre d'exemple</h3>
-          <p class="text-text opacity-90 max-w-2xl">
+        <div class="bg-bg-surface border border-border rounded-xl p-6 space-y-3">
+          <h3 class="font-display text-2xl font-bold text-primary">Titre d'exemple</h3>
+          <p class="text-text-main opacity-90 max-w-2xl">
             Paragraphe de démonstration utilisant la couleur de texte du thème
             sur la couleur de fond du thème. Voici un
             <a class="text-secondary underline" href="#">lien secondaire</a>
-            pour illustrer le contraste.
+            et un <span class="text-accent font-semibold">accent</span> pour
+            illustrer le contraste.
           </p>
         </div>
       </section>

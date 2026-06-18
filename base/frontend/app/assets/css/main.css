@@ -15,8 +15,12 @@
      composable; the fallbacks below are used before hydration / when unset. */
   --color-primary: var(--theme-primary, #ef4434);
   --color-secondary: var(--theme-secondary, #206ee9);
-  --color-background: var(--theme-background, #ffffff);
-  --color-text: var(--theme-text, #0d0e12);
+  --color-accent: var(--theme-accent, #8f57ef);
+  --color-bg-main: var(--theme-bg-main, #ffffff);
+  --color-bg-surface: var(--theme-bg-surface, #f6f6f8);
+  --color-text-main: var(--theme-text-main, #0d0e12);
+  --color-text-muted: var(--theme-text-muted, #727892);
+  --color-border: var(--theme-border, #e3e4e8);
 
   --color-nuxt: #00dc82;
 
@@ -123,8 +127,9 @@
   --color-green-950: #14211a;
 
   /* Dynamic typography administered from Sanity (themeSettings singleton). */
-  --font-display: var(--theme-heading-font, "Inter", "sans-serif");
-  --font-sans: var(--theme-body-font, "Inter", "sans-serif");
+  --font-display: var(--theme-font-display, "Inter", "sans-serif");
+  --font-sans: var(--theme-font-body, "Inter", "sans-serif");
+  --font-accent: var(--theme-font-accent, "Inter", "sans-serif");
 
   --animate-gradient: gradient 2s ease-in-out infinite;
   @keyframes gradient {
@@ -138,12 +143,6 @@
   }
 
   --default-transition-duration: 250ms;
-}
-
-/* Apply the Sanity-administered base font size and line height globally. */
-html {
-  font-size: var(--theme-base-font-size, 16px);
-  line-height: var(--theme-line-height, 1.5);
 }
 
 @keyframes expandWidth {

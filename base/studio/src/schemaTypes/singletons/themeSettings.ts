@@ -7,21 +7,15 @@ import {defineField, defineType} from '@sanity/types'
  * Learn more: https://www.sanity.io/docs/create-a-link-to-a-single-edit-page-in-your-main-document-type-list
  */
 
-const HEX_COLOR = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
-
 const colorField = (name: string, title: string, description: string, initialValue: string) =>
   defineField({
     name,
     title,
-    type: 'string',
+    type: 'simplerColor',
     description,
-    initialValue,
+    initialValue: {_type: 'simplerColor', value: initialValue},
     group: 'colors',
-    validation: (rule) =>
-      rule
-        .required()
-        .regex(HEX_COLOR, {name: 'hex color'})
-        .error('Use a valid hex color, e.g. #ef4434 or #fff'),
+    validation: (rule) => rule.required(),
   })
 
 const FONT_OPTIONS = [
@@ -36,6 +30,18 @@ const FONT_OPTIONS = [
   {title: 'Playfair Display (serif)', value: '"Playfair Display", serif'},
 ]
 
+const fontField = (name: string, title: string, description: string) =>
+  defineField({
+    name,
+    title,
+    type: 'string',
+    description,
+    group: 'typography',
+    options: {list: FONT_OPTIONS},
+    initialValue: '"Inter", sans-serif',
+    validation: (rule) => rule.required(),
+  })
+
 export const themeSettings = defineType({
   name: 'themeSettings',
   title: 'Thème',
@@ -46,60 +52,62 @@ export const themeSettings = defineType({
     {name: 'typography', title: 'Typographie'},
   ],
   fields: [
-    colorField('primary', 'Primary', 'Main brand color (buttons, links, accents).', '#ef4434'),
+    colorField(
+      'primary',
+      'Couleur Principale',
+      'Couleur principale de la marque (boutons, liens, accents).',
+      '#ef4434',
+    ),
     colorField(
       'secondary',
-      'Secondary',
-      'Secondary / complementary brand color.',
+      'Couleur Secondaire',
+      'Couleur secondaire / complémentaire de la marque.',
       '#206ee9',
     ),
-    colorField('background', 'Background', 'Global page background color.', '#ffffff'),
-    colorField('text', 'Text', 'Default text color.', '#0d0e12'),
-    defineField({
-      name: 'headingFont',
-      title: 'Police des titres',
-      type: 'string',
-      description: 'Famille de police utilisée pour les titres (font-display).',
-      group: 'typography',
-      options: {list: FONT_OPTIONS},
-      initialValue: '"Inter", sans-serif',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'bodyFont',
-      title: 'Police du corps',
-      type: 'string',
-      description: 'Famille de police utilisée pour le texte courant (font-sans).',
-      group: 'typography',
-      options: {list: FONT_OPTIONS},
-      initialValue: '"Inter", sans-serif',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'baseFontSize',
-      title: 'Taille de police de base',
-      type: 'number',
-      description: 'Taille de police racine en pixels (appliquée à <html>). Ex: 16.',
-      group: 'typography',
-      initialValue: 16,
-      validation: (rule) => rule.required().min(10).max(24),
-    }),
-    defineField({
-      name: 'lineHeight',
-      title: 'Hauteur de ligne',
-      type: 'number',
-      description: 'Hauteur de ligne par défaut (sans unité). Ex: 1.5.',
-      group: 'typography',
-      initialValue: 1.5,
-      validation: (rule) => rule.required().min(1).max(2.5),
-    }),
+    colorField(
+      'accent',
+      "Couleur d'Accent",
+      "Couleur d'accent pour mettre en avant certains éléments.",
+      '#8f57ef',
+    ),
+    colorField('bgMain', 'Fond Principal', 'Couleur de fond principale des pages.', '#ffffff'),
+    colorField(
+      'bgSurface',
+      'Fond de Surface',
+      'Couleur de fond des surfaces (cartes, sections).',
+      '#f6f6f8',
+    ),
+    colorField('textMain', 'Texte Principal', 'Couleur du texte principal.', '#0d0e12'),
+    colorField(
+      'textMuted',
+      'Texte Secondaire',
+      'Couleur du texte secondaire / atténué.',
+      '#727892',
+    ),
+    colorField(
+      'border',
+      'Bordures et Séparateurs',
+      'Couleur des bordures et séparateurs.',
+      '#e3e4e8',
+    ),
+    fontField('fontDisplay', 'Police des Titres', 'Famille de police utilisée pour les titres.'),
+    fontField(
+      'fontBody',
+      'Police du Texte',
+      'Famille de police utilisée pour le texte courant.',
+    ),
+    fontField(
+      'fontAccent',
+      "Police d'Accent",
+      "Famille de police utilisée pour les éléments d'accent.",
+    ),
   ],
   preview: {
     select: {primary: 'primary'},
     prepare({primary}) {
       return {
         title: 'Thème',
-        subtitle: primary ? `Primary: ${primary}` : undefined,
+        subtitle: primary ? `Couleur principale : ${primary}` : undefined,
       }
     },
   },
