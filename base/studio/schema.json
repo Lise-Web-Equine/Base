@@ -433,6 +433,175 @@
     }
   },
   {
+    "name": "themeSettings",
+    "type": "document",
+    "attributes": {
+      "_id": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_type": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string",
+          "value": "themeSettings"
+        }
+      },
+      "_createdAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_updatedAt": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "_rev": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        }
+      },
+      "primary": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "secondary": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "background": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "text": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": false
+      },
+      "headingFont": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "\"Inter\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "system-ui, sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Roboto\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Open Sans\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Poppins\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Montserrat\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Lato\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "Georgia, serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Playfair Display\", serif"
+            }
+          ]
+        },
+        "optional": false
+      },
+      "bodyFont": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "\"Inter\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "system-ui, sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Roboto\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Open Sans\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Poppins\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Montserrat\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Lato\", sans-serif"
+            },
+            {
+              "type": "string",
+              "value": "Georgia, serif"
+            },
+            {
+              "type": "string",
+              "value": "\"Playfair Display\", serif"
+            }
+          ]
+        },
+        "optional": false
+      },
+      "baseFontSize": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": false
+      },
+      "lineHeight": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": false
+      }
+    }
+  },
+  {
     "type": "type",
     "name": "sanity.imageAsset.reference",
     "value": {

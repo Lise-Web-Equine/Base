@@ -1,4 +1,4 @@
-import {CogIcon} from '@sanity/icons'
+import {CogIcon, ColorWheelIcon} from '@sanity/icons'
 import type {StructureBuilder, StructureResolver} from 'sanity/structure'
 import pluralize from 'pluralize-esm'
 
@@ -8,7 +8,7 @@ import pluralize from 'pluralize-esm'
  * Learn more: https://www.sanity.io/docs/structure-builder-introduction
  */
 
-const DISABLED_TYPES = ['settings', 'assist.instruction.context']
+const DISABLED_TYPES = ['settings', 'themeSettings', 'assist.instruction.context']
 
 export const structure: StructureResolver = (S: StructureBuilder) =>
   S.list()
@@ -26,4 +26,9 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
         .title('Site Settings')
         .child(S.document().schemaType('settings').documentId('siteSettings'))
         .icon(CogIcon),
+      // Theme Settings Singleton: a single document holding the global color theme.
+      S.listItem()
+        .title('Thème')
+        .child(S.document().schemaType('themeSettings').documentId('themeSettings'))
+        .icon(ColorWheelIcon),
     ])

@@ -65,6 +65,18 @@ export const pageQuery = defineQuery(/* groq */ `
 			}
 		}`);
 
+export const themeSettingsQuery = defineQuery(/* groq */ `
+		*[_type == "themeSettings"][0]{
+			primary,
+			secondary,
+			background,
+			text,
+			headingFont,
+			bodyFont,
+			baseFontSize,
+			lineHeight
+		}`);
+
 export const settingsQuery = defineQuery(/* groq */ `
 		*[_type == "settings"][0]{
 			title,

@@ -10,6 +10,14 @@
 @theme {
   --shadow-layer: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
 
+  /* Dynamic theme colors administered from Sanity (themeSettings singleton).
+     The runtime values --theme-* are injected at app startup by the useTheme()
+     composable; the fallbacks below are used before hydration / when unset. */
+  --color-primary: var(--theme-primary, #ef4434);
+  --color-secondary: var(--theme-secondary, #206ee9);
+  --color-background: var(--theme-background, #ffffff);
+  --color-text: var(--theme-text, #0d0e12);
+
   --color-nuxt: #00dc82;
 
   --color-black: #0d0e12;
@@ -114,8 +122,9 @@
   --color-green-900: #183122;
   --color-green-950: #14211a;
 
-  --font-display: "Inter", "sans-serif";
-  --font-sans: "Inter", "sans-serif";
+  /* Dynamic typography administered from Sanity (themeSettings singleton). */
+  --font-display: var(--theme-heading-font, "Inter", "sans-serif");
+  --font-sans: var(--theme-body-font, "Inter", "sans-serif");
 
   --animate-gradient: gradient 2s ease-in-out infinite;
   @keyframes gradient {
@@ -129,6 +138,12 @@
   }
 
   --default-transition-duration: 250ms;
+}
+
+/* Apply the Sanity-administered base font size and line height globally. */
+html {
+  font-size: var(--theme-base-font-size, 16px);
+  line-height: var(--theme-line-height, 1.5);
 }
 
 @keyframes expandWidth {

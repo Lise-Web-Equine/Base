@@ -16,7 +16,6 @@ import {
   type DocumentLocation,
 } from 'sanity/presentation'
 import {assist} from '@sanity/assist'
-import {defineConfig} from 'sanity'
 import {frFRLocale} from '@sanity/locale-fr-fr'
 
 // Environment variables for project configuration
