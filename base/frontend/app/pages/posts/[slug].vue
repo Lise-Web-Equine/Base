@@ -15,6 +15,9 @@ const { data: posts } = await useLazySanityQuery<SomePostsQueryResult>(
 useSiteMetadata({
   title: post?.value?.seoTitle || post?.value?.title,
   description: post?.value?.seoDescription || post?.value?.excerpt,
+  ogImage: post?.value?.ogImage || undefined,
+  ogType: "article",
+  noIndex: post?.value?.noIndex ?? false,
 });
 </script>
 

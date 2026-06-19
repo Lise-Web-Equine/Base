@@ -37,7 +37,8 @@ export const postQuery = defineQuery(/* groq */ `
 							},
 						}
 					},
-			"author": author->{..., "picture": picture.asset._ref}
+			"author": author->{..., "picture": picture.asset._ref},
+			"ogImage": coverImage.asset->url
 		}`);
 
 export const pageQuery = defineQuery(/* groq */ `
@@ -95,5 +96,15 @@ export const settingsQuery = defineQuery(/* groq */ `
 							},
 						}
 					},
-			"ogImage": ogImage.asset->url
+			metaDescription,
+			"ogImage": ogImage.asset->url,
+			"logo": logo.asset->url,
+			socialLinks
+		}`);
+
+export const sitemapQuery = defineQuery(/* groq */ `
+		*[_type in ["page", "post"] && defined(slug.current) && noIndex != true]{
+			_type,
+			"slug": slug.current,
+			_updatedAt
 		}`);

@@ -11,6 +11,7 @@ const runtimeConfig = useRuntimeConfig();
 useSiteMetadata({
   title: page?.value?.seoTitle || page?.value?.heading,
   description: page?.value?.seoDescription || page?.value?.subheading,
+  noIndex: page?.value?.noIndex ?? false,
 });
 </script>
 

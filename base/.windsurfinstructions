@@ -1,0 +1,10 @@
+# Instructions du projet
+
+## Structure
+Ce projet est un **monorepo** :
+- `/frontend` : application **Nuxt 3** (site web).
+- `/studio` : **CMS Sanity** (Studio + schémas de contenu).
+
+## Règles strictes
+- **Ne jamais scanner automatiquement le projet** sans mon accord explicite et une explication.
+- Ces restrictions ont pour but d'**économiser les tokens** : demande-moi toujours avant d'explorer ou de lire des fichiers de config.

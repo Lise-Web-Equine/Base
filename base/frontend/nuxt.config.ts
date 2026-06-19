@@ -5,7 +5,29 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
-  modules: ["@nuxtjs/sanity", "@nuxt/fonts"],
+  modules: ["@nuxtjs/sanity", "@nuxt/fonts", "@nuxtjs/seo"],
+  // Configuration globale du site, utilisée par @nuxtjs/seo pour les URLs
+  // canoniques, le sitemap, robots.txt et les balises Open Graph.
+  site: {
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+    name: process.env.NUXT_PUBLIC_SITE_NAME,
+    defaultLocale: "fr",
+  },
+  // Le sitemap est alimenté dynamiquement par le contenu Sanity
+  // (voir server/api/__sitemap__/urls.ts).
+  sitemap: {
+    sources: ["/api/__sitemap__/urls"],
+  },
+  robots: {
+    // Empêche l'indexation des routes techniques de prévisualisation Sanity.
+    disallow: ["/preview/"],
+  },
+  // Les images Open Graph sont gérées dans Sanity (champ ogImage), on n'utilise
+  // donc pas la génération dynamique de nuxt-og-image (évite une dépendance de
+  // rendu et une config interactive). Les balises og:image restent générées.
+  ogImage: {
+    enabled: false,
+  },
   sanity: {
     projectId: process.env.NUXT_SANITY_PROJECT_ID,
     dataset: process.env.NUXT_SANITY_DATASET,

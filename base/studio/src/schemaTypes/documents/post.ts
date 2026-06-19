@@ -114,6 +114,15 @@ export const post = defineType({
         'Description used for search engines and social media sharing (recommended: 150-160 characters)',
       group: 'seo',
     }),
+    defineField({
+      name: 'noIndex',
+      title: 'Masquer des moteurs de recherche',
+      type: 'boolean',
+      description:
+        "Si activé, cet article ne sera pas indexé par Google (balise noindex) et sera exclu du sitemap.",
+      initialValue: false,
+      group: 'seo',
+    }),
   ],
   // List preview configuration. https://www.sanity.io/docs/previews-list-views
   preview: {

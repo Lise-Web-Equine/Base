@@ -124,6 +124,38 @@ export const settings = defineType({
         },
       },
     }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Description SEO par défaut',
+      type: 'text',
+      rows: 3,
+      description:
+        "Description affichée par les moteurs de recherche lorsqu'une page n'a pas sa propre description SEO (recommandé : 150-160 caractères).",
+    }),
+    defineField({
+      name: 'logo',
+      title: 'Logo de l\u2019organisation',
+      type: 'image',
+      description:
+        'Utilisé pour les données structurées Schema.org (logo de l\u2019entreprise affiché par Google). Format carré recommandé.',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'socialLinks',
+      title: 'Réseaux sociaux',
+      type: 'array',
+      description:
+        'Liens vers les profils officiels (Facebook, Instagram, LinkedIn, etc.). Utilisés pour les données structurées Schema.org.',
+      of: [
+        defineArrayMember({
+          type: 'url',
+          validation: (rule) =>
+            rule.uri({scheme: ['http', 'https']}),
+        }),
+      ],
+    }),
   ],
   preview: {
     prepare() {
