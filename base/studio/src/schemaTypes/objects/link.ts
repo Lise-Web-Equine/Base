@@ -2,79 +2,98 @@ import {defineField, defineType} from '@sanity/types'
 import {LinkIcon} from '@sanity/icons'
 
 /**
- * Link schema object. This link object lets the user first select the type of link and then
- * then enter the URL, page reference, or post reference - depending on the type selected.
- * Learn more: https://www.sanity.io/docs/object-type
+ * Objet de schéma "link" (lien). Brique réutilisable : l'utilisateur choisit d'abord
+ * le type de lien, puis renseigne l'URL, la référence de page/article, ou l'ancre,
+ * selon le type sélectionné. Le libellé affiché n'appartient PAS à cet objet : il est
+ * fourni par l'objet appelant (ex: callToAction), pour garder le lien comme une pure cible.
+ * En savoir plus : https://www.sanity.io/docs/object-type
  */
 
 export const link = defineType({
   name: 'link',
-  title: 'Link',
+  title: 'Lien',
   type: 'object',
   icon: LinkIcon,
   fields: [
     defineField({
       name: 'linkType',
-      title: 'Link Type',
+      title: 'Type de lien',
       type: 'string',
-      initialValue: 'url',
+      description: 'Choisissez vers quoi pointe ce lien.',
+      initialValue: 'page',
       options: {
         list: [
-          {title: 'URL', value: 'href'},
-          {title: 'Page', value: 'page'},
-          {title: 'Post', value: 'post'},
+          {title: 'Page interne', value: 'page'},
+          {title: 'Article', value: 'post'},
+          {title: 'URL externe', value: 'href'},
+          {title: 'Ancre sur la page', value: 'anchor'},
         ],
         layout: 'radio',
       },
     }),
     defineField({
-      name: 'href',
-      title: 'URL',
-      type: 'url',
-      hidden: ({parent}) => parent?.linkType !== 'href',
-      validation: (Rule) =>
-        // Custom validation to ensure URL is provided if the link type is 'href'
-        Rule.custom((value, context: any) => {
-          if (context.parent?.linkType === 'href' && !value) {
-            return 'URL is required when Link Type is URL'
-          }
-          return true
-        }),
-    }),
-    defineField({
       name: 'page',
       title: 'Page',
       type: 'reference',
+      description: 'La page interne vers laquelle pointe ce lien.',
       to: [{type: 'page'}],
       hidden: ({parent}) => parent?.linkType !== 'page',
       validation: (Rule) =>
-        // Custom validation to ensure page reference is provided if the link type is 'page'
         Rule.custom((value, context: any) => {
           if (context.parent?.linkType === 'page' && !value) {
-            return 'Page reference is required when Link Type is Page'
+            return 'Une page est requise lorsque le type de lien est « Page interne ».'
           }
           return true
         }),
     }),
     defineField({
       name: 'post',
-      title: 'Post',
+      title: 'Article',
       type: 'reference',
+      description: "L'article vers lequel pointe ce lien.",
       to: [{type: 'post'}],
       hidden: ({parent}) => parent?.linkType !== 'post',
       validation: (Rule) =>
-        // Custom validation to ensure post reference is provided if the link type is 'post'
         Rule.custom((value, context: any) => {
           if (context.parent?.linkType === 'post' && !value) {
-            return 'Post reference is required when Link Type is Post'
+            return 'Un article est requis lorsque le type de lien est « Article ».'
+          }
+          return true
+        }),
+    }),
+    defineField({
+      name: 'href',
+      title: 'URL externe',
+      type: 'url',
+      description: 'Adresse complète (ex: https://exemple.com).',
+      hidden: ({parent}) => parent?.linkType !== 'href',
+      validation: (Rule) =>
+        Rule.custom((value, context: any) => {
+          if (context.parent?.linkType === 'href' && !value) {
+            return 'Une URL est requise lorsque le type de lien est « URL externe ».'
+          }
+          return true
+        }),
+    }),
+    defineField({
+      name: 'anchor',
+      title: 'Ancre',
+      type: 'string',
+      description: 'Identifiant de section sur la page courante, sans le « # » (ex: contact).',
+      hidden: ({parent}) => parent?.linkType !== 'anchor',
+      validation: (Rule) =>
+        Rule.custom((value, context: any) => {
+          if (context.parent?.linkType === 'anchor' && !value) {
+            return 'Une ancre est requise lorsque le type de lien est « Ancre sur la page ».'
           }
           return true
         }),
     }),
     defineField({
       name: 'openInNewTab',
-      title: 'Open in new tab',
+      title: 'Ouvrir dans un nouvel onglet',
       type: 'boolean',
+      description: 'Recommandé pour les liens externes.',
       initialValue: false,
     }),
   ],

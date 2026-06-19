@@ -1,10 +1,14 @@
 import {ColorWheelIcon} from '@sanity/icons'
 import {defineField, defineType} from '@sanity/types'
+import {COLOR_SLOTS} from '../../colorSlots'
 
 /**
  * Theme Settings schema Singleton.  Stores the global color theme that is applied
  * across the whole frontend via dynamic CSS variables (e.g. --color-primary).
  * Learn more: https://www.sanity.io/docs/create-a-link-to-a-single-edit-page-in-your-main-document-type-list
+ *
+ * Les champs couleur sont générés à partir de `COLOR_SLOTS` (source unique de
+ * vérité partagée avec les schémas qui proposent un choix de couleur du thème).
  */
 
 const colorField = (name: string, title: string, description: string, initialValue: string) =>
@@ -52,43 +56,8 @@ export const themeSettings = defineType({
     {name: 'typography', title: 'Typographie'},
   ],
   fields: [
-    colorField(
-      'primary',
-      'Couleur Principale',
-      'Couleur principale de la marque (boutons, liens, accents).',
-      '#ef4434',
-    ),
-    colorField(
-      'secondary',
-      'Couleur Secondaire',
-      'Couleur secondaire / complémentaire de la marque.',
-      '#206ee9',
-    ),
-    colorField(
-      'accent',
-      "Couleur d'Accent",
-      "Couleur d'accent pour mettre en avant certains éléments.",
-      '#8f57ef',
-    ),
-    colorField('bgMain', 'Fond Principal', 'Couleur de fond principale des pages.', '#ffffff'),
-    colorField(
-      'bgSurface',
-      'Fond de Surface',
-      'Couleur de fond des surfaces (cartes, sections).',
-      '#f6f6f8',
-    ),
-    colorField('textMain', 'Texte Principal', 'Couleur du texte principal.', '#0d0e12'),
-    colorField(
-      'textMuted',
-      'Texte Secondaire',
-      'Couleur du texte secondaire / atténué.',
-      '#727892',
-    ),
-    colorField(
-      'border',
-      'Bordures et Séparateurs',
-      'Couleur des bordures et séparateurs.',
-      '#e3e4e8',
+    ...COLOR_SLOTS.map((slot) =>
+      colorField(slot.name, slot.title, slot.description, slot.initialValue),
     ),
     fontField('fontDisplay', 'Police des Titres', 'Famille de police utilisée pour les titres.'),
     fontField(

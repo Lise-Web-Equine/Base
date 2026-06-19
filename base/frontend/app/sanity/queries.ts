@@ -14,6 +14,12 @@ link {
 	}
 `;
 
+// Projection d'un objet `button` : tous ses champs + le lien résolu.
+const buttonFields = /* groq */ `{
+	...,
+	${linkFields}
+}`;
+
 export const postsQuery =
   defineQuery(`*[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
 		...
@@ -47,7 +53,8 @@ export const pageQuery = defineQuery(/* groq */ `
 			"pageBuilder": pageBuilder[]{
 				...,
 				_type == "callToAction" => {
-					${linkFields},
+					primaryButton ${buttonFields},
+					secondaryButton ${buttonFields},
 				},
 				_type == "infoSection" => {
 					content[]{

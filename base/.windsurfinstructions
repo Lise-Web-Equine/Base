@@ -2,7 +2,7 @@
 
 ## Structure
 Ce projet est un **monorepo** :
-- `/frontend` : application **Nuxt 3** (site web).
+- `/frontend` : application **Nuxt 4** et tailwind (site web).
 - `/studio` : **CMS Sanity** (Studio + schémas de contenu).
 
 ## Règles strictes
