@@ -8,7 +8,9 @@
  *
  * Ajouter / retirer une couleur ici la propage automatiquement au thème ET à
  * toutes les listes de choix de couleur. Le `name` sert d'identifiant stable et
- * correspond à une variable CSS côté frontend (ex: `primary` -> `--color-primary`).
+ * correspond à une variable CSS côté frontend (ex: `primary` -> `--color-primary`,
+ * `background` -> `--color-background`). Utiliser des noms d'un seul mot en
+ * minuscules pour que l'utilitaire Tailwind reste propre (ex: `bg-background`).
  */
 export interface ColorSlot {
   name: string
@@ -37,25 +39,25 @@ export const COLOR_SLOTS: ColorSlot[] = [
     initialValue: '#8f57ef',
   },
   {
-    name: 'bgMain',
+    name: 'background',
     title: 'Fond Principal',
     description: 'Couleur de fond principale des pages.',
     initialValue: '#ffffff',
   },
   {
-    name: 'bgSurface',
+    name: 'surface',
     title: 'Fond de Surface',
     description: 'Couleur de fond des surfaces (cartes, sections).',
     initialValue: '#f6f6f8',
   },
   {
-    name: 'textMain',
+    name: 'foreground',
     title: 'Texte Principal',
     description: 'Couleur du texte principal.',
     initialValue: '#0d0e12',
   },
   {
-    name: 'textMuted',
+    name: 'muted',
     title: 'Texte Secondaire',
     description: 'Couleur du texte secondaire / atténué.',
     initialValue: '#727892',

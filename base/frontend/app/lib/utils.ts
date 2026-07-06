@@ -1,12 +1,13 @@
 /**
- * Convertit un slot de couleur du thème (ex: "bgMain", "primary") en
- * référence à sa variable CSS Tailwind (ex: "var(--color-bg-main)").
+ * Convertit un slot de couleur du thème (ex: "background", "primary") en
+ * référence à sa variable CSS Tailwind (ex: "var(--color-background)").
+ * Les slots sont nommés en un seul mot minuscule (voir `studio/src/colorSlots.ts`),
+ * donc la valeur correspond directement au token `--color-<slot>`.
  * Voir `app/assets/css/main.css` et le singleton `themeSettings`.
  */
 export function colorSlotToCssVar(slot: string | undefined | null): string | undefined {
   if (!slot) return undefined;
-  const kebab = slot.replace(/([A-Z])/g, "-$1").toLowerCase();
-  return `var(--color-${kebab})`;
+  return `var(--color-${slot})`;
 }
 
 export function linkResolver(link: Link | undefined) {

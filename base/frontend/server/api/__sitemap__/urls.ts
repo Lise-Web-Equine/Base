@@ -8,7 +8,10 @@ type SitemapDoc = {
 
 // Identique à `sitemapQuery` dans app/sanity/queries.ts. Inliné ici car le
 // contexte serveur (Nitro) ne partage pas l'alias `~` du dossier app/.
-const sitemapQuery = `*[_type in ["page", "post"] && defined(slug.current) && noIndex != true]{
+const sitemapQuery = `*[
+  ((_type in ["page", "post"] && defined(slug.current)) || _type == "homePage")
+  && noIndex != true
+]{
   _type,
   "slug": slug.current,
   _updatedAt
@@ -51,9 +54,14 @@ export default defineSitemapEventHandler(async (event) => {
   const docs = await client.fetch<SitemapDoc[]>(sitemapQuery);
 
   return (docs ?? [])
-    .filter((doc) => doc.slug)
-    .map((doc) => ({
-      loc: doc._type === "post" ? `/posts/${doc.slug}` : `/${doc.slug}`,
-      lastmod: doc._updatedAt,
-    }));
+    .filter((doc) => doc._type === "homePage" || doc.slug)
+    .map((doc) => {
+      const loc =
+        doc._type === "homePage"
+          ? "/"
+          : doc._type === "post"
+            ? `/posts/${doc.slug}`
+            : `/${doc.slug}`;
+      return { loc, lastmod: doc._updatedAt };
+    });
 });

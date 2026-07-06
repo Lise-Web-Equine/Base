@@ -16,10 +16,10 @@
   --color-primary: var(--theme-primary, #ef4434);
   --color-secondary: var(--theme-secondary, #206ee9);
   --color-accent: var(--theme-accent, #8f57ef);
-  --color-bg-main: var(--theme-bg-main, #ffffff);
-  --color-bg-surface: var(--theme-bg-surface, #f6f6f8);
-  --color-text-main: var(--theme-text-main, #0d0e12);
-  --color-text-muted: var(--theme-text-muted, #727892);
+  --color-background: var(--theme-background, #ffffff);
+  --color-surface: var(--theme-surface, #f6f6f8);
+  --color-foreground: var(--theme-foreground, #0d0e12);
+  --color-muted: var(--theme-muted, #727892);
   --color-border: var(--theme-border, #e3e4e8);
 
   --color-nuxt: #00dc82;
@@ -143,23 +143,4 @@
   }
 
   --default-transition-duration: 250ms;
-}
-
-@keyframes expandWidth {
-  0% {
-    width: 0vw;
-    opacity: 0%;
-  }
-  50% {
-    width: 40vw;
-    opacity: 75%;
-  }
-  100% {
-    width: 25vw;
-    opacity: 20%;
-  }
-}
-
-.animate-width {
-  animation: expandWidth 1s forwards;
 }

@@ -57,7 +57,7 @@ const useLightText = computed(
 
       <div
         class="relative flex flex-col gap-6 px-8 py-12 sm:px-12 sm:py-16"
-        :class="useLightText ? 'text-white' : 'text-text-main'"
+        :class="useLightText ? 'text-white' : 'text-foreground'"
       >
         <div class="flex max-w-2xl flex-col gap-3">
           <p
@@ -76,7 +76,7 @@ const useLightText = computed(
           <p
             v-if="block.text"
             class="text-lg leading-8"
-            :class="useLightText ? 'text-white/90' : 'text-text-muted'"
+            :class="useLightText ? 'text-white/90' : 'text-muted'"
           >
             {{ block.text }}
           </p>

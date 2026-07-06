@@ -34,30 +34,30 @@ const swatches = computed(() => [
   },
   {
     name: "Fond Principal",
-    token: "--color-bg-main",
-    value: cssVariables.value["--theme-bg-main"],
-    swatchClass: "bg-bg-main border border-border",
-    onColor: "text-text-main",
+    token: "--color-background",
+    value: cssVariables.value["--theme-background"],
+    swatchClass: "bg-background border border-border",
+    onColor: "text-foreground",
   },
   {
     name: "Fond de Surface",
-    token: "--color-bg-surface",
-    value: cssVariables.value["--theme-bg-surface"],
-    swatchClass: "bg-bg-surface border border-border",
-    onColor: "text-text-main",
+    token: "--color-surface",
+    value: cssVariables.value["--theme-surface"],
+    swatchClass: "bg-surface border border-border",
+    onColor: "text-foreground",
   },
   {
     name: "Texte Principal",
-    token: "--color-text-main",
-    value: cssVariables.value["--theme-text-main"],
-    swatchClass: "bg-text-main",
+    token: "--color-foreground",
+    value: cssVariables.value["--theme-foreground"],
+    swatchClass: "bg-foreground",
     onColor: "text-white",
   },
   {
     name: "Texte Secondaire",
-    token: "--color-text-muted",
-    value: cssVariables.value["--theme-text-muted"],
-    swatchClass: "bg-text-muted",
+    token: "--color-muted",
+    value: cssVariables.value["--theme-muted"],
+    swatchClass: "bg-muted",
     onColor: "text-white",
   },
   {
@@ -65,7 +65,7 @@ const swatches = computed(() => [
     token: "--color-border",
     value: cssVariables.value["--theme-border"],
     swatchClass: "bg-border",
-    onColor: "text-text-main",
+    onColor: "text-foreground",
   },
 ]);
 
@@ -92,7 +92,7 @@ const fonts = computed(() => [
 </script>
 
 <template>
-  <div class="bg-bg-main text-text-main min-h-screen transition-colors">
+  <div class="bg-background text-foreground min-h-screen transition-colors">
     <div class="container mx-auto max-w-5xl py-16 space-y-12">
       <header class="space-y-3">
         <p class="uppercase tracking-widest text-sm text-secondary">
@@ -135,11 +135,11 @@ const fonts = computed(() => [
             v-for="font in fonts"
             :key="font.name"
             class="rounded-xl border border-border p-6 space-y-2">
-            <p class="text-xs uppercase tracking-widest text-text-muted">
+            <p class="text-xs uppercase tracking-widest text-muted">
               {{ font.name }}
             </p>
             <p :class="font.sampleClass" class="text-2xl">{{ font.sample }}</p>
-            <p class="font-mono text-xs text-text-muted">{{ font.value }}</p>
+            <p class="font-mono text-xs text-muted">{{ font.value }}</p>
           </div>
         </div>
       </section>
@@ -161,9 +161,9 @@ const fonts = computed(() => [
           </button>
         </div>
 
-        <div class="bg-bg-surface border border-border rounded-xl p-6 space-y-3">
+        <div class="bg-surface border border-border rounded-xl p-6 space-y-3">
           <h3 class="font-display text-2xl font-bold text-primary">Titre d'exemple</h3>
-          <p class="text-text-main opacity-90 max-w-2xl">
+          <p class="text-foreground opacity-90 max-w-2xl">
             Paragraphe de démonstration utilisant la couleur de texte du thème
             sur la couleur de fond du thème. Voici un
             <a class="text-secondary underline" href="#">lien secondaire</a>

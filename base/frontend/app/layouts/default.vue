@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white text-black font-sans">
+  <div class="bg-background text-foreground font-sans">
     <section class="min-h-screen pt-24">
       <Header />
       <main class=""><slot /></main>

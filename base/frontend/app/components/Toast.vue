@@ -29,13 +29,13 @@ const { enabled: previewEnabled, inFrame } = useSanityVisualEditingState()!;
           <div class="p-4">
             <div class="flex items-center">
               <div class="flex w-0 flex-1 justify-between">
-                <p class="w-0 flex-1 text-sm font-medium text-gray-900">
-                  Preview Mode Enabled
+                <p class="w-0 flex-1 text-sm font-medium text-foreground">
+                  Mode aperçu activé
                 </p>
                 <a
                   :href="`/preview/disable?redirect=${route.fullPath}`"
-                  class="ml-3 shrink-0 rounded-md bg-white text-sm font-medium text-red-400 hover:text-gray-900 hover:underline focus:outline-none focus:underline">
-                  Disable
+                  class="ml-3 shrink-0 rounded-md bg-white text-sm font-medium text-primary hover:text-foreground hover:underline focus:outline-none focus:underline">
+                  Désactiver
                 </a>
               </div>
             </div>

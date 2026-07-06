@@ -18,11 +18,11 @@ defineProps({
       </h2>
       <span
         v-if="block?.subheading"
-        class="block mt-4 mb-8 text-lg uppercase font-light text-gray-900/70"
+        class="block mt-4 mb-8 text-lg uppercase font-light text-muted"
       >
         {{ block.subheading }}
       </span>
-      <div class="prose prose-a:text-red-500 mt-4" v-if="block.content">
+      <div class="prose prose-a:text-primary mt-4" v-if="block.content">
         <PortableText :portableText="block.content" />
       </div>
     </div>

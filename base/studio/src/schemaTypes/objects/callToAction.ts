@@ -58,7 +58,7 @@ export const callToAction = defineType({
           title: 'Couleur',
           type: 'string',
           description: 'Couleur de fond, choisie parmi les couleurs du thème.',
-          initialValue: 'bgSurface',
+          initialValue: 'surface',
           options: {list: colorSlotOptions()},
           hidden: ({parent}) => parent?.type !== 'color',
           validation: (Rule) =>

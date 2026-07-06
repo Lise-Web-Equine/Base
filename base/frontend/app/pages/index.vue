@@ -1,93 +1,57 @@
 <script setup lang="ts">
-import { postsQuery, settingsQuery } from "~/sanity/queries";
+import { homeQuery } from "~/sanity/queries";
 
-const { data: posts } = await useLazySanityQuery<PostsQueryResult>(postsQuery);
-const { data: settings } = await useSanityQuery<SettingsQueryResult>(settingsQuery);
+// La page d'accueil est le singleton `homePage` (sans slug), servi à la racine
+// et rendu via le Page Builder. Éditable dans le Studio (entrée « Accueil »).
+const { data: page } = await useSanityQuery<HomeQueryResult>(homeQuery);
+
+const runtimeConfig = useRuntimeConfig();
 
 useSiteMetadata({
-  title: "Sanity + Nuxt",
-  description:
-    "This starter template is a powerful web app built with Nuxt for the frontend and Sanity for seamless content management. It includes a standalone Sanity Studio (CMS) with advanced features like Visual Editing, type-safe schemas and queries using Sanity TypeGen , a structured content page builder, and more. The @nuxtjs/sanity toolkit is integrated into the frontend, ensuring a quick and effortless setup.",
-  ogImage: settings?.value?.ogImage || "",
+  title: page?.value?.seoTitle || page?.value?.heading,
+  description: page?.value?.seoDescription || page?.value?.subheading,
+  noIndex: page?.value?.noIndex ?? false,
 });
-
-const { leftDivRef, rightDivRef } = usePageAnimation();
 </script>
 
 <template>
-  <div class="relative">
-    <div
-      ref="leftDivRef"
-      class="bg-gradient-to-r from-red-400 w-[0] h-full absolute left-0 left-div"></div>
-    <div
-      ref="rightDivRef"
-      class="bg-gradient-to-l from-nuxt w-[0] h-full absolute right-0 right-div"></div>
-    <div class="bg-gradient-to-b from-white w-full h-40 absolute top-0"></div>
-    <div
-      class="bg-gradient-to-t from-white w-full h-40 absolute bottom-0"></div>
-    <div class="container relative">
-      <div
-        class="mx-auto max-w-2xl pt-10 xl:pt-20 pb-30 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center">
-        <div class="flex flex-col gap-4 items-center">
-          <div class="text-md leading-6 prose uppercase">
-            A starter template for
-          </div>
-          <h1
-            class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-black">
-            <NuxtLink
-              class="underline decoration-red-400 hover:text-red-400 underline-offset-8 hover:underline-offset-4 transition-all ease-out"
-              to="https://sanity.io/">
-              Sanity
-            </NuxtLink>
-            +
-            <NuxtLink
-              class="underline decoration-nuxt hover:text-nuxt underline-offset-8 hover:underline-offset-4 transition-all ease-out"
-              to="https://nuxt.com/">
-              Nuxt
-            </NuxtLink>
-          </h1>
+  <div class="my-12 lg:my-24" v-if="page">
+    <div class="container" v-if="page.heading || page.subheading">
+      <div class="pb-6 border-b border-border">
+        <div class="max-w-3xl">
+          <h2
+            v-if="page.heading"
+            class="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-7xl">
+            {{ page.heading }}
+          </h2>
+          <p
+            v-if="page.subheading"
+            class="mt-4 text-base lg:text-lg leading-relaxed text-muted uppercase font-light">
+            {{ page.subheading }}
+          </p>
         </div>
       </div>
     </div>
-    <div class="border-t border-gray-100 flex flex-col items-center">
-      <SideBySideIcons />
-      <div
-        class="container relative mx-auto max-w-2xl pb-20 pt-10 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center">
-        <div
-          class="prose sm:prose-lg md:prose-xl xl:prose-2xl text-gray-700 prose-a:text-gray-700 font-light text-center">
-          <PortableText :portableText="settings?.description ?? []" />
-          <div class="flex items-center flex-col gap-4">
-            <GetStartedCode />
-            <NuxtLink
-              to="https://www.sanity.io/docs"
-              class="inline-flex text-red-400 text-xs md:text-sm underline hover:text-gray-900"
-              target="_blank"
-              rel="noopener noreferrer">
-              Sanity Documentation
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="w-4 h-4 ml-1 inline"
-                fill="currentColor">
-                <path
-                  d="M10 6V8H5V19H16V14H18V20C18 20.5523 17.5523 21 17 21H4C3.44772 21 3 20.5523 3 20V7C3 6.44772 3.44772 6 4 6H10ZM21 3V12L17.206 8.207L11.2071 14.2071L9.79289 12.7929L15.792 6.793L12 3H21Z">
-                </path>
-              </svg>
-            </NuxtLink>
-          </div>
-        </div>
-      </div>
-    </div>
+    <PageBuilder
+      v-if="page.pageBuilder && page.pageBuilder.length > 0"
+      :blocks="page.pageBuilder" />
   </div>
 
-  <div v-if="posts" class="border-t border-gray-100">
-    <div class="container">
-      <aside class="py-12 sm:py-20">
-        <Posts
-          heading="Recent Posts"
-          :subHeading="`These ${posts.length} blog posts are populated from your Sanity Studio.`"
-          :posts="posts" />
-      </aside>
+  <div v-else class="container my-24 text-center">
+    <h1 class="text-2xl font-semibold text-foreground">
+      Page d'accueil non configurée
+    </h1>
+    <p class="mt-2 text-base text-muted">
+      Ouvrez l'entrée « Accueil » dans le Studio et ajoutez du contenu.
+    </p>
+    <div v-if="runtimeConfig.public.studioUrl" class="mt-8 flex justify-center">
+      <NuxtLink
+        class="rounded-full flex gap-2 items-center bg-black hover:bg-primary py-3 px-6 text-white transition-colors duration-200"
+        :to="runtimeConfig.public.studioUrl"
+        target="_blank"
+        rel="noopener noreferrer">
+        Ouvrir le Studio
+      </NuxtLink>
     </div>
   </div>
 </template>
