@@ -7,6 +7,7 @@ metadata:
   version: "1.0.0"
   tags: ["sanity", "nuxt", "page-builder"]
   stack: "Nuxt 3 / Sanity v3"
+trigger: model_decision
 ---
 
 # Procédure : Ajouter un champ Sanity (Core)
