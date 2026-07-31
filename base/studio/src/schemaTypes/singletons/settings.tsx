@@ -10,113 +10,83 @@ import * as demo from '../../lib/initialValues'
 
 export const settings = defineType({
   name: 'settings',
-  title: 'Settings',
+  title: 'Réglages du site',
   type: 'document',
   icon: CogIcon,
+  groups: [
+    {name: 'identity', title: 'Identité & Coordonnées', default: true},
+    {name: 'seo', title: 'SEO & Partage'},
+    {name: 'modules', title: 'Modules'},
+  ],
+  fieldsets: [
+    {name: 'branding', title: 'Général & Branding'},
+    {name: 'contact', title: 'Coordonnées'},
+    {name: 'location', title: 'Localisation'},
+    {name: 'social', title: 'Réseaux sociaux'},
+  ],
   fields: [
     defineField({
       name: 'title',
-      description: 'Site title used in the Navigation Bar',
-      title: 'Fallback SEOTitle',
+      title: "Nom de l'organisation / Entreprise",
+      description:
+        'Nom affiché dans la navigation, utilisé comme titre SEO par défaut et dans les données structurées.',
       type: 'string',
+      group: 'identity',
+      fieldset: 'branding',
       initialValue: demo.title,
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'description',
-      description: 'Used on the Homepage',
-      title: 'Description',
-      type: 'array',
-      initialValue: demo.description,
-      of: [
-        // Define a minified block content field for the description. https://www.sanity.io/docs/block-content
-        defineArrayMember({
-          type: 'block',
-          options: {},
-          styles: [],
-          lists: [],
-          marks: {
-            decorators: [],
-            annotations: [
-              {
-                name: 'link',
-                type: 'object',
-                title: 'Link',
-                fields: [
-                  defineField({
-                    name: 'linkType',
-                    title: 'Link Type',
-                    type: 'string',
-                    initialValue: 'href',
-                    options: {
-                      list: [
-                        {title: 'URL', value: 'href'},
-                        {title: 'Page', value: 'page'},
-                        {title: 'Post', value: 'post'},
-                      ],
-                      layout: 'radio',
-                    },
-                  }),
-                  defineField({
-                    name: 'href',
-                    title: 'URL',
-                    type: 'url',
-                    hidden: ({parent}) => parent?.linkType !== 'href' && parent?.linkType != null,
-                    validation: (Rule) =>
-                      Rule.custom((value, context: any) => {
-                        if (context.parent?.linkType === 'href' && !value) {
-                          return 'URL is required when Link Type is URL'
-                        }
-                        return true
-                      }),
-                  }),
-                  defineField({
-                    name: 'page',
-                    title: 'Page',
-                    type: 'reference',
-                    to: [{type: 'page'}],
-                    hidden: ({parent}) => parent?.linkType !== 'page',
-                    validation: (Rule) =>
-                      Rule.custom((value, context: any) => {
-                        if (context.parent?.linkType === 'page' && !value) {
-                          return 'Page reference is required when Link Type is Page'
-                        }
-                        return true
-                      }),
-                  }),
-                  defineField({
-                    name: 'post',
-                    title: 'Post',
-                    type: 'reference',
-                    to: [{type: 'post'}],
-                    hidden: ({parent}) => parent?.linkType !== 'post',
-                    validation: (Rule) =>
-                      Rule.custom((value, context: any) => {
-                        if (context.parent?.linkType === 'post' && !value) {
-                          return 'Post reference is required when Link Type is Post'
-                        }
-                        return true
-                      }),
-                  }),
-                  defineField({
-                    name: 'openInNewTab',
-                    title: 'Open in new tab',
-                    type: 'boolean',
-                    initialValue: false,
-                  }),
-                ],
-              },
-            ],
-          },
-        }),
+      name: 'logo',
+      title: 'Logo de l\u2019organisation',
+      type: 'image',
+      group: 'identity',
+      fieldset: 'branding',
+      description:
+        'Utilisé pour les données structurées Schema.org (logo affiché par Google). Format carré recommandé.',
+      options: {hotspot: true},
+    }),
+    defineField({
+      name: 'phone',
+      title: 'Téléphone principal',
+      type: 'string',
+      group: 'identity',
+      fieldset: 'contact',
+      description: 'Numéro de téléphone public (affichage + données structurées).',
+    }),
+    defineField({
+      name: 'email',
+      title: 'Adresse e-mail',
+      type: 'string',
+      group: 'identity',
+      fieldset: 'contact',
+      description: 'Adresse e-mail publique de contact.',
+      validation: (Rule) =>
+        Rule.custom((value: any) =>
+          !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? true : 'Adresse e-mail invalide.',
+        ),
+    }),
+    defineField({
+      name: 'address',
+      title: 'Adresse',
+      type: 'object',
+      group: 'identity',
+      fieldset: 'location',
+      options: {columns: 1},
+      fields: [
+        defineField({name: 'street', title: 'Rue', type: 'string'}),
+        defineField({name: 'postalCode', title: 'Code postal', type: 'string'}),
+        defineField({name: 'city', title: 'Ville', type: 'string'}),
+        defineField({name: 'country', title: 'Pays', type: 'string', initialValue: 'France'}),
       ],
     }),
     defineField({
       name: 'ogImage',
-      title: 'Open Graph Image',
+      title: 'Image de partage (Open Graph)',
       type: 'image',
+      group: 'seo',
       description:
-        'Displayed on social cards and search engine results.  Used everywhere unless overwritten.',
+        'Affichée sur les réseaux sociaux et dans les résultats de recherche, tant qu\u2019une page ne la surcharge pas.',
       options: {
         hotspot: true,
         aiAssist: {
@@ -128,31 +98,100 @@ export const settings = defineType({
       name: 'metaDescription',
       title: 'Description SEO par défaut',
       type: 'text',
+      group: 'seo',
       rows: 3,
       description:
         "Description affichée par les moteurs de recherche lorsqu'une page n'a pas sa propre description SEO (recommandé : 150-160 caractères).",
     }),
     defineField({
-      name: 'logo',
-      title: 'Logo de l\u2019organisation',
-      type: 'image',
-      description:
-        'Utilisé pour les données structurées Schema.org (logo de l\u2019entreprise affiché par Google). Format carré recommandé.',
-      options: {
-        hotspot: true,
-      },
-    }),
-    defineField({
       name: 'socialLinks',
       title: 'Réseaux sociaux',
       type: 'array',
+      group: 'identity',
+      fieldset: 'social',
       description:
-        'Liens vers les profils officiels (Facebook, Instagram, LinkedIn, etc.). Utilisés pour les données structurées Schema.org.',
+        'Profils officiels. L\u2019icône est déduite de la plateforme choisie (affichage front).',
       of: [
         defineArrayMember({
-          type: 'url',
-          validation: (rule) =>
-            rule.uri({scheme: ['http', 'https']}),
+          type: 'object',
+          name: 'socialLink',
+          title: 'Réseau social',
+          fields: [
+            defineField({
+              name: 'platform',
+              title: 'Plateforme',
+              type: 'string',
+              options: {
+                list: [
+                  {title: 'Facebook', value: 'facebook'},
+                  {title: 'Instagram', value: 'instagram'},
+                  {title: 'X (Twitter)', value: 'x'},
+                  {title: 'LinkedIn', value: 'linkedin'},
+                  {title: 'YouTube', value: 'youtube'},
+                  {title: 'TikTok', value: 'tiktok'},
+                  {title: 'Pinterest', value: 'pinterest'},
+                  {title: 'WhatsApp', value: 'whatsapp'},
+                  {title: 'Autre', value: 'other'},
+                ],
+              },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'label',
+              title: 'Nom (si « Autre »)',
+              type: 'string',
+              hidden: ({parent}) => parent?.platform !== 'other',
+            }),
+            defineField({
+              name: 'url',
+              title: 'Lien',
+              type: 'url',
+              validation: (Rule) => Rule.required().uri({scheme: ['http', 'https']}),
+            }),
+          ],
+          preview: {
+            select: {platform: 'platform', label: 'label', url: 'url'},
+            prepare({platform, label, url}) {
+              return {title: label || platform || 'Réseau social', subtitle: url}
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
+      name: 'cookieConsent',
+      title: 'Bannière cookies (RGPD)',
+      type: 'object',
+      group: 'modules',
+      description:
+        "Bannière de consentement via Axeptio. À activer uniquement si le site utilise des cookies non essentiels (analytics, publicité, embeds…).",
+      options: {columns: 1},
+      fields: [
+        defineField({
+          name: 'enabled',
+          title: 'Activer la bannière (Axeptio)',
+          type: 'boolean',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'axeptioClientId',
+          title: 'Identifiant client Axeptio',
+          type: 'string',
+          description: 'Trouvé dans ton compte Axeptio (paramètres du projet).',
+          hidden: ({parent}) => !parent?.enabled,
+          validation: (Rule) =>
+            Rule.custom((value, context: any) =>
+              context.parent?.enabled && !value
+                ? "Requis lorsque la bannière est activée."
+                : true,
+            ),
+        }),
+        defineField({
+          name: 'axeptioCookiesVersion',
+          title: 'Version des cookies (optionnel)',
+          type: 'string',
+          description: 'Paramètre « cookiesVersion » d\u2019Axeptio (optionnel).',
+          hidden: ({parent}) => !parent?.enabled,
         }),
       ],
     }),
@@ -160,7 +199,7 @@ export const settings = defineType({
   preview: {
     prepare() {
       return {
-        title: 'Settings',
+        title: 'Réglages du site',
       }
     },
   },
