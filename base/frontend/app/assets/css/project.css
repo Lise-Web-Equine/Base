@@ -1,0 +1,39 @@
+/* =============================================================================
+   FICHIER PROJET — personnalisation propre à CHAQUE site.
+   Importé par main.css (Cœur). Ne mettre ici QUE des réglages spécifiques au
+   projet ; ne jamais mettre de logique de base ici.
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   1) POLICES AUTO-HÉBERGÉES (perf + RGPD)
+   -----------------------------------------------------------------------------
+   Déclare ici les familles Google réellement utilisées par CE site (celles
+   choisies dans le thème Sanity : Titres / Texte / Accent).
+
+   Pourquoi : la police est choisie à l'exécution dans Sanity, or @nuxt/fonts
+   détecte les polices au build en scannant les variables `--font-*`. En listant
+   ci-dessous les familles retenues, @nuxt/fonts les télécharge et les SERT EN
+   LOCAL — donc pas d'appel au CDN Google (conforme RGPD) et seules ces
+   polices-là sont chargées (aucun surpoids).
+
+   Règle : le nom déclaré ici doit correspondre exactement à celui choisi dans
+   le thème Sanity. Ajoute/retire une ligne quand tu changes de police.
+
+   NB : ces classes n'ont pas besoin d'être utilisées dans le HTML — leur seule
+   présence dans le CSS suffit à ce que @nuxt/fonts détecte et héberge la police. */
+.font-hosted-1 {
+  font-family: "Inter";
+}
+/* .font-hosted-2 { font-family: "Playfair Display"; } */
+/* .font-hosted-3 { font-family: "Merriweather"; } */
+
+/* -----------------------------------------------------------------------------
+   2) SURCHARGE FINE DES STYLES ATOMIQUES (optionnel)
+   -----------------------------------------------------------------------------
+   Les grands leviers (échelle, arrondi, largeur, densité) se règlent dans
+   Sanity (thème → « Mise en forme »). N'utilise ce bloc que pour un ajustement
+   très spécifique non exposé au client. Exemple :
+
+   :root {
+     --a-scale: 1.28;
+   }                                                                            */

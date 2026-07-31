@@ -5,7 +5,16 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
-  modules: ["@nuxtjs/sanity", "@nuxt/fonts", "@nuxtjs/seo"],
+  modules: ["@nuxtjs/sanity", "@nuxt/fonts", "@nuxtjs/seo", "@nuxt/image"],
+  // Optimisation des images : <SanityImage> passe automatiquement par <NuxtImg>
+  // (redimensionnement responsive, format auto, lazy-loading) via le provider
+  // Sanity de Nuxt Image.
+  image: {
+    sanity: {
+      projectId: process.env.NUXT_SANITY_PROJECT_ID,
+      dataset: process.env.NUXT_SANITY_DATASET,
+    },
+  },
   // Configuration globale du site, utilisée par @nuxtjs/seo pour les URLs
   // canoniques, le sitemap, robots.txt et les balises Open Graph.
   site: {

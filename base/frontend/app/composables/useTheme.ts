@@ -17,6 +17,12 @@ const DEFAULT_THEME = {
   fontDisplay: '"Inter", sans-serif',
   fontBody: '"Inter", sans-serif',
   fontAccent: '"Inter", sans-serif',
+  // Mise en forme (styles atomiques calculés dans main.css).
+  typeScale: "1.2",
+  headingWeight: "700",
+  radius: "0.75rem",
+  contentWidth: "72ch",
+  density: "1",
 } as const;
 
 /**
@@ -47,6 +53,11 @@ export async function useTheme() {
     "--theme-font-display": theme.value?.fontDisplay || DEFAULT_THEME.fontDisplay,
     "--theme-font-body": theme.value?.fontBody || DEFAULT_THEME.fontBody,
     "--theme-font-accent": theme.value?.fontAccent || DEFAULT_THEME.fontAccent,
+    "--theme-type-scale": theme.value?.typeScale || DEFAULT_THEME.typeScale,
+    "--theme-heading-weight": theme.value?.headingWeight || DEFAULT_THEME.headingWeight,
+    "--theme-radius": theme.value?.radius || DEFAULT_THEME.radius,
+    "--theme-content-width": theme.value?.contentWidth || DEFAULT_THEME.contentWidth,
+    "--theme-density": theme.value?.density || DEFAULT_THEME.density,
   }));
 
   const cssText = computed(() =>

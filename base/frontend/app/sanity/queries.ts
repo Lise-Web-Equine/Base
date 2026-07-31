@@ -112,7 +112,12 @@ export const themeSettingsQuery = defineQuery(/* groq */ `
 			"border": border.value,
 			fontDisplay,
 			fontBody,
-			fontAccent
+			fontAccent,
+			typeScale,
+			headingWeight,
+			radius,
+			contentWidth,
+			density
 		}`);
 
 export const settingsQuery = defineQuery(/* groq */ `

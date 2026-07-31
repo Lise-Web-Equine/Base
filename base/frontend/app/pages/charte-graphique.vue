@@ -89,6 +89,15 @@ const fonts = computed(() => [
     sample: "Élégance & caractère",
   },
 ]);
+
+// Réglages « Mise en forme » : leviers globaux qui pilotent les styles atomiques.
+const layoutTokens = computed(() => [
+  { name: "Échelle typographique", value: cssVariables.value["--theme-type-scale"] },
+  { name: "Graisse des titres", value: cssVariables.value["--theme-heading-weight"] },
+  { name: "Arrondi", value: cssVariables.value["--theme-radius"] },
+  { name: "Largeur de lecture", value: cssVariables.value["--theme-content-width"] },
+  { name: "Densité verticale", value: cssVariables.value["--theme-density"] },
+]);
 </script>
 
 <template>
@@ -170,6 +179,55 @@ const fonts = computed(() => [
             et un <span class="text-accent font-semibold">accent</span> pour
             illustrer le contraste.
           </p>
+        </div>
+      </section>
+
+      <section class="space-y-6">
+        <h2 class="text-xl font-semibold">Styles atomiques</h2>
+        <p class="text-sm text-muted max-w-2xl">
+          Définis une seule fois (classes <code>.a-*</code> + <code>.prose</code>)
+          et calculés depuis les réglages « Mise en forme » du thème Sanity.
+          Modifie-les dans le Studio → tout se met à jour ici.
+        </p>
+        <div class="grid gap-6 md:grid-cols-2">
+          <div class="rounded-xl border border-border p-6 space-y-4">
+            <p class="a-eyebrow">Sur-titre</p>
+            <h2 class="a-h2">Titre 2 — a-h2</h2>
+            <h3 class="a-h3">Titre 3 — a-h3</h3>
+            <h4 class="a-h4">Titre 4 — a-h4</h4>
+            <p class="a-lead">
+              Chapô : phrase d'introduction mise en avant (a-lead).
+            </p>
+            <p class="a-body">
+              Paragraphe courant (a-body) avec un
+              <span :style="{ color: 'var(--color-primary)' }">texte coloré</span>
+              et un
+              <span
+                class="rounded px-1 py-0.5"
+                :style="{ backgroundColor: 'color-mix(in srgb, var(--color-primary) 22%, transparent)' }"
+                >surlignage</span
+              >.
+            </p>
+            <blockquote class="a-quote">
+              Citation d'exemple illustrant le style a-quote.
+            </blockquote>
+            <ul class="a-body list-disc space-y-1 pl-5">
+              <li>Élément de liste</li>
+              <li>Autre élément</li>
+            </ul>
+          </div>
+          <div class="rounded-xl border border-border p-6 space-y-1">
+            <p class="text-xs uppercase tracking-widest text-muted mb-3">
+              Réglages « Mise en forme »
+            </p>
+            <div
+              v-for="t in layoutTokens"
+              :key="t.name"
+              class="flex items-center justify-between gap-4 border-b border-border py-2 last:border-0">
+              <span class="text-sm">{{ t.name }}</span>
+              <span class="font-mono text-xs text-muted">{{ t.value }}</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>
