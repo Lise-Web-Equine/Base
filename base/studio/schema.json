@@ -202,6 +202,154 @@
     }
   },
   {
+    "name": "sectionAppearance",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "sectionAppearance"
+          }
+        },
+        "background": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "object",
+            "attributes": {
+              "type": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "string",
+                      "value": "none"
+                    },
+                    {
+                      "type": "string",
+                      "value": "color"
+                    },
+                    {
+                      "type": "string",
+                      "value": "image"
+                    }
+                  ]
+                },
+                "optional": true
+              },
+              "colorSlot": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "string",
+                      "value": "primary"
+                    },
+                    {
+                      "type": "string",
+                      "value": "secondary"
+                    },
+                    {
+                      "type": "string",
+                      "value": "accent"
+                    },
+                    {
+                      "type": "string",
+                      "value": "background"
+                    },
+                    {
+                      "type": "string",
+                      "value": "surface"
+                    },
+                    {
+                      "type": "string",
+                      "value": "foreground"
+                    },
+                    {
+                      "type": "string",
+                      "value": "muted"
+                    },
+                    {
+                      "type": "string",
+                      "value": "border"
+                    }
+                  ]
+                },
+                "optional": true
+              },
+              "image": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "inline",
+                  "name": "customImage"
+                },
+                "optional": true
+              },
+              "overlay": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "string",
+                      "value": "none"
+                    },
+                    {
+                      "type": "string",
+                      "value": "dark"
+                    },
+                    {
+                      "type": "string",
+                      "value": "light"
+                    }
+                  ]
+                },
+                "optional": true
+              },
+              "overlayOpacity": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "number"
+                },
+                "optional": true
+              }
+            }
+          },
+          "optional": true
+        },
+        "spacing": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "union",
+            "of": [
+              {
+                "type": "string",
+                "value": "none"
+              },
+              {
+                "type": "string",
+                "value": "sm"
+              },
+              {
+                "type": "string",
+                "value": "md"
+              },
+              {
+                "type": "string",
+                "value": "lg"
+              }
+            ]
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "type": "type",
     "name": "sanity.imageAsset.reference",
     "value": {
@@ -1304,6 +1452,31 @@
             {
               "type": "string",
               "value": "1.35"
+            }
+          ]
+        },
+        "optional": false
+      },
+      "siteMaxWidth": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "1120px"
+            },
+            {
+              "type": "string",
+              "value": "1280px"
+            },
+            {
+              "type": "string",
+              "value": "1440px"
+            },
+            {
+              "type": "string",
+              "value": "100%"
             }
           ]
         },

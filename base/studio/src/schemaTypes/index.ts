@@ -9,6 +9,7 @@ import {link} from './objects/link'
 import {button} from './objects/button'
 import {customImage} from './objects/customImage'
 import {blockContent} from './objects/blockContent'
+import {sectionAppearance} from './objects/sectionAppearance'
 import {pageBuilderSections} from '../sections'
 import {projectSchemaTypes} from './project'
 
@@ -18,7 +19,7 @@ import {projectSchemaTypes} from './project'
 // --- CŒUR (réutilisable par tous les projets) ---
 const coreSingletons = [settings, themeSettings, homePage, navigation]
 const coreDocuments = [page, post, person]
-const coreObjects = [blockContent, link, button, customImage]
+const coreObjects = [blockContent, link, button, customImage, sectionAppearance]
 
 export const schemaTypes = [
   ...coreSingletons,

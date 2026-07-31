@@ -5,8 +5,12 @@
 @plugin "@tailwindcss/typography";
 
 @utility container {
-  margin: 0 auto;
-  padding: 0 2rem;
+  width: 100%;
+  /* Largeur max = token Sanity (« Largeur du site ») ; gouttière fluide responsive.
+     Source unique de la marge du contenu, respectée par toutes les sections. */
+  max-width: var(--site-max, 1280px);
+  margin-inline: auto;
+  padding-inline: var(--gutter, clamp(1rem, 4vw, 2rem));
 }
 
 @theme {
@@ -198,6 +202,12 @@
   --a-content-width: var(--theme-content-width, 72ch);
   --a-heading-weight: var(--theme-heading-weight, 700);
   --a-density: var(--theme-density, 1);
+
+  /* Layout global : largeur max du site (token Sanity), gouttière latérale fluide
+     et rythme vertical des sections (fluide, modulé par la densité). */
+  --site-max: var(--theme-site-max, 1280px);
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --section-space: calc(clamp(2rem, 6vw, 5rem) * var(--a-density));
 }
 
 @layer components {

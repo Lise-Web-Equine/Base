@@ -142,6 +142,18 @@ export const themeSettings = defineType({
       ],
       '1',
     ),
+    layoutField(
+      'siteMaxWidth',
+      'Largeur du site',
+      'Largeur maximale du contenu. Les fonds restent pleine largeur ; seul le contenu est contraint.',
+      [
+        {title: 'Compact (1120px)', value: '1120px'},
+        {title: 'Standard (1280px)', value: '1280px'},
+        {title: 'Large (1440px)', value: '1440px'},
+        {title: 'Pleine largeur', value: '100%'},
+      ],
+      '1280px',
+    ),
   ],
   preview: {
     select: {primary: 'primary'},

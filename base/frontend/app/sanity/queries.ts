@@ -117,7 +117,8 @@ export const themeSettingsQuery = defineQuery(/* groq */ `
 			headingWeight,
 			radius,
 			contentWidth,
-			density
+			density,
+			siteMaxWidth
 		}`);
 
 export const settingsQuery = defineQuery(/* groq */ `

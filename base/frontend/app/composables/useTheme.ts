@@ -23,6 +23,7 @@ const DEFAULT_THEME = {
   radius: "0.75rem",
   contentWidth: "72ch",
   density: "1",
+  siteMaxWidth: "1280px",
 } as const;
 
 /**
@@ -58,6 +59,7 @@ export async function useTheme() {
     "--theme-radius": theme.value?.radius || DEFAULT_THEME.radius,
     "--theme-content-width": theme.value?.contentWidth || DEFAULT_THEME.contentWidth,
     "--theme-density": theme.value?.density || DEFAULT_THEME.density,
+    "--theme-site-max": theme.value?.siteMaxWidth || DEFAULT_THEME.siteMaxWidth,
   }));
 
   const cssText = computed(() =>
