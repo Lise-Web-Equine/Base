@@ -15,6 +15,14 @@ export default defineNuxtConfig({
       dataset: process.env.NUXT_SANITY_DATASET || "production",
     },
   },
+  // Swiper est intégré via ses Web Components (<swiper-container>/<swiper-slide>) ;
+  // on indique à Vue de les traiter comme des éléments personnalisés.
+  // L'enregistrement se fait dans plugins/swiper.client.ts.
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag.startsWith("swiper-"),
+    },
+  },
   // Configuration globale du site, utilisée par @nuxtjs/seo pour les URLs
   // canoniques, le sitemap, robots.txt et les balises Open Graph.
   site: {
@@ -54,6 +62,10 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    // Privé (serveur uniquement) — jamais exposé au client.
+    resendApiKey: process.env.RESEND_API_KEY || "",
+    contactTo: process.env.CONTACT_TO || "",
+    contactFrom: process.env.CONTACT_FROM || "",
     public: {
       studioUrl: process.env.NUXT_SANITY_STUDIO_URL,
     },

@@ -19,13 +19,16 @@
     "@vueuse/nuxt": "^14.3.0",
     "groq": "^5.24.0",
     "nuxt": "^4.4.4",
+    "resend": "^6.18.0",
     "sanity": "^5.24.0",
+    "swiper": "^14.0.6",
     "tailwindcss": "^4.3.0",
     "vue": "^3.5.34",
     "vue-router": "^5.0.6"
   },
   "devDependencies": {
     "@nuxt/image": "^2.0.0",
+    "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.19"
   }
 }

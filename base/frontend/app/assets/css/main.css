@@ -3,6 +3,7 @@
 @import "./project.css";
 
 @plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
 
 @utility container {
   width: 100%;
