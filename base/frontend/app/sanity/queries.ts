@@ -124,22 +124,14 @@ export const themeSettingsQuery = defineQuery(/* groq */ `
 export const settingsQuery = defineQuery(/* groq */ `
 		*[_type == "settings"][0]{
 			title,
-			description[]{
-						...,
-						markDefs[]{
-							...,
-							_type == "link" => {
-								"link": {
-									...,
-									${linkReference}
-								}
-							},
-						}
-					},
+			phone,
+			email,
+			address,
 			metaDescription,
 			"ogImage": ogImage.asset->url,
 			"logo": logo.asset->url,
-			socialLinks
+			socialLinks,
+			cookieConsent
 		}`);
 
 export const navigationQuery = defineQuery(/* groq */ `

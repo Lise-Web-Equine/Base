@@ -17,17 +17,60 @@ useSeoMeta({
 });
 
 // Données structurées Schema.org (aident Google à comprendre l'entité du site).
+// LocalBusiness enrichit l'entité avec les coordonnées (tél., e-mail, adresse)
+// saisies dans Réglages → Identité & Coordonnées. Pour une entité non locale
+// (ex. agence sans point d'accueil), on peut repasser à defineOrganization.
+const addr = settings.value?.address;
+const hasAddress = !!(addr && (addr.street || addr.city || addr.postalCode));
+
 useSchemaOrg([
-  defineOrganization({
+  defineLocalBusiness({
     name: settings.value?.title || siteConfig.name,
     logo: settings.value?.logo || settings.value?.ogImage || undefined,
-    sameAs: settings.value?.socialLinks ?? [],
+    image: settings.value?.ogImage || settings.value?.logo || undefined,
+    telephone: settings.value?.phone || undefined,
+    email: settings.value?.email || undefined,
+    ...(hasAddress
+      ? {
+          address: {
+            streetAddress: addr?.street || undefined,
+            postalCode: addr?.postalCode || undefined,
+            addressLocality: addr?.city || undefined,
+            addressCountry: addr?.country || undefined,
+          },
+        }
+      : {}),
+    sameAs: (settings.value?.socialLinks ?? [])
+      .map((s) => s.url)
+      .filter((u): u is string => !!u),
   }),
   defineWebSite({
     name: settings.value?.title || siteConfig.name,
   }),
   defineWebPage(),
 ]);
+
+// Bannière de consentement cookies (Axeptio), activable depuis Sanity
+// (Réglages → Bannière cookies). Le SDK n'est chargé que si activé + ID fourni.
+const consent = settings.value?.cookieConsent;
+if (consent?.enabled && consent.axeptioClientId) {
+  useHead({
+    script: [
+      {
+        key: "axeptio-settings",
+        innerHTML: `window.axeptioSettings = ${JSON.stringify({
+          clientId: consent.axeptioClientId,
+          cookiesVersion: consent.axeptioCookiesVersion || undefined,
+        })};`,
+      },
+      {
+        key: "axeptio-sdk",
+        src: "https://static.axept.io/sdk.js",
+        async: true,
+      },
+    ],
+  });
+}
 </script>
 
 <template>

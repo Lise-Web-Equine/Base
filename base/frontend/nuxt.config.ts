@@ -5,7 +5,19 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
-  modules: ["@nuxtjs/sanity", "@nuxt/fonts", "@nuxtjs/seo", "@nuxt/image", "@vueuse/nuxt"],
+  modules: [
+    "@nuxtjs/sanity",
+    "@nuxt/fonts",
+    "@nuxtjs/seo",
+    "@nuxt/image",
+    "@vueuse/nuxt",
+    "@nuxt/icon",
+  ],
+  // Icônes (Iconify) auto-hébergées en local (perf + RGPD, pas d'appel à l'API
+  // Iconify). Les collections installées (@iconify-json/*) sont servies localement.
+  icon: {
+    serverBundle: "local",
+  },
   // Optimisation des images : <SanityImage> passe automatiquement par <NuxtImg>
   // (redimensionnement responsive, format auto, lazy-loading) via le provider
   // Sanity de Nuxt Image.
