@@ -10,7 +10,8 @@
     "prebuild": "npm run extract-types",
     "build": "sanity build",
     "deploy": "sanity deploy",
-    "extract-types": "sanity schema extract --enforce-required-fields"
+    "extract-types": "sanity schema extract --enforce-required-fields",
+    "fonts:sync": "node scripts/generate-google-fonts.mjs"
   },
   "keywords": [
     "sanity"
@@ -19,6 +20,7 @@
     "@sanity/assist": "^6.0.5",
     "@sanity/icons": "^3.7.4",
     "@sanity/locale-fr-fr": "^1.2.32",
+    "@sanity/table": "^3.1.12",
     "@sanity/types": "^5.24.0",
     "@sanity/vision": "5.24.0",
     "pluralize-esm": "^9.0.5",

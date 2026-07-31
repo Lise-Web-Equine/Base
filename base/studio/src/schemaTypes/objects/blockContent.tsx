@@ -1,26 +1,90 @@
 import {defineArrayMember, defineType, defineField} from '@sanity/types'
+import {
+  BoldIcon,
+  ItalicIcon,
+  UnderlineIcon,
+  StrikethroughIcon,
+  CodeIcon,
+} from '@sanity/icons'
+import {colorSlotOptions} from '../../colorSlots'
 
 /**
- * This is the schema definition for the rich text fields used for
- * for this blog studio. When you import it in schemas.js it can be
- * reused in other parts of the studio with:
- *  {
- *    name: 'someName',
- *    title: 'Some title',
- *    type: 'blockContent'
- *  }
+ * Définition du champ texte riche (Portable Text) réutilisable dans tout le
+ * Studio via `{type: 'blockContent'}`.
+ *
+ * CŒUR : styles de bloc, décorateurs, listes et annotations communs à tous les
+ * projets. Le style de rendu est piloté côté frontend par les design tokens.
+ *
+ * - Styles de bloc volontairement limités à Titre 2 → Titre 4 (le H1 est réservé
+ *   au titre de page/section pour préserver la hiérarchie SEO).
+ * - L'annotation « Couleur » réutilise les slots du thème (`COLOR_SLOTS`) : aucune
+ *   couleur en dur, cohérence garantie avec la charte.
  *
  * Learn more: https://www.sanity.io/docs/block-content
  */
 export const blockContent = defineType({
-  title: 'Block Content',
+  title: 'Contenu enrichi',
   name: 'blockContent',
   type: 'array',
   of: [
     defineArrayMember({
       type: 'block',
+      // Styles de paragraphe (menu déroulant). H1 volontairement exclu (SEO).
+      styles: [
+        {title: 'Normal', value: 'normal'},
+        {title: 'Titre 2', value: 'h2'},
+        {title: 'Titre 3', value: 'h3'},
+        {title: 'Titre 4', value: 'h4'},
+        {title: 'Citation', value: 'blockquote'},
+      ],
+      // Listes disponibles.
+      lists: [
+        {title: 'Puces', value: 'bullet'},
+        {title: 'Numérotée', value: 'number'},
+      ],
       marks: {
+        // Décorateurs (formatage d'une sélection). Les `value` correspondent aux
+        // composants de rendu frontend (voir `components/mark/`).
+        decorators: [
+          {title: 'Gras', value: 'strong', icon: BoldIcon},
+          {title: 'Italique', value: 'em', icon: ItalicIcon},
+          {title: 'Souligné', value: 'underline', icon: UnderlineIcon},
+          {title: 'Barré', value: 'strike-through', icon: StrikethroughIcon},
+          {title: 'Code', value: 'code', icon: CodeIcon},
+        ],
         annotations: [
+          // Annotation « Couleur » : colore le texte ou le surligne avec une
+          // couleur du thème (slot). Rendu par `components/mark/HighlightMark.vue`.
+          defineField({
+            name: 'highlight',
+            type: 'object',
+            title: 'Couleur / Surlignage',
+            fields: [
+              defineField({
+                name: 'color',
+                title: 'Couleur',
+                type: 'string',
+                description: 'Couleur choisie parmi les couleurs du thème.',
+                initialValue: 'primary',
+                options: {list: colorSlotOptions()},
+                validation: (Rule) => Rule.required(),
+              }),
+              defineField({
+                name: 'mode',
+                title: 'Style',
+                type: 'string',
+                initialValue: 'text',
+                options: {
+                  list: [
+                    {title: 'Texte coloré', value: 'text'},
+                    {title: 'Surligné (fond)', value: 'background'},
+                  ],
+                  layout: 'radio',
+                },
+                validation: (Rule) => Rule.required(),
+              }),
+            ],
+          }),
           {
             name: 'link',
             type: 'object',

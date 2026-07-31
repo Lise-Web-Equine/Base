@@ -18,6 +18,7 @@ import {
 import {assist} from '@sanity/assist'
 import {frFRLocale} from '@sanity/locale-fr-fr'
 import { simplerColorInput } from 'sanity-plugin-simpler-color-input'
+import {table} from '@sanity/table'
 
 // Environment variables for project configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
@@ -141,6 +142,8 @@ export default defineConfig({
     }),
     assist(),
     visionTool(),
+    // Plugin officiel de tableaux : active le type `table` dans les schémas.
+    table(),
   ],
 
   // Schema configuration, imported from ./src/schemaTypes/index.ts

@@ -33,5 +33,17 @@ export const customImage = defineType({
           return true
         }),
     }),
+    defineField({
+      name: 'caption',
+      title: 'Légende',
+      type: 'string',
+      description: 'Texte affiché sous l\u2019image (optionnel).',
+    }),
+    defineField({
+      name: 'credit',
+      title: 'Crédit',
+      type: 'string',
+      description: 'Auteur / source de l\u2019image (optionnel).',
+    }),
   ],
 })
