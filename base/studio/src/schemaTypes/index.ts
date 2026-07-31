@@ -4,6 +4,7 @@ import {post} from './documents/post'
 import {settings} from './singletons/settings'
 import {themeSettings} from './singletons/themeSettings'
 import {homePage} from './singletons/homePage'
+import {navigation} from './singletons/navigation'
 import {link} from './objects/link'
 import {button} from './objects/button'
 import {customImage} from './objects/customImage'
@@ -15,7 +16,7 @@ import {projectSchemaTypes} from './project'
 // Pour ajouter un type propre à un site, éditer `project.ts` (jamais ce fichier).
 
 // --- CŒUR (réutilisable par tous les projets) ---
-const coreSingletons = [settings, themeSettings, homePage]
+const coreSingletons = [settings, themeSettings, homePage, navigation]
 const coreDocuments = [page, post, person]
 const coreObjects = [blockContent, link, button, customImage]
 

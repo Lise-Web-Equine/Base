@@ -1,4 +1,4 @@
-import {CogIcon, ColorWheelIcon, HomeIcon} from '@sanity/icons'
+import {CogIcon, ColorWheelIcon, HomeIcon, MenuIcon} from '@sanity/icons'
 import type {StructureBuilder, StructureResolver} from 'sanity/structure'
 import pluralize from 'pluralize-esm'
 import {projectExcludedTypes, projectStructureItems} from './project'
@@ -14,6 +14,7 @@ const CORE_EXCLUDED_TYPES = [
   'settings',
   'themeSettings',
   'homePage',
+  'navigation',
   'assist.instruction.context',
 ]
 
@@ -38,6 +39,11 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
       // Éléments de structure propres au projet (singletons, regroupements custom).
       ...projectStructureItems(S),
       S.divider(),
+      // Singleton de la navigation (menus en-tête / pied de page).
+      S.listItem()
+        .title('Navigation')
+        .child(S.document().schemaType('navigation').documentId('navigation'))
+        .icon(MenuIcon),
       // Singleton des réglages globaux du site.
       S.listItem()
         .title('Réglages du site')

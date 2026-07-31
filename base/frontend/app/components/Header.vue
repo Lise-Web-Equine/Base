@@ -1,8 +1,24 @@
 <script setup lang="ts">
-import { settingsQuery } from "~/sanity/queries";
+import { settingsQuery, navigationQuery } from "~/sanity/queries";
 
-const { data: settings } =
-   useSanityQuery<SettingsQueryResult>(settingsQuery);
+const { data: settings } = useSanityQuery<SettingsQueryResult>(settingsQuery);
+const { data: navigation } =
+  useSanityQuery<NavigationQueryResult>(navigationQuery);
+
+const menu = computed(() => navigation.value?.headerMenu ?? []);
+
+// Gestion des sous-menus déroulants (un seul ouvert à la fois).
+const openKey = ref<string | null>(null);
+function toggle(key: string) {
+  openKey.value = openKey.value === key ? null : key;
+}
+function close() {
+  openKey.value = null;
+}
+
+// Ferme le menu ouvert lors d'un changement de page.
+const router = useRouter();
+router.afterEach(() => close());
 </script>
 
 <template>
@@ -17,8 +33,55 @@ const { data: settings } =
           </span>
         </NuxtLink>
 
-        <!-- Navigation : à piloter depuis Sanity (singleton navigation, Phase B). -->
-        <nav></nav>
+        <nav v-if="menu.length" class="flex items-center gap-6">
+          <template v-for="item in menu" :key="item._key">
+            <!-- Entrée avec sous-menu déroulant -->
+            <div
+              v-if="item.children && item.children.length"
+              class="relative"
+              @mouseenter="openKey = item._key"
+              @mouseleave="close"
+            >
+              <button
+                type="button"
+                class="flex items-center gap-1 text-foreground hover:text-primary transition-colors"
+                :aria-expanded="openKey === item._key"
+                aria-haspopup="true"
+                @click="toggle(item._key)"
+              >
+                {{ item.label }}
+                <span
+                  class="transition-transform"
+                  :class="{ 'rotate-180': openKey === item._key }"
+                  aria-hidden="true"
+                  >&#9662;</span
+                >
+              </button>
+              <div
+                v-show="openKey === item._key"
+                class="absolute left-0 top-full min-w-48 rounded-lg border border-border bg-surface p-2 shadow-lg"
+              >
+                <ResolvedLink
+                  v-for="child in item.children"
+                  :key="child._key"
+                  :link="child.link"
+                  class-name="block rounded-md px-3 py-2 text-foreground hover:bg-background hover:text-primary transition-colors"
+                >
+                  {{ child.label }}
+                </ResolvedLink>
+              </div>
+            </div>
+
+            <!-- Entrée simple -->
+            <ResolvedLink
+              v-else-if="item.link"
+              :link="item.link"
+              class-name="text-foreground hover:text-primary transition-colors"
+            >
+              {{ item.label }}
+            </ResolvedLink>
+          </template>
+        </nav>
       </div>
     </div>
   </header>

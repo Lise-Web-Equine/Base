@@ -136,6 +136,25 @@ export const settingsQuery = defineQuery(/* groq */ `
 			socialLinks
 		}`);
 
+export const navigationQuery = defineQuery(/* groq */ `
+		*[_type == "navigation"][0]{
+			headerMenu[]{
+				_key,
+				label,
+				${linkFields},
+				children[]{
+					_key,
+					label,
+					${linkFields}
+				}
+			},
+			footerLinks[]{
+				_key,
+				label,
+				${linkFields}
+			}
+		}`);
+
 export const sitemapQuery = defineQuery(/* groq */ `
 		*[
 			((_type in ["page", "post"] && defined(slug.current)) || _type == "homePage")
