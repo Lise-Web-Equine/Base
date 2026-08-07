@@ -50,6 +50,10 @@ useSchemaOrg([
   defineWebPage(),
 ]);
 
+// Mesure d'audience (Plausible / Matomo / GA4), activable depuis Sanity
+// (Réglages → Modules → Analytics). Rien n'est chargé si aucun fournisseur.
+useAnalytics(settings.value);
+
 // Bannière de consentement cookies (Axeptio), activable depuis Sanity
 // (Réglages → Bannière cookies). Le SDK n'est chargé que si activé + ID fourni.
 const consent = settings.value?.cookieConsent;

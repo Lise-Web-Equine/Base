@@ -131,7 +131,8 @@ export const settingsQuery = defineQuery(/* groq */ `
 			"ogImage": ogImage.asset->url,
 			"logo": logo.asset->url,
 			socialLinks,
-			cookieConsent
+			cookieConsent,
+			analytics
 		}`);
 
 export const navigationQuery = defineQuery(/* groq */ `
@@ -196,4 +197,11 @@ export const sitemapQuery = defineQuery(/* groq */ `
 			_type,
 			"slug": slug.current,
 			_updatedAt
+		}`);
+
+export const redirectsQuery = defineQuery(/* groq */ `
+		*[_type == "redirects"][0].entries[]{
+			source,
+			destination,
+			"permanent": coalesce(permanent, true)
 		}`);

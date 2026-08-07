@@ -1,4 +1,4 @@
-import {CogIcon, ColorWheelIcon, HomeIcon, MenuIcon} from '@sanity/icons'
+import {CogIcon, ColorWheelIcon, HomeIcon, MenuIcon, TransferIcon} from '@sanity/icons'
 import type {StructureBuilder, StructureResolver} from 'sanity/structure'
 import pluralize from 'pluralize-esm'
 import {projectExcludedTypes, projectStructureItems} from './project'
@@ -15,6 +15,7 @@ const CORE_EXCLUDED_TYPES = [
   'themeSettings',
   'homePage',
   'navigation',
+  'redirects',
   'assist.instruction.context',
 ]
 
@@ -54,4 +55,9 @@ export const structure: StructureResolver = (S: StructureBuilder) =>
         .title('Thème')
         .child(S.document().schemaType('themeSettings').documentId('themeSettings'))
         .icon(ColorWheelIcon),
+      // Singleton des redirections d'URL.
+      S.listItem()
+        .title('Redirections')
+        .child(S.document().schemaType('redirects').documentId('redirects'))
+        .icon(TransferIcon),
     ])

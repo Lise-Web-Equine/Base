@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@nuxt/icon",
     "@vueuse/motion/nuxt",
+    "@nuxt/scripts",
   ],
   // Icônes (Iconify) auto-hébergées en local (perf + RGPD, pas d'appel à l'API
   // Iconify). Les collections installées (@iconify-json/*) sont servies localement.

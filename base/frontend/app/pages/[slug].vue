@@ -5,6 +5,12 @@ const { data: page } = await useSanityQuery<PageQueryResult>(pageQuery, {
   slug: useRoute().params.slug,
 });
 
+// URL inconnue (aucune page publiée avec ce slug) : renvoyer un vrai 404
+// afin d'afficher `error.vue` avec le bon code de statut (SEO).
+if (!page.value) {
+  throw createError({ statusCode: 404, statusMessage: "Page introuvable" });
+}
+
 // This is needed to correctly set the studioUrl
 const runtimeConfig = useRuntimeConfig();
 

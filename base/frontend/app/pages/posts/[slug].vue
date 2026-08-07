@@ -4,6 +4,12 @@ import { postQuery, somePostsQuery } from "~/sanity/queries";
 const { data: post } = await useSanityQuery<PostQueryResult>(postQuery, {
   slug: useRoute().params.slug,
 });
+
+// Article inexistant : renvoyer un vrai 404 (affiche `error.vue`).
+if (!post.value) {
+  throw createError({ statusCode: 404, statusMessage: "Article introuvable" });
+}
+
 const { data: posts } = await useLazySanityQuery<SomePostsQueryResult>(
   somePostsQuery,
   {

@@ -195,6 +195,105 @@ export const settings = defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'analytics',
+      title: "Analytics / Mesure d'audience",
+      type: 'object',
+      group: 'modules',
+      description:
+        "Suivi d'audience. Plausible (recommandé) et Matomo (mode sans cookie) fonctionnent sans bannière de consentement. Google Analytics dépose des cookies et doit être associé à la bannière RGPD.",
+      options: {columns: 1},
+      fields: [
+        defineField({
+          name: 'provider',
+          title: 'Fournisseur',
+          type: 'string',
+          initialValue: 'none',
+          options: {
+            list: [
+              {title: 'Aucun', value: 'none'},
+              {title: 'Plausible (sans cookie, RGPD)', value: 'plausible'},
+              {title: 'Matomo', value: 'matomo'},
+              {title: 'Google Analytics 4', value: 'googleAnalytics'},
+            ],
+            layout: 'radio',
+          },
+        }),
+        // --- Plausible ---
+        defineField({
+          name: 'plausibleDomain',
+          title: 'Domaine Plausible',
+          type: 'string',
+          description: 'Le domaine tel que déclaré dans Plausible (ex: mon-site.fr).',
+          hidden: ({parent}) => parent?.provider !== 'plausible',
+          validation: (Rule) =>
+            Rule.custom((value, context: any) =>
+              context.parent?.provider === 'plausible' && !value
+                ? 'Requis pour Plausible.'
+                : true,
+            ),
+        }),
+        defineField({
+          name: 'plausibleScriptUrl',
+          title: 'URL du script (optionnel)',
+          type: 'url',
+          description:
+            "Pour une instance Plausible auto-hébergée. Laisser vide pour utiliser https://plausible.io.",
+          hidden: ({parent}) => parent?.provider !== 'plausible',
+        }),
+        // --- Matomo ---
+        defineField({
+          name: 'matomoUrl',
+          title: 'URL de l\u2019instance Matomo',
+          type: 'url',
+          description: 'Ex: https://analytics.mon-site.fr',
+          hidden: ({parent}) => parent?.provider !== 'matomo',
+          validation: (Rule) =>
+            Rule.custom((value, context: any) =>
+              context.parent?.provider === 'matomo' && !value
+                ? 'Requis pour Matomo.'
+                : true,
+            ),
+        }),
+        defineField({
+          name: 'matomoSiteId',
+          title: 'Identifiant du site Matomo',
+          type: 'string',
+          description: 'Le « Site ID » du site dans Matomo (ex: 1).',
+          hidden: ({parent}) => parent?.provider !== 'matomo',
+          validation: (Rule) =>
+            Rule.custom((value, context: any) =>
+              context.parent?.provider === 'matomo' && !value
+                ? 'Requis pour Matomo.'
+                : true,
+            ),
+        }),
+        defineField({
+          name: 'matomoDisableCookies',
+          title: 'Mode sans cookie (pas de bannière requise)',
+          type: 'boolean',
+          description:
+            'Activé : Matomo ne dépose pas de cookie (RGPD, aucun consentement requis). Désactivé : à associer à la bannière de consentement.',
+          initialValue: true,
+          hidden: ({parent}) => parent?.provider !== 'matomo',
+        }),
+        // --- Google Analytics 4 ---
+        defineField({
+          name: 'gaMeasurementId',
+          title: 'Identifiant de mesure (GA4)',
+          type: 'string',
+          description:
+            'Format G-XXXXXXXXXX (Admin → Flux de données). GA se charge en Consent Mode « refusé » par défaut : pensez à activer le Google Consent Mode dans le tableau de bord Axeptio pour que le consentement soit accordé automatiquement.',
+          hidden: ({parent}) => parent?.provider !== 'googleAnalytics',
+          validation: (Rule) =>
+            Rule.custom((value, context: any) =>
+              context.parent?.provider === 'googleAnalytics' && !value
+                ? 'Requis pour Google Analytics.'
+                : true,
+            ),
+        }),
+      ],
+    }),
   ],
   preview: {
     prepare() {
