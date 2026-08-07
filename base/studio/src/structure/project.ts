@@ -15,17 +15,28 @@ import {DocumentTextIcon} from '@sanity/icons'
 export const projectExcludedTypes: string[] = ['legalTexts']
 
 /**
- * Éléments de structure ajoutés par le projet (rendus avant les réglages/thème).
+ * Éléments de structure ajoutés par le projet dans le groupe « Contenu »
+ * (rendus après la liste auto des types de documents).
  * Retourner un tableau vide si aucun.
  *
  * Exemple :
- *   export const projectStructureItems = (S: StructureBuilder): ListItemBuilder[] => [
+ *   export const projectContentItems = (S: StructureBuilder): ListItemBuilder[] => [
  *     S.listItem().title('Accueil').child(
  *       S.document().schemaType('page').documentId('home'),
  *     ),
  *   ]
  */
-export const projectStructureItems = (S: StructureBuilder): ListItemBuilder[] => [
+export const projectContentItems = (S: StructureBuilder): ListItemBuilder[] => [
+  // Aucun élément de contenu projet par défaut.
+]
+
+/**
+ * Éléments de structure ajoutés par le projet dans le groupe « Administration »
+ * (rendus après les réglages/thème/redirections).
+ * Réglages et singletons de configuration définis au lancement du site.
+ * Retourner un tableau vide si aucun.
+ */
+export const projectAdminItems = (S: StructureBuilder): ListItemBuilder[] => [
   // Singleton des textes légaux (verrouillé, une seule instance).
   S.listItem()
     .title('Textes légaux')
