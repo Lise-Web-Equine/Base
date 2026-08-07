@@ -153,6 +153,41 @@ export const navigationQuery = defineQuery(/* groq */ `
 			}
 		}`);
 
+export const legalTextsQuery = defineQuery(/* groq */ `
+		*[_type == "legalTexts"][0]{
+			editorName,
+			editorLegalForm,
+			editorSiret,
+			editorRcs,
+			editorVat,
+			editorAddress,
+			editorEmail,
+			editorPhone,
+			editorPublicationDirector,
+			hostName,
+			hostAddress,
+			hostWebsite,
+			legalNoticeTitle,
+			legalNoticeIntro,
+			legalNoticeContent[]{
+				${portableTextFields}
+			},
+			privacyTitle,
+			privacyIntro,
+			privacyContent[]{
+				${portableTextFields}
+			},
+			termsTitle,
+			termsIntro,
+			termsContent[]{
+				${portableTextFields}
+			},
+			cookiesTitle,
+			cookiesContent[]{
+				${portableTextFields}
+			}
+		}`);
+
 export const sitemapQuery = defineQuery(/* groq */ `
 		*[
 			((_type in ["page", "post"] && defined(slug.current)) || _type == "homePage")

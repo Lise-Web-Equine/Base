@@ -1,4 +1,5 @@
 import type {SchemaTypeDefinition} from 'sanity'
+import {legalTexts} from './singletons/legalTexts'
 
 /**
  * Types de schéma propres au PROJET client (documents et objets NON-sections).
@@ -12,4 +13,4 @@ import type {SchemaTypeDefinition} from 'sanity'
  *   import {service} from './documents/service'
  *   export const projectSchemaTypes: SchemaTypeDefinition[] = [service]
  */
-export const projectSchemaTypes: SchemaTypeDefinition[] = []
+export const projectSchemaTypes: SchemaTypeDefinition[] = [legalTexts]
