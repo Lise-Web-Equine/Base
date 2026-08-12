@@ -46,11 +46,10 @@ const handleHome = () => clearError({ redirect: "/" });
     <div class="container my-24 lg:my-32">
       <div class="max-w-2xl">
         <p class="a-eyebrow">{{ error?.statusCode || "Erreur" }}</p>
-        <h1
-          class="mt-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+        <h1 class="a-display mt-4">
           {{ heading }}
         </h1>
-        <p class="mt-4 text-base lg:text-lg leading-relaxed text-muted">
+        <p class="a-lead mt-4">
           {{ message }}
         </p>
         <div class="mt-10 flex flex-wrap gap-4">

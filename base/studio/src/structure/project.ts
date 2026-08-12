@@ -1,5 +1,5 @@
 import type {StructureBuilder, ListItemBuilder} from 'sanity/structure'
-import {DocumentTextIcon} from '@sanity/icons'
+import {DocumentTextIcon, DocumentsIcon} from '@sanity/icons'
 
 /**
  * Extensions de la structure du Studio propres au PROJET.
@@ -27,7 +27,11 @@ export const projectExcludedTypes: string[] = ['legalTexts']
  *   ]
  */
 export const projectContentItems = (S: StructureBuilder): ListItemBuilder[] => [
-  // Aucun élément de contenu projet par défaut.
+  // Liste de toutes les pages du site (bouton "+ Page" pour en créer d'autres).
+  S.listItem()
+    .title('Pages')
+    .icon(DocumentsIcon)
+    .child(S.documentTypeList('page').title('Pages')),
 ]
 
 /**

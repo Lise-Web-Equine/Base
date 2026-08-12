@@ -11,7 +11,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "extract-types": "sanity schema extract --enforce-required-fields",
-    "fonts:sync": "node scripts/generate-google-fonts.mjs"
+    "fonts:sync": "node scripts/generate-google-fonts.mjs",
+    "seed:contact": "sanity exec scripts/seed-contact-page.ts --with-user-token"
   },
   "keywords": [
     "sanity"

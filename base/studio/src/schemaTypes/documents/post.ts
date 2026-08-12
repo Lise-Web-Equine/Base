@@ -1,5 +1,6 @@
 import {DocumentTextIcon} from '@sanity/icons'
 import {defineField, defineType} from '@sanity/types'
+import {CategorySelectInput} from '../../components/CategorySelectInput'
 
 /**
  * Post schema.  Define and edit the fields for the 'post' content type.
@@ -8,13 +9,13 @@ import {defineField, defineType} from '@sanity/types'
 
 export const post = defineType({
   name: 'post',
-  title: 'Post',
+  title: 'Article',
   icon: DocumentTextIcon,
   type: 'document',
   groups: [
     {
       name: 'content',
-      title: 'Content',
+      title: 'Contenu',
     },
     {
       name: 'seo',
@@ -24,16 +25,16 @@ export const post = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Titre',
       type: 'string',
       validation: (rule) => rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: "Adresse de l'article (URL)",
       type: 'slug',
-      description: 'A slug is required for the post to show up in the preview',
+      description: "Partie de l'URL identifiant l'article (générée à partir du titre).",
       options: {
         source: 'title',
         maxLength: 96,
@@ -44,19 +45,21 @@ export const post = defineType({
     }),
     defineField({
       name: 'content',
-      title: 'Content',
+      title: 'Contenu',
       type: 'blockContent',
       group: 'content',
     }),
     defineField({
-      name: 'excerpt',
-      title: 'Excerpt',
-      type: 'text',
+      name: 'category',
+      title: 'Catégorie',
+      type: 'string',
       group: 'content',
+      description: 'Catégories définies dans « Réglages du site » → Blog / Actualités.',
+      components: {input: CategorySelectInput},
     }),
     defineField({
       name: 'coverImage',
-      title: 'Cover Image',
+      title: 'Image de couverture',
       type: 'image',
       options: {
         hotspot: true,
@@ -68,13 +71,13 @@ export const post = defineType({
         {
           name: 'alt',
           type: 'string',
-          title: 'Alternative text',
-          description: 'Important for SEO and accessibility.',
+          title: 'Texte alternatif',
+          description: "Important pour le SEO et l'accessibilité.",
           validation: (rule) => {
             // Custom validation to ensure alt text is provided if the image is present. https://www.sanity.io/docs/validation
             return rule.custom((alt, context) => {
               if ((context.document?.coverImage as any)?.asset?._ref && !alt) {
-                return 'Required'
+                return 'Requis'
               }
               return true
             })
@@ -92,26 +95,19 @@ export const post = defineType({
       group: 'content',
     }),
     defineField({
-      name: 'author',
-      title: 'Author',
-      type: 'reference',
-      to: [{type: 'person'}],
-      group: 'content',
-    }),
-    defineField({
       name: 'seoTitle',
-      title: 'SEO Title',
+      title: 'Titre SEO',
       type: 'string',
       description:
-        'Title used for search engines and social media sharing (recommended: 50-60 characters)',
+        'Titre utilisé par les moteurs de recherche et le partage sur les réseaux sociaux (recommandé : 50-60 caractères).',
       group: 'seo',
     }),
     defineField({
       name: 'seoDescription',
-      title: 'SEO Description',
+      title: 'Description SEO',
       type: 'text',
       description:
-        'Description used for search engines and social media sharing (recommended: 150-160 characters)',
+        'Description utilisée par les moteurs de recherche et le partage sur les réseaux sociaux (recommandé : 150-160 caractères).',
       group: 'seo',
     }),
     defineField({
@@ -128,19 +124,18 @@ export const post = defineType({
   preview: {
     select: {
       title: 'title',
-      authorFirstName: 'author.firstName',
-      authorLastName: 'author.lastName',
       date: 'date',
       media: 'coverImage',
     },
-    prepare({title, media, authorFirstName, authorLastName, date}) {
-      const subtitles = [
-        authorFirstName && authorLastName && `by ${authorFirstName} ${authorLastName}`,
-        date &&
-          `on ${new Date(date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}`,
-      ].filter(Boolean)
-
-      return {title, media, subtitle: subtitles.join(' ')}
+    prepare({title, media, date}) {
+      const subtitle = date
+        ? new Date(date).toLocaleDateString('fr-FR', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : ''
+      return {title, media, subtitle}
     },
   },
 })

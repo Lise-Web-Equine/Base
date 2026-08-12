@@ -27,9 +27,13 @@ const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event);
   const body = await readBody<{
+    firstName?: string;
     name?: string;
     email?: string;
+    phone?: string;
+    subject?: string;
     message?: string;
+    consent?: boolean;
     company?: string; // honeypot (doit rester vide)
   }>(event);
 
@@ -38,14 +42,25 @@ export default defineEventHandler(async (event) => {
     return {ok: true};
   }
 
+  const firstName = (body?.firstName ?? "").trim();
   const name = (body?.name ?? "").trim();
   const email = (body?.email ?? "").trim();
+  const phone = (body?.phone ?? "").trim();
+  const subject = (body?.subject ?? "").trim();
   const message = (body?.message ?? "").trim();
 
-  if (!name || !isEmail(email) || message.length < 10) {
+  if (!firstName || !name || !isEmail(email) || !subject || message.length < 10) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Merci de renseigner un nom, un email valide et un message.",
+      statusMessage:
+        "Merci de renseigner votre prénom, nom, un email valide, un sujet et un message.",
+    });
+  }
+
+  if (!body?.consent) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Merci d'accepter l'utilisation de vos données pour être recontacté.",
     });
   }
 
@@ -69,8 +84,18 @@ export default defineEventHandler(async (event) => {
     from: config.contactFrom as string,
     to: config.contactTo as string,
     replyTo: email,
-    subject: `Nouveau message de ${name}`,
-    text: `Nom : ${name}\nEmail : ${email}\n\n${message}`,
+    subject: `Nouveau message : ${subject}`,
+    text: [
+      `Prénom : ${firstName}`,
+      `Nom : ${name}`,
+      `Email : ${email}`,
+      `Téléphone : ${phone || "—"}`,
+      `Sujet : ${subject}`,
+      "",
+      message,
+      "",
+      "Consentement RGPD : accepté",
+    ].join("\n"),
   });
 
   if (error) {

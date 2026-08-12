@@ -19,14 +19,10 @@ useSiteMetadata({
     <div class="container" v-if="page.heading || page.subheading">
       <div class="pb-6 border-b border-border">
         <div class="max-w-3xl">
-          <h2
-            v-if="page.heading"
-            class="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-7xl">
+          <h2 v-if="page.heading" class="a-display">
             {{ page.heading }}
           </h2>
-          <p
-            v-if="page.subheading"
-            class="mt-4 text-base lg:text-lg leading-relaxed text-muted uppercase font-light">
+          <p v-if="page.subheading" class="a-lead mt-4 uppercase">
             {{ page.subheading }}
           </p>
         </div>

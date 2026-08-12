@@ -17,13 +17,10 @@ defineProps({
 
 <template>
   <div>
-    <h2
-      v-if="heading"
-      class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl"
-    >
+    <h2 v-if="heading" class="a-h1">
       {{ heading }}
     </h2>
-    <p v-if="subHeading" class="mt-2 text-lg leading-8 text-muted">
+    <p v-if="subHeading" class="a-lead mt-2">
       {{ subHeading }}
     </p>
     <div

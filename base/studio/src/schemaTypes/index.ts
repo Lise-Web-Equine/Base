@@ -1,4 +1,3 @@
-import {person} from './documents/person'
 import {page} from './documents/page'
 import {post} from './documents/post'
 import {settings} from './singletons/settings'
@@ -20,7 +19,7 @@ import {projectSchemaTypes} from './project'
 
 // --- CŒUR (réutilisable par tous les projets) ---
 const coreSingletons = [settings, themeSettings, homePage, navigation, redirects]
-const coreDocuments = [page, post, person]
+const coreDocuments = [page, post]
 const coreObjects = [blockContent, link, button, customImage, sectionAppearance, gallery]
 
 export const schemaTypes = [

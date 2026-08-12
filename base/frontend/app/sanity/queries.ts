@@ -46,6 +46,14 @@ const coreSectionProjections = /* groq */ `
 			${portableTextFields}
 		}
 	},
+	_type == "faqSection" => {
+		items[]{
+			...,
+			answer[]{
+				${portableTextFields}
+			}
+		}
+	},
 `;
 
 // PROJET : projections des sections propres au client (références, images...).
@@ -84,7 +92,10 @@ export const postQuery = defineQuery(/* groq */ `
 							},
 						}
 					},
-			"author": author->{..., "picture": picture.asset._ref},
+			"author": *[_type == "settings"][0].author{
+				name,
+				"picture": picture.asset._ref
+			},
 			"ogImage": coverImage.asset->url
 		}`);
 
@@ -132,7 +143,8 @@ export const settingsQuery = defineQuery(/* groq */ `
 			"logo": logo.asset->url,
 			socialLinks,
 			cookieConsent,
-			analytics
+			analytics,
+			blog
 		}`);
 
 export const navigationQuery = defineQuery(/* groq */ `

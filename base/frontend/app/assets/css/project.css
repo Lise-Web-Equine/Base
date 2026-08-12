@@ -5,22 +5,21 @@
    ============================================================================= */
 
 /* -----------------------------------------------------------------------------
-   1) POLICES AUTO-HÉBERGÉES (perf + RGPD)
+   1) POLICES DU THÈME (perf + RGPD)
    -----------------------------------------------------------------------------
-   Déclare ici les familles Google réellement utilisées par CE site (celles
-   choisies dans le thème Sanity : Titres / Texte / Accent).
+   Les polices choisies dans le thème Sanity (Titres / Texte / Accent) sont
+   chargées DYNAMIQUEMENT à l'exécution, sans rebuild : `useTheme()` injecte un
+   lien vers le proxy local `/api/fonts/css`, qui récupère la police côté serveur
+   depuis Google puis la sert depuis NOTRE domaine (aucun appel client vers
+   Google → conforme RGPD). Voir `server/api/fonts/*`.
 
-   Pourquoi : la police est choisie à l'exécution dans Sanity, or @nuxt/fonts
-   détecte les polices au build en scannant les variables `--font-*`. En listant
-   ci-dessous les familles retenues, @nuxt/fonts les télécharge et les SERT EN
-   LOCAL — donc pas d'appel au CDN Google (conforme RGPD) et seules ces
-   polices-là sont chargées (aucun surpoids).
+   → Tu n'as donc RIEN à déclarer ici quand le client change de police dans Sanity.
 
-   Règle : le nom déclaré ici doit correspondre exactement à celui choisi dans
-   le thème Sanity. Ajoute/retire une ligne quand tu changes de police.
-
-   NB : ces classes n'ont pas besoin d'être utilisées dans le HTML — leur seule
-   présence dans le CSS suffit à ce que @nuxt/fonts détecte et héberge la police. */
+   Optionnel : pour figer une police critique et éviter tout flash au premier
+   rendu, tu peux la pré-héberger au build via @nuxt/fonts. Il suffit de la
+   déclarer ci-dessous (le nom doit correspondre exactement à celui du thème) ;
+   la seule présence de la classe suffit à ce que @nuxt/fonts détecte et héberge
+   la police en local. */
 .font-hosted-1 {
   font-family: "Inter";
 }

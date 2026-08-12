@@ -16,6 +16,7 @@ export const settings = defineType({
   groups: [
     {name: 'identity', title: 'Identité & Coordonnées', default: true},
     {name: 'seo', title: 'SEO & Partage'},
+    {name: 'blog', title: 'Blog / Actualités'},
     {name: 'modules', title: 'Modules'},
   ],
   fieldsets: [
@@ -23,6 +24,7 @@ export const settings = defineType({
     {name: 'contact', title: 'Coordonnées'},
     {name: 'location', title: 'Localisation'},
     {name: 'social', title: 'Réseaux sociaux'},
+    {name: 'author', title: 'Auteur des articles'},
   ],
   fields: [
     defineField({
@@ -78,6 +80,29 @@ export const settings = defineType({
         defineField({name: 'postalCode', title: 'Code postal', type: 'string'}),
         defineField({name: 'city', title: 'Ville', type: 'string'}),
         defineField({name: 'country', title: 'Pays', type: 'string', initialValue: 'France'}),
+      ],
+    }),
+    defineField({
+      name: 'author',
+      title: 'Auteur des articles',
+      type: 'object',
+      group: 'identity',
+      fieldset: 'author',
+      description:
+        'Auteur unique affiché sur tous les articles de blog (nom + photo).',
+      options: {columns: 1},
+      fields: [
+        defineField({
+          name: 'name',
+          title: 'Nom',
+          type: 'string',
+        }),
+        defineField({
+          name: 'picture',
+          title: 'Photo',
+          type: 'image',
+          options: {hotspot: true},
+        }),
       ],
     }),
     defineField({
@@ -155,6 +180,52 @@ export const settings = defineType({
               return {title: label || platform || 'Réseau social', subtitle: url}
             },
           },
+        }),
+      ],
+    }),
+    defineField({
+      name: 'blog',
+      title: 'Blog / Actualités',
+      type: 'object',
+      group: 'blog',
+      options: {columns: 1},
+      description:
+        "Active la section blog du site. Une fois activée, l'ajout d'articles apparaît dans « Contenu » et la rubrique s'affiche sur le site.",
+      fields: [
+        defineField({
+          name: 'enabled',
+          title: 'Activer le blog / les actualités',
+          type: 'boolean',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'label',
+          title: 'Nom affiché',
+          type: 'string',
+          description: 'Nom de la rubrique affiché sur le site et dans le Studio.',
+          initialValue: 'blog',
+          options: {
+            list: [
+              {title: 'Blog', value: 'blog'},
+              {title: 'Actualités', value: 'actualites'},
+            ],
+            layout: 'radio',
+          },
+          hidden: ({parent}) => !parent?.enabled,
+          validation: (Rule) =>
+            Rule.custom((value, context: any) =>
+              context.parent?.enabled && !value ? 'Choisissez un nom à afficher.' : true,
+            ),
+        }),
+        defineField({
+          name: 'categories',
+          title: 'Catégories',
+          type: 'array',
+          of: [defineArrayMember({type: 'string'})],
+          description:
+            "Catégories proposées lors de l'édition d'un article (menu déroulant du champ « Catégorie »).",
+          options: {layout: 'tags'},
+          hidden: ({parent}) => !parent?.enabled,
         }),
       ],
     }),

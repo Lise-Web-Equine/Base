@@ -152,6 +152,24 @@
   --default-transition-duration: 250ms;
 }
 
+/* Base : toute la typographie hérite des polices du thème (tokens --font-*).
+   Le corps utilise la police « Texte », les titres la police « Titres ». Ainsi,
+   même un texte non stylé explicitement s'adapte au thème Sanity. */
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-foreground);
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+}
+
 /* Rendu du texte enrichi (Portable Text) : on aligne les couleurs de
    @tailwindcss/typography (.prose) sur les design tokens du thème Sanity,
    pour qu'aucune couleur ne soit codée en dur. Voir components/PortableText.vue. */
@@ -199,6 +217,14 @@
   --a-h4: calc(1rem * var(--a-scale));
   --a-h3: calc(var(--a-h4) * var(--a-scale));
   --a-h2: calc(var(--a-h3) * var(--a-scale));
+  /* Normalisateur : vaut 1 quand l'échelle = 1.2 (rendu de référence). Fait
+     grandir/rétrécir proportionnellement les grands titres quand l'éditeur
+     change l'échelle du thème. */
+  --a-step: calc(var(--a-scale) / 1.2);
+  /* Grands titres, FLUIDES (mobile → desktop) et pilotés par l'échelle du thème.
+     --a-h1 : titres de section ; --a-display : héros de page. */
+  --a-h1: clamp(calc(1.875rem * var(--a-step)), calc(1.1rem + 2.4vw), calc(2.75rem * var(--a-step)));
+  --a-display: clamp(calc(2.25rem * var(--a-step)), calc(1.4rem + 4vw), calc(4.5rem * var(--a-step)));
   --a-radius: var(--theme-radius, 0.75rem);
   --a-content-width: var(--theme-content-width, 72ch);
   --a-heading-weight: var(--theme-heading-weight, 700);
@@ -219,6 +245,22 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+  }
+  .a-display {
+    font-family: var(--font-display);
+    font-size: var(--a-display);
+    font-weight: var(--a-heading-weight);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-foreground);
+  }
+  .a-h1 {
+    font-family: var(--font-display);
+    font-size: var(--a-h1);
+    font-weight: var(--a-heading-weight);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: var(--color-foreground);
   }
   .a-h2 {
     font-family: var(--font-display);

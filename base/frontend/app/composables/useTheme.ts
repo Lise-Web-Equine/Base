@@ -1,3 +1,4 @@
+import { stegaClean } from "@sanity/client/stega";
 import { themeSettingsQuery } from "~/sanity/queries";
 
 /**
@@ -42,31 +43,62 @@ export async function useTheme() {
   const query = useSanityQuery<ThemeSettingsQueryResult>(themeSettingsQuery);
   const theme = query.data;
 
-  const cssVariables = computed(() => ({
-    "--theme-primary": theme.value?.primary || DEFAULT_THEME.primary,
-    "--theme-secondary": theme.value?.secondary || DEFAULT_THEME.secondary,
-    "--theme-accent": theme.value?.accent || DEFAULT_THEME.accent,
-    "--theme-background": theme.value?.background || DEFAULT_THEME.background,
-    "--theme-surface": theme.value?.surface || DEFAULT_THEME.surface,
-    "--theme-foreground": theme.value?.foreground || DEFAULT_THEME.foreground,
-    "--theme-muted": theme.value?.muted || DEFAULT_THEME.muted,
-    "--theme-border": theme.value?.border || DEFAULT_THEME.border,
-    "--theme-font-display": theme.value?.fontDisplay || DEFAULT_THEME.fontDisplay,
-    "--theme-font-body": theme.value?.fontBody || DEFAULT_THEME.fontBody,
-    "--theme-font-accent": theme.value?.fontAccent || DEFAULT_THEME.fontAccent,
-    "--theme-type-scale": theme.value?.typeScale || DEFAULT_THEME.typeScale,
-    "--theme-heading-weight": theme.value?.headingWeight || DEFAULT_THEME.headingWeight,
-    "--theme-radius": theme.value?.radius || DEFAULT_THEME.radius,
-    "--theme-content-width": theme.value?.contentWidth || DEFAULT_THEME.contentWidth,
-    "--theme-density": theme.value?.density || DEFAULT_THEME.density,
-    "--theme-site-max": theme.value?.siteMaxWidth || DEFAULT_THEME.siteMaxWidth,
-  }));
+  // Visual Editing (`visualEditing.stega: true`) ajoute des caractères
+  // invisibles (Content Source Maps) dans toutes les chaînes renvoyées par
+  // Sanity. Utilisées telles quelles comme valeurs CSS, elles rendent les
+  // déclarations invalides — le thème n'est alors PAS appliqué (surtout dans
+  // l'aperçu Presentation). On nettoie donc les valeurs avant injection.
+  const cleanTheme = computed(() => stegaClean(theme.value) ?? undefined);
+
+  const cssVariables = computed(() => {
+    const t = cleanTheme.value;
+    return {
+      "--theme-primary": t?.primary || DEFAULT_THEME.primary,
+      "--theme-secondary": t?.secondary || DEFAULT_THEME.secondary,
+      "--theme-accent": t?.accent || DEFAULT_THEME.accent,
+      "--theme-background": t?.background || DEFAULT_THEME.background,
+      "--theme-surface": t?.surface || DEFAULT_THEME.surface,
+      "--theme-foreground": t?.foreground || DEFAULT_THEME.foreground,
+      "--theme-muted": t?.muted || DEFAULT_THEME.muted,
+      "--theme-border": t?.border || DEFAULT_THEME.border,
+      "--theme-font-display": t?.fontDisplay || DEFAULT_THEME.fontDisplay,
+      "--theme-font-body": t?.fontBody || DEFAULT_THEME.fontBody,
+      "--theme-font-accent": t?.fontAccent || DEFAULT_THEME.fontAccent,
+      "--theme-type-scale": t?.typeScale || DEFAULT_THEME.typeScale,
+      "--theme-heading-weight": t?.headingWeight || DEFAULT_THEME.headingWeight,
+      "--theme-radius": t?.radius || DEFAULT_THEME.radius,
+      "--theme-content-width": t?.contentWidth || DEFAULT_THEME.contentWidth,
+      "--theme-density": t?.density || DEFAULT_THEME.density,
+      "--theme-site-max": t?.siteMaxWidth || DEFAULT_THEME.siteMaxWidth,
+    };
+  });
 
   const cssText = computed(() =>
     Object.entries(cssVariables.value)
       .map(([key, value]) => `${key}: ${value};`)
       .join(" "),
   );
+
+  // Chargement dynamique des polices choisies dans Sanity via le proxy local
+  // (/api/fonts/css). Les polices sont donc servies depuis notre domaine — pas
+  // d'appel client vers Google (RGPD) — et n'importe quelle police du thème
+  // fonctionne sans rebuild. On n'extrait que le nom de famille (avant la
+  // virgule de repli) et on dédoublonne.
+  const familyOf = (v?: string) =>
+    (v?.split(",")[0] ?? "").replace(/["']/g, "").trim();
+
+  const fontsHref = computed(() => {
+    const t = cleanTheme.value;
+    const families = [
+      familyOf(t?.fontDisplay),
+      familyOf(t?.fontBody),
+      familyOf(t?.fontAccent),
+    ].filter((f, i, arr) => f && arr.indexOf(f) === i);
+    if (!families.length) return "";
+    const params = new URLSearchParams();
+    for (const f of families) params.append("family", f);
+    return `/api/fonts/css?${params.toString()}`;
+  });
 
   useHead({
     style: [
@@ -76,6 +108,19 @@ export async function useTheme() {
       },
     ],
   });
+
+  // Lien séparé (forme fonction) pour ne rien émettre tant qu'aucune police
+  // n'est déterminée (évite un <link href=""> qui recharge la page courante).
+  useHead(() => ({
+    link: fontsHref.value
+      ? [{key: "theme-fonts", rel: "stylesheet", href: fontsHref.value}]
+      : [],
+  }));
+
+  // useHead est déjà enregistré (contexte de setup préservé) : on peut enfin
+  // attendre la requête pour que le SSR sérialise le thème réel (pas de flash
+  // des couleurs par défaut au premier rendu).
+  await query;
 
   return { theme, cssVariables };
 }

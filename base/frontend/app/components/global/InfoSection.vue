@@ -10,15 +10,12 @@ defineProps({
 <template>
   <div class="container my-12">
     <div class="max-w-3xl">
-      <h2
-        v-if="block?.heading"
-        class="text-2xl md:text-3xl lg:text-4xl font-bold"
-      >
+      <h2 v-if="block?.heading" class="a-h1">
         {{ block.heading }}
       </h2>
       <span
         v-if="block?.subheading"
-        class="block mt-4 mb-8 text-lg uppercase font-light text-muted"
+        class="a-lead mt-4 mb-8 block uppercase"
       >
         {{ block.subheading }}
       </span>

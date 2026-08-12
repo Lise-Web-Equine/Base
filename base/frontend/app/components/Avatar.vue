@@ -1,11 +1,12 @@
 <script setup lang="ts">
-type SimplifiedPerson = Omit<Person, "picture"> & {
+type Author = {
+  name: string | null;
   picture: string | null;
 };
 
 defineProps({
-  person: {
-    type: Object as PropType<SimplifiedPerson>,
+  author: {
+    type: Object as PropType<Author>,
     required: true,
   },
   date: {
@@ -17,18 +18,18 @@ defineProps({
 
 <template>
   <div class="flex items-center">
-    <div v-if="person.picture" class="mr-4 h-9 w-9">
+    <div v-if="author.picture" class="mr-4 h-9 w-9">
       <SanityImage
-        :asset-id="person.picture"
+        :asset-id="author.picture"
         auto="format"
         class="h-full rounded-full object-cover"
-        :alt="`${person.firstName} ${person.lastName}`"
+        :alt="author.name || ''"
       />
     </div>
-    <div v-else class="mr-1">By</div>
+    <div v-else class="mr-1">Par</div>
     <div class="flex flex-col">
-      <div v-if="person.firstName && person.lastName" class="font-bold">
-        {{ person.firstName }} {{ person.lastName }}
+      <div v-if="author.name" class="font-bold">
+        {{ author.name }}
       </div>
       <div v-if="date" class="text-gray-500 text-sm">
         <Date :dateString="date" />

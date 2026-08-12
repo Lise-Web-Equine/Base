@@ -1,10 +1,17 @@
 <script setup lang="ts">
-defineProps({
+import { excerptFromContent } from "~/lib/excerpt";
+
+const props = defineProps({
   post: {
     type: Object as PropType<Post>,
     required: true,
   },
 });
+
+// Extrait dérivé de la 1re phrase du contenu (l'ancien champ `excerpt` a été supprimé).
+const excerpt = computed(() =>
+  excerptFromContent(props.post?.content as any)
+);
 </script>
 
 <template>
@@ -13,7 +20,7 @@ defineProps({
       <Date :dateString="post.date" />
     </div>
 
-    <h3 class="mt-3 text-2xl font-semibold">
+    <h3 class="a-h3 mt-3">
       <nuxt-link
         class="hover:text-primary underline transition-colors"
         :to="`/posts/${post.slug?.current}`"
@@ -22,7 +29,7 @@ defineProps({
       </nuxt-link>
     </h3>
     <p class="mt-5 line-clamp-3 text-sm leading-6 text-muted">
-      {{ post.excerpt }}
+      {{ excerpt }}
     </p>
   </article>
 </template>

@@ -7,6 +7,9 @@ const { data: navigation } =
 
 const menu = computed(() => navigation.value?.headerMenu ?? []);
 
+// Rubrique blog/actualités : lien ajouté au menu quand elle est activée.
+const { enabled: blogEnabled, label: blogLabel } = useBlog();
+
 // Gestion des sous-menus déroulants (un seul ouvert à la fois).
 const openKey = ref<string | null>(null);
 function toggle(key: string) {
@@ -33,7 +36,7 @@ router.afterEach(() => close());
           </span>
         </NuxtLink>
 
-        <nav v-if="menu.length" class="flex items-center gap-6">
+        <nav v-if="menu.length || blogEnabled" class="flex items-center gap-6">
           <template v-for="item in menu" :key="item._key">
             <!-- Entrée avec sous-menu déroulant -->
             <div
@@ -81,6 +84,15 @@ router.afterEach(() => close());
               {{ item.label }}
             </ResolvedLink>
           </template>
+
+          <!-- Lien vers la rubrique blog/actualités (si activée). -->
+          <NuxtLink
+            v-if="blogEnabled"
+            to="/posts"
+            class="text-foreground hover:text-primary transition-colors"
+          >
+            {{ blogLabel }}
+          </NuxtLink>
         </nav>
       </div>
     </div>

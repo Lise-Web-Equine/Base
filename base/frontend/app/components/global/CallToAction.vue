@@ -62,20 +62,21 @@ const useLightText = computed(
         <div class="flex max-w-2xl flex-col gap-3">
           <p
             v-if="block.eyebrow"
-            class="text-sm font-semibold uppercase tracking-wide"
+            class="a-eyebrow"
             :class="useLightText ? 'text-white/80' : 'text-primary'"
           >
             {{ block.eyebrow }}
           </p>
           <h2
             v-if="block.heading"
-            class="text-3xl font-bold tracking-tight sm:text-4xl"
+            class="a-h1"
+            :class="useLightText ? 'text-white' : 'text-foreground'"
           >
             {{ block.heading }}
           </h2>
           <p
             v-if="block.text"
-            class="text-lg leading-8"
+            class="a-lead"
             :class="useLightText ? 'text-white/90' : 'text-muted'"
           >
             {{ block.text }}

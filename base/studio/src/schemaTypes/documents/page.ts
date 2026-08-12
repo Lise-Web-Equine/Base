@@ -15,7 +15,7 @@ export const page = defineType({
   groups: [
     {
       name: 'content',
-      title: 'Content',
+      title: 'Contenu',
     },
     {
       name: 'seo',
@@ -26,16 +26,18 @@ export const page = defineType({
     // Content fields
     defineField({
       name: 'name',
-      title: 'Name',
+      title: 'Nom de la page',
       type: 'string',
+      description: 'Nom interne de la page (utilisé pour générer son URL).',
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
 
     defineField({
       name: 'slug',
-      title: 'Slug',
+      title: 'Adresse de la page (URL)',
       type: 'slug',
+      description: "Partie de l'URL identifiant la page (générée à partir du nom de la page).",
       validation: (Rule) => Rule.required(),
       options: {
         source: 'name',
@@ -45,20 +47,20 @@ export const page = defineType({
     }),
     defineField({
       name: 'heading',
-      title: 'Heading',
+      title: 'Titre affiché',
       type: 'string',
       validation: (Rule) => Rule.required(),
       group: 'content',
     }),
     defineField({
       name: 'subheading',
-      title: 'Subheading',
+      title: 'Sous-titre',
       type: 'string',
       group: 'content',
     }),
     defineField({
       name: 'pageBuilder',
-      title: 'Page builder',
+      title: 'Sections de la page',
       type: 'array',
       of: pageBuilderTypeNames.map((type) => ({type})),
       options: {
@@ -79,18 +81,18 @@ export const page = defineType({
     // SEO fields
     defineField({
       name: 'seoTitle',
-      title: 'SEO Title',
+      title: 'Titre SEO',
       type: 'string',
       description:
-        'Title used for search engines and social media sharing (recommended: 50-60 characters)',
+        'Titre utilisé par les moteurs de recherche et le partage sur les réseaux sociaux (recommandé : 50-60 caractères).',
       group: 'seo',
     }),
     defineField({
       name: 'seoDescription',
-      title: 'SEO Description',
+      title: 'Description SEO',
       type: 'text',
       description:
-        'Description used for search engines and social media sharing (recommended: 150-160 characters)',
+        'Description utilisée par les moteurs de recherche et le partage sur les réseaux sociaux (recommandé : 150-160 caractères).',
       group: 'seo',
     }),
     defineField({
