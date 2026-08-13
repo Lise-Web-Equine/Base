@@ -1,11 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   css: ["~/assets/css/main.css"],
   modules: [
+    // Nuxt UI : bibliothèque de composants (Reka UI + Tailwind v4). Ajoute
+    // lui-même le plugin Vite Tailwind, d'où le retrait de @tailwindcss/vite.
+    "@nuxt/ui",
     "@nuxtjs/sanity",
     "@nuxt/fonts",
     "@nuxtjs/seo",
@@ -15,6 +17,13 @@ export default defineNuxtConfig({
     "@vueuse/motion/nuxt",
     "@nuxt/scripts",
   ],
+  // Alias de couleurs Nuxt UI branchés sur nos couleurs custom (voir main.css :
+  // échelles générées depuis les tokens du thème via color-mix).
+  ui: {
+    theme: {
+      colors: ["primary", "secondary", "success", "info", "warning", "error", "neutral"],
+    },
+  },
   // Icônes (Iconify) auto-hébergées en local (perf + RGPD, pas d'appel à l'API
   // Iconify). Les collections installées (@iconify-json/*) sont servies localement.
   icon: {
@@ -28,6 +37,9 @@ export default defineNuxtConfig({
       projectId: process.env.NUXT_SANITY_PROJECT_ID || "",
       dataset: process.env.NUXT_SANITY_DATASET || "production",
     },
+    // Autorise le CDN Sanity pour les <NuxtImg> qui reçoivent une URL absolue
+    // (ex. la prop `image` de <UBlogPost>).
+    domains: ["cdn.sanity.io"],
   },
   // Swiper est intégré via ses Web Components (<swiper-container>/<swiper-slide>) ;
   // on indique à Vue de les traiter comme des éléments personnalisés.
@@ -85,7 +97,6 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
         "lodash/startCase.js",

@@ -61,7 +61,7 @@ useSchemaOrg(
         <details
           v-for="(item, i) in items"
           :key="item._key || i"
-          class="group border border-border bg-surface"
+          class="group border border-border bg-light"
           :style="{ borderRadius: 'var(--a-radius)' }">
           <summary
             class="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 font-medium text-foreground marker:content-none">

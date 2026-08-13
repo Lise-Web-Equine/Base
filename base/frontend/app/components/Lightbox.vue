@@ -13,8 +13,20 @@ interface Img {
   credit?: string | null;
 }
 
+import { sanityImageUrl } from "~/lib/sanityImage";
+
 const props = defineProps<{ images: Img[]; modelValue: number | null }>();
 const emit = defineEmits<{ "update:modelValue": [number | null] }>();
+
+// URL générée directement (contournement du srcset dégénéré de <SanityImage>).
+const sanity = useSanity();
+const fullUrl = (ref?: string | null) =>
+  sanityImageUrl(
+    ref,
+    (sanity.config as any)?.projectId,
+    (sanity.config as any)?.dataset,
+    "auto=format&fit=max&w=1600"
+  );
 
 const isOpen = computed(() => props.modelValue !== null);
 const current = computed(() =>
@@ -88,12 +100,10 @@ useSwipe(swipeTarget, {
         </button>
 
         <figure ref="swipeTarget" class="m-0 flex max-h-full max-w-full flex-col items-center">
-          <SanityImage
+          <img
             v-if="current.asset?._ref"
-            :asset-id="current.asset._ref"
+            :src="fullUrl(current.asset._ref)"
             :alt="current.alt || ''"
-            auto="format"
-            sizes="90vw"
             class="max-h-[82vh] w-auto object-contain" />
           <figcaption
             v-if="current.caption || current.credit"

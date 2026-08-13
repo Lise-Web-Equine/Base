@@ -2,11 +2,15 @@ import {defineArrayMember, defineField, defineType} from '@sanity/types'
 import {ImagesIcon} from '@sanity/icons'
 
 /**
- * Objet Galerie (CŒUR, réutilisable).
+ * Section Galerie (CŒUR, réutilisable).
  *
- * Tableau d'images (`customImage`) + mode d'affichage. Rendu côté frontend par
- * `<Gallery>` (Swiper pour la structure/navigation) avec ouverture en plein
- * écran via `<Lightbox>`. À intégrer dans les sections des templates clients.
+ * Section du Page Builder : tableau d'images (`customImage`) + mode d'affichage
+ * (Grille ou Carrousel). Rendue côté frontend par `<Gallery>` (Swiper pour la
+ * structure/navigation) avec ouverture en plein écran via `<Lightbox>`.
+ *
+ * Le STYLE détaillé (type de carrousel, nombre de colonnes) n'est PAS exposé à
+ * l'éditeur : il est défini une fois dans le code (`frontend/app/lib/
+ * carouselStyles.ts`) et surchargeable par projet.
  */
 export const gallery = defineType({
   name: 'gallery',
@@ -14,6 +18,12 @@ export const gallery = defineType({
   type: 'object',
   icon: ImagesIcon,
   fields: [
+    defineField({
+      name: 'heading',
+      title: 'Titre (optionnel)',
+      type: 'string',
+      description: 'Titre affiché au-dessus de la galerie (optionnel).',
+    }),
     defineField({
       name: 'images',
       title: 'Images',
@@ -34,22 +44,6 @@ export const gallery = defineType({
         ],
         layout: 'radio',
       },
-    }),
-    defineField({
-      name: 'columns',
-      title: 'Colonnes (grille)',
-      type: 'string',
-      description: 'Nombre de colonnes en mode grille (sur grand écran).',
-      initialValue: '3',
-      options: {
-        list: [
-          {title: '2', value: '2'},
-          {title: '3', value: '3'},
-          {title: '4', value: '4'},
-        ],
-        layout: 'radio',
-      },
-      hidden: ({parent}) => parent?.layout === 'carousel',
     }),
   ],
   preview: {

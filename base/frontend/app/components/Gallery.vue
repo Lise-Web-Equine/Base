@@ -14,24 +14,44 @@ interface Img {
   credit?: string | null;
 }
 
+import { sanityImageUrl } from "~/lib/sanityImage";
+import { activeCarouselStyle, galleryColumns } from "~/lib/carouselStyles";
+
 const props = defineProps<{
   gallery?: {
     images?: Img[] | null;
+    // L'éditeur choisit seulement « Grille » ou « Carrousel ».
     layout?: "grid" | "carousel" | null;
-    columns?: "2" | "3" | "4" | null;
   } | null;
 }>();
 
 const images = computed(() => props.gallery?.images?.filter((i) => i?.asset?._ref) ?? []);
 const isCarousel = computed(() => props.gallery?.layout === "carousel");
 
-// Classe de colonnes (littérales pour que Tailwind les génère).
-const gridColsClass = computed(
-  () =>
-    ({ "2": "lg:grid-cols-2", "3": "lg:grid-cols-3", "4": "lg:grid-cols-4" }[
-      props.gallery?.columns ?? "3"
-    ] ?? "lg:grid-cols-3")
-);
+// Style de carrousel : défini dans le code (cœur + surcharge projet),
+// pas par l'éditeur — cf. lib/carouselStyles.
+const swiperEffect = activeCarouselStyle.effect ?? "slide";
+const slidesPerView = activeCarouselStyle.slidesPerView ?? "auto";
+const slideClass = activeCarouselStyle.slideClass ?? "";
+const carouselAttrs = activeCarouselStyle.attrs ?? {};
+
+// URL d'image générée directement (le wrapper <SanityImage> produit un srcset
+// dégénéré à 1px, cf. lib/sanityImage). On passe donc par le helper.
+const sanity = useSanity();
+const imgUrl = (ref?: string | null) =>
+  sanityImageUrl(
+    ref,
+    (sanity.config as any)?.projectId,
+    (sanity.config as any)?.dataset,
+    "auto=format&fit=crop&w=800&h=600"
+  );
+
+// Classe de colonnes (littérales pour que Tailwind les génère). Le nombre de
+// colonnes vient du code (cœur + surcharge projet), pas du Studio.
+const gridColsClass =
+  ({ "2": "lg:grid-cols-2", "3": "lg:grid-cols-3", "4": "lg:grid-cols-4" }[
+    galleryColumns
+  ] ?? "lg:grid-cols-3");
 
 // Index ouvert dans la lightbox (null = fermée).
 const lightboxIndex = ref<number | null>(null);
@@ -45,23 +65,24 @@ const open = (i: number) => (lightboxIndex.value = i);
       v-if="isCarousel"
       navigation="true"
       pagination="true"
-      slides-per-view="auto"
+      :slides-per-view="slidesPerView"
+      :effect="swiperEffect"
       space-between="16"
+      v-bind="carouselAttrs"
       :style="{ '--swiper-theme-color': 'var(--color-primary)' }">
       <swiper-slide
         v-for="(img, i) in images"
         :key="img.asset!._ref!"
-        class="!w-[80%] sm:!w-[45%] lg:!w-[32%]">
+        :class="slideClass">
         <button
           type="button"
           class="group block w-full overflow-hidden"
           :style="{ borderRadius: 'var(--a-radius)' }"
           @click="open(i)">
-          <SanityImage
-            :asset-id="img.asset!._ref!"
+          <img
+            :src="imgUrl(img.asset!._ref!)"
             :alt="img.alt || ''"
-            auto="format"
-            sizes="(min-width: 1024px) 33vw, 80vw"
+            loading="lazy"
             class="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-105" />
         </button>
       </swiper-slide>
@@ -79,11 +100,10 @@ const open = (i: number) => (lightboxIndex.value = i);
         class="group block overflow-hidden"
         :style="{ borderRadius: 'var(--a-radius)' }"
         @click="open(i)">
-        <SanityImage
-          :asset-id="img.asset!._ref!"
+        <img
+          :src="imgUrl(img.asset!._ref!)"
           :alt="img.alt || ''"
-          auto="format"
-          sizes="(min-width: 1024px) 33vw, 50vw"
+          loading="lazy"
           class="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-105" />
       </button>
     </div>

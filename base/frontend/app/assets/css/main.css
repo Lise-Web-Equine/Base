@@ -1,9 +1,92 @@
 @import "tailwindcss";
+@import "@nuxt/ui";
 /* Point d'extension PROJET : polices auto-hébergées + surcharges par site. */
 @import "./project.css";
 
+/* Les composants Nuxt UI suivent l'arrondi défini dans le Studio (themeSettings
+   → --theme-radius). Ainsi la forme s'adapte à la charte de chaque client. */
+:root {
+  --ui-radius: var(--theme-radius, 0.75rem);
+}
+
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
+
+/* ------------------------------------------------------------------------- */
+/*  Pont de thème Nuxt UI                                                     */
+/*                                                                            */
+/*  Nuxt UI attend des couleurs avec échelles 50→950 (hover/focus/dark).      */
+/*  Nos tokens client (--color-*) n'ont qu'une teinte : on génère les nuances */
+/*  à la volée via color-mix. 100% CSS, réactif au thème client, sans build.  */
+/*  Ces couleurs custom sont ensuite reliées aux alias Nuxt UI dans           */
+/*  app/app.config.ts (ui.colors).                                            */
+/* ------------------------------------------------------------------------- */
+@theme {
+  /* primary */
+  --color-cprimary-50: color-mix(in oklab, var(--color-primary), white 92%);
+  --color-cprimary-100: color-mix(in oklab, var(--color-primary), white 84%);
+  --color-cprimary-200: color-mix(in oklab, var(--color-primary), white 68%);
+  --color-cprimary-300: color-mix(in oklab, var(--color-primary), white 48%);
+  --color-cprimary-400: color-mix(in oklab, var(--color-primary), white 24%);
+  --color-cprimary-500: var(--color-primary);
+  --color-cprimary-600: color-mix(in oklab, var(--color-primary), black 14%);
+  --color-cprimary-700: color-mix(in oklab, var(--color-primary), black 28%);
+  --color-cprimary-800: color-mix(in oklab, var(--color-primary), black 42%);
+  --color-cprimary-900: color-mix(in oklab, var(--color-primary), black 56%);
+  --color-cprimary-950: color-mix(in oklab, var(--color-primary), black 68%);
+
+  /* secondary */
+  --color-csecondary-50: color-mix(in oklab, var(--color-secondary), white 92%);
+  --color-csecondary-100: color-mix(in oklab, var(--color-secondary), white 84%);
+  --color-csecondary-200: color-mix(in oklab, var(--color-secondary), white 68%);
+  --color-csecondary-300: color-mix(in oklab, var(--color-secondary), white 48%);
+  --color-csecondary-400: color-mix(in oklab, var(--color-secondary), white 24%);
+  --color-csecondary-500: var(--color-secondary);
+  --color-csecondary-600: color-mix(in oklab, var(--color-secondary), black 14%);
+  --color-csecondary-700: color-mix(in oklab, var(--color-secondary), black 28%);
+  --color-csecondary-800: color-mix(in oklab, var(--color-secondary), black 42%);
+  --color-csecondary-900: color-mix(in oklab, var(--color-secondary), black 56%);
+  --color-csecondary-950: color-mix(in oklab, var(--color-secondary), black 68%);
+
+  /* success */
+  --color-csuccess-50: color-mix(in oklab, var(--color-success), white 92%);
+  --color-csuccess-100: color-mix(in oklab, var(--color-success), white 84%);
+  --color-csuccess-200: color-mix(in oklab, var(--color-success), white 68%);
+  --color-csuccess-300: color-mix(in oklab, var(--color-success), white 48%);
+  --color-csuccess-400: color-mix(in oklab, var(--color-success), white 24%);
+  --color-csuccess-500: var(--color-success);
+  --color-csuccess-600: color-mix(in oklab, var(--color-success), black 14%);
+  --color-csuccess-700: color-mix(in oklab, var(--color-success), black 28%);
+  --color-csuccess-800: color-mix(in oklab, var(--color-success), black 42%);
+  --color-csuccess-900: color-mix(in oklab, var(--color-success), black 56%);
+  --color-csuccess-950: color-mix(in oklab, var(--color-success), black 68%);
+
+  /* warning */
+  --color-cwarning-50: color-mix(in oklab, var(--color-warning), white 92%);
+  --color-cwarning-100: color-mix(in oklab, var(--color-warning), white 84%);
+  --color-cwarning-200: color-mix(in oklab, var(--color-warning), white 68%);
+  --color-cwarning-300: color-mix(in oklab, var(--color-warning), white 48%);
+  --color-cwarning-400: color-mix(in oklab, var(--color-warning), white 24%);
+  --color-cwarning-500: var(--color-warning);
+  --color-cwarning-600: color-mix(in oklab, var(--color-warning), black 14%);
+  --color-cwarning-700: color-mix(in oklab, var(--color-warning), black 28%);
+  --color-cwarning-800: color-mix(in oklab, var(--color-warning), black 42%);
+  --color-cwarning-900: color-mix(in oklab, var(--color-warning), black 56%);
+  --color-cwarning-950: color-mix(in oklab, var(--color-warning), black 68%);
+
+  /* error */
+  --color-cerror-50: color-mix(in oklab, var(--color-error), white 92%);
+  --color-cerror-100: color-mix(in oklab, var(--color-error), white 84%);
+  --color-cerror-200: color-mix(in oklab, var(--color-error), white 68%);
+  --color-cerror-300: color-mix(in oklab, var(--color-error), white 48%);
+  --color-cerror-400: color-mix(in oklab, var(--color-error), white 24%);
+  --color-cerror-500: var(--color-error);
+  --color-cerror-600: color-mix(in oklab, var(--color-error), black 14%);
+  --color-cerror-700: color-mix(in oklab, var(--color-error), black 28%);
+  --color-cerror-800: color-mix(in oklab, var(--color-error), black 42%);
+  --color-cerror-900: color-mix(in oklab, var(--color-error), black 56%);
+  --color-cerror-950: color-mix(in oklab, var(--color-error), black 68%);
+}
 
 @utility container {
   width: 100%;
@@ -24,10 +107,24 @@
   --color-secondary: var(--theme-secondary, #206ee9);
   --color-accent: var(--theme-accent, #8f57ef);
   --color-background: var(--theme-background, #ffffff);
-  --color-surface: var(--theme-surface, #f6f6f8);
+  --color-surface: var(--theme-surface, #1b1d27);
+  --color-light: var(--theme-light, #f6f6f8);
   --color-foreground: var(--theme-foreground, #0d0e12);
   --color-muted: var(--theme-muted, #727892);
   --color-border: var(--theme-border, #e3e4e8);
+
+  /* Couleurs d'états (feedback UI) administrées depuis Sanity. Génèrent les
+     utilitaires bg-success / text-warning / border-error, etc. */
+  --color-success: var(--theme-success, #16a34a);
+  --color-warning: var(--theme-warning, #d97706);
+  --color-error: var(--theme-error, #dc2626);
+
+  /* Variantes d'interaction (survol) : déclinaison plus sombre des couleurs
+     d'action, calculée automatiquement (pas de champ Sanity dédié). Génèrent
+     les utilitaires bg-primary-hover, hover:bg-primary-hover, etc. */
+  --color-primary-hover: color-mix(in srgb, var(--color-primary) 86%, #000);
+  --color-secondary-hover: color-mix(in srgb, var(--color-secondary) 86%, #000);
+  --color-accent-hover: color-mix(in srgb, var(--color-accent) 86%, #000);
 
   --color-nuxt: #00dc82;
 

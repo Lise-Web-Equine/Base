@@ -23,9 +23,15 @@ useSeoMeta({
 const addr = settings.value?.address;
 const hasAddress = !!(addr && (addr.street || addr.city || addr.postalCode));
 
+// Description pour les données structurées : priorité à la description SEO par
+// défaut (Réglages → SEO & Partage), puis à la description de l'organisation.
+const seoDescription =
+  settings.value?.seoDescription || settings.value?.description || undefined;
+
 useSchemaOrg([
   defineLocalBusiness({
     name: settings.value?.title || siteConfig.name,
+    description: seoDescription,
     logo: settings.value?.logo || settings.value?.ogImage || undefined,
     image: settings.value?.ogImage || settings.value?.logo || undefined,
     telephone: settings.value?.phone || undefined,
@@ -45,7 +51,8 @@ useSchemaOrg([
       .filter((u): u is string => !!u),
   }),
   defineWebSite({
-    name: settings.value?.title || siteConfig.name,
+    name: settings.value?.seoTitle || settings.value?.title || siteConfig.name,
+    description: seoDescription,
   }),
   defineWebPage(),
 ]);
@@ -78,8 +85,10 @@ if (consent?.enabled && consent.axeptioClientId) {
 </script>
 
 <template>
-  <NuxtLoadingIndicator />
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <UApp>
+    <NuxtLoadingIndicator />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </UApp>
 </template>

@@ -11,7 +11,7 @@ const socialLinks = computed(() => settings.value?.socialLinks ?? []);
 </script>
 
 <template>
-  <footer class="bg-surface border-border border-t">
+  <footer class="bg-light border-border border-t">
     <div class="container">
       <div
         class="flex flex-col items-center gap-6 py-12 sm:flex-row sm:justify-between"

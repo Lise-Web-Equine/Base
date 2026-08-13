@@ -17,6 +17,7 @@ export const settings = defineType({
     {name: 'identity', title: 'Identité & Coordonnées', default: true},
     {name: 'seo', title: 'SEO & Partage'},
     {name: 'blog', title: 'Blog / Actualités'},
+    {name: 'appearance', title: 'Apparence'},
     {name: 'modules', title: 'Modules'},
   ],
   fieldsets: [
@@ -24,19 +25,28 @@ export const settings = defineType({
     {name: 'contact', title: 'Coordonnées'},
     {name: 'location', title: 'Localisation'},
     {name: 'social', title: 'Réseaux sociaux'},
-    {name: 'author', title: 'Auteur des articles'},
   ],
   fields: [
     defineField({
       name: 'title',
       title: "Nom de l'organisation / Entreprise",
       description:
-        'Nom affiché dans la navigation, utilisé comme titre SEO par défaut et dans les données structurées.',
+        'Nom affiché dans la navigation et dans les données structurées.',
       type: 'string',
       group: 'identity',
       fieldset: 'branding',
       initialValue: demo.title,
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'description',
+      title: "Description de l'organisation",
+      description:
+        'Courte description de l’organisation, utilisée dans les données structurées.',
+      type: 'text',
+      rows: 3,
+      group: 'identity',
+      fieldset: 'branding',
     }),
     defineField({
       name: 'logo',
@@ -45,8 +55,47 @@ export const settings = defineType({
       group: 'identity',
       fieldset: 'branding',
       description:
-        'Utilisé pour les données structurées Schema.org (logo affiché par Google). Format carré recommandé.',
+        'Logo principal, utilisé par défaut (navigation, données structurées Schema.org). Format carré recommandé.',
       options: {hotspot: true},
+    }),
+    defineField({
+      name: 'logoHome',
+      title: 'Logo — Accueil (transparent)',
+      type: 'image',
+      group: 'identity',
+      fieldset: 'branding',
+      description:
+        "Variante affichée sur la page d'accueil (ex. version transparente, sur fond sombre du hero). Si vide, le logo principal est utilisé.",
+      options: {hotspot: true},
+    }),
+    defineField({
+      name: 'logoBlog',
+      title: 'Logo — Blog (rond)',
+      type: 'image',
+      group: 'identity',
+      fieldset: 'branding',
+      description:
+        'Variante ronde/carrée pour la rubrique blog et les vignettes d’articles. Si vide, le logo principal est utilisé.',
+      options: {hotspot: true},
+    }),
+    defineField({
+      name: 'logoFooter',
+      title: 'Logo — Pied de page',
+      type: 'image',
+      group: 'identity',
+      fieldset: 'branding',
+      description:
+        'Variante affichée dans le pied de page (souvent monochrome / claire). Si vide, le logo principal est utilisé.',
+      options: {hotspot: true},
+    }),
+    defineField({
+      name: 'favicon',
+      title: 'Favicon (icône du navigateur)',
+      type: 'image',
+      group: 'identity',
+      fieldset: 'branding',
+      description:
+        "Petite icône carrée affichée dans l'onglet du navigateur. Format carré (PNG/SVG), idéalement 512×512.",
     }),
     defineField({
       name: 'phone',
@@ -83,27 +132,25 @@ export const settings = defineType({
       ],
     }),
     defineField({
-      name: 'author',
-      title: 'Auteur des articles',
-      type: 'object',
-      group: 'identity',
-      fieldset: 'author',
+      name: 'seoTitle',
+      title: 'Titre SEO par défaut',
+      type: 'string',
+      group: 'seo',
       description:
-        'Auteur unique affiché sur tous les articles de blog (nom + photo).',
-      options: {columns: 1},
-      fields: [
-        defineField({
-          name: 'name',
-          title: 'Nom',
-          type: 'string',
-        }),
-        defineField({
-          name: 'picture',
-          title: 'Photo',
-          type: 'image',
-          options: {hotspot: true},
-        }),
-      ],
+        "Titre affiché par les moteurs de recherche lorsqu'une page n'a pas son propre titre SEO (recommandé : 50-60 caractères).",
+      validation: (rule) =>
+        rule.max(60).warning('Recommandé : 60 caractères maximum pour un affichage complet dans Google.'),
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'Description SEO par défaut',
+      type: 'text',
+      group: 'seo',
+      rows: 3,
+      description:
+        "Description affichée par les moteurs de recherche lorsqu'une page n'a pas sa propre description SEO (recommandé : 150-160 caractères).",
+      validation: (rule) =>
+        rule.max(160).warning('Recommandé : 160 caractères maximum pour un affichage complet dans Google.'),
     }),
     defineField({
       name: 'ogImage',
@@ -118,15 +165,6 @@ export const settings = defineType({
           imageDescriptionField: 'alt',
         },
       },
-    }),
-    defineField({
-      name: 'metaDescription',
-      title: 'Description SEO par défaut',
-      type: 'text',
-      group: 'seo',
-      rows: 3,
-      description:
-        "Description affichée par les moteurs de recherche lorsqu'une page n'a pas sa propre description SEO (recommandé : 150-160 caractères).",
     }),
     defineField({
       name: 'socialLinks',
@@ -226,6 +264,30 @@ export const settings = defineType({
             "Catégories proposées lors de l'édition d'un article (menu déroulant du champ « Catégorie »).",
           options: {layout: 'tags'},
           hidden: ({parent}) => !parent?.enabled,
+        }),
+      ],
+    }),
+    defineField({
+      name: 'gallery',
+      title: "Galerie — type d'affichage",
+      type: 'object',
+      group: 'appearance',
+      options: {columns: 1},
+      description:
+        "Affichage appliqué automatiquement aux galeries du blog, pour un rendu homogène sur tout le site. Le style détaillé (type de carrousel, colonnes) est défini dans le code.",
+      fields: [
+        defineField({
+          name: 'layout',
+          title: 'Affichage',
+          type: 'string',
+          initialValue: 'grid',
+          options: {
+            list: [
+              {title: 'Grille', value: 'grid'},
+              {title: 'Carrousel', value: 'carousel'},
+            ],
+            layout: 'radio',
+          },
         }),
       ],
     }),

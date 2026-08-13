@@ -92,10 +92,6 @@ export const postQuery = defineQuery(/* groq */ `
 							},
 						}
 					},
-			"author": *[_type == "settings"][0].author{
-				name,
-				"picture": picture.asset._ref
-			},
 			"ogImage": coverImage.asset->url
 		}`);
 
@@ -103,6 +99,13 @@ export const pageQuery = defineQuery(/* groq */ `
 		*[_type == "page" && defined(slug.current) && slug.current == $slug][0]{
 			...,
 			${pageBuilderFields}
+		}`);
+
+// Page « Contact » (si elle existe) : sert à afficher le lien dans le menu.
+export const contactPageQuery = defineQuery(/* groq */ `
+		*[_type == "page" && slug.current == "contact"][0]{
+			name,
+			"slug": slug.current
 		}`);
 
 export const homeQuery = defineQuery(/* groq */ `
@@ -118,9 +121,13 @@ export const themeSettingsQuery = defineQuery(/* groq */ `
 			"accent": accent.value,
 			"background": background.value,
 			"surface": surface.value,
+			"light": light.value,
 			"foreground": foreground.value,
 			"muted": muted.value,
 			"border": border.value,
+			"success": success.value,
+			"warning": warning.value,
+			"error": error.value,
 			fontDisplay,
 			fontBody,
 			fontAccent,
@@ -135,16 +142,23 @@ export const themeSettingsQuery = defineQuery(/* groq */ `
 export const settingsQuery = defineQuery(/* groq */ `
 		*[_type == "settings"][0]{
 			title,
+			description,
 			phone,
 			email,
 			address,
-			metaDescription,
+			seoTitle,
+			seoDescription,
 			"ogImage": ogImage.asset->url,
 			"logo": logo.asset->url,
+			"logoHome": logoHome.asset->url,
+			"logoBlog": logoBlog.asset->url,
+			"logoFooter": logoFooter.asset->url,
+			"favicon": favicon.asset->url,
 			socialLinks,
 			cookieConsent,
 			analytics,
-			blog
+			blog,
+			gallery
 		}`);
 
 export const navigationQuery = defineQuery(/* groq */ `

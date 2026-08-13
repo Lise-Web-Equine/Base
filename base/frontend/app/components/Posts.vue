@@ -4,6 +4,10 @@ defineProps({
     type: String,
     default: null,
   },
+  headingTag: {
+    type: String,
+    default: "h2",
+  },
   subHeading: {
     type: String,
     default: null,
@@ -17,9 +21,9 @@ defineProps({
 
 <template>
   <div>
-    <h2 v-if="heading" class="a-h1">
+    <component :is="headingTag" v-if="heading" class="a-h2">
       {{ heading }}
-    </h2>
+    </component>
     <p v-if="subHeading" class="a-lead mt-2">
       {{ subHeading }}
     </p>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { stegaClean } from "@sanity/client/stega";
 import { socialIconFor } from "~/lib/socialIcons";
 
 /**
@@ -33,8 +34,14 @@ const PLATFORM_LABELS: Record<string, string> = {
   other: "Lien",
 };
 
+// Visual Editing (stega) ajoute des caractères invisibles aux chaînes Sanity :
+// on nettoie `platform` pour que la correspondance icône/libellé fonctionne.
+function platformOf(link: SocialLink): string {
+  return (stegaClean(link.platform) ?? "").trim();
+}
+
 function labelFor(link: SocialLink): string {
-  return link.label || PLATFORM_LABELS[link.platform ?? ""] || "Lien";
+  return link.label || PLATFORM_LABELS[platformOf(link)] || "Lien";
 }
 </script>
 
@@ -49,8 +56,8 @@ function labelFor(link: SocialLink): string {
         :aria-label="labelFor(link)"
         class="inline-flex items-center text-muted transition-colors hover:text-primary">
         <Icon
-          v-if="socialIconFor(link.platform)"
-          :name="socialIconFor(link.platform)!"
+          v-if="socialIconFor(platformOf(link))"
+          :name="socialIconFor(platformOf(link))!"
           :size="size"
           aria-hidden="true" />
         <span v-else class="text-sm">{{ labelFor(link) }}</span>

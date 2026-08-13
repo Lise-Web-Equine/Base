@@ -19,7 +19,7 @@ defineProps({
       >
         {{ block.subheading }}
       </span>
-      <div class="prose prose-a:text-primary mt-4" v-if="block.content">
+      <div class="mt-4" v-if="block.content">
         <PortableText :portableText="block.content" />
       </div>
     </div>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 /**
  * Bouton réutilisable rendu à partir de l'objet Sanity `button`
- * (label + link + variant). Les couleurs proviennent du thème (variables CSS
- * --color-* administrées via le singleton themeSettings).
+ * (label + link + variant). Fin wrapper autour de <UButton> (Nuxt UI) : les
+ * couleurs viennent du thème (pont de couleurs), l'arrondi suit --ui-radius.
  */
+import { linkResolver } from "~/lib/utils";
+
 const props = defineProps({
   button: {
     type: Object as PropType<Button>,
@@ -11,28 +13,28 @@ const props = defineProps({
   },
 });
 
-const variantClass = computed(() => {
-  switch (props.button?.variant) {
-    case "secondary":
-      return "bg-secondary text-white hover:opacity-90";
-    case "outline":
-      return "border border-primary text-primary hover:bg-primary hover:text-white";
-    case "primary":
-    default:
-      return "bg-primary text-white hover:opacity-90";
-  }
-});
+// Lien résolu (page / post / URL) → prop `to` de <UButton>.
+const to = computed(() => (props.button?.link ? linkResolver(props.button.link) : undefined));
+const target = computed(() =>
+  props.button?.link?.openInNewTab ? "_blank" : undefined
+);
+
+// Mappe le variant Sanity vers les props Nuxt UI (couleur + style).
+const color = computed<"primary" | "secondary">(() =>
+  props.button?.variant === "secondary" ? "secondary" : "primary"
+);
+const variant = computed<"solid" | "outline">(() =>
+  props.button?.variant === "outline" ? "outline" : "solid"
+);
 </script>
 
 <template>
-  <ResolvedLink
-    v-if="button?.link"
-    :link="button.link"
-    :class="[
-      'inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium transition-all duration-200',
-      variantClass,
-    ]"
-  >
-    {{ button.label }}
-  </ResolvedLink>
+  <UButton
+    v-if="button?.label"
+    :to="to || undefined"
+    :target="target"
+    :color="color"
+    :variant="variant"
+    :label="button.label"
+    size="lg" />
 </template>

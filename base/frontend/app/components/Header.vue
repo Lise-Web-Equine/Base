@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { settingsQuery, navigationQuery } from "~/sanity/queries";
+import {
+  settingsQuery,
+  navigationQuery,
+  contactPageQuery,
+} from "~/sanity/queries";
 
 const { data: settings } = useSanityQuery<SettingsQueryResult>(settingsQuery);
 const { data: navigation } =
@@ -9,6 +13,11 @@ const menu = computed(() => navigation.value?.headerMenu ?? []);
 
 // Rubrique blog/actualités : lien ajouté au menu quand elle est activée.
 const { enabled: blogEnabled, label: blogLabel } = useBlog();
+
+// Page Contact : lien ajouté à la fin du menu seulement si la page existe.
+const { data: contactPage } =
+  useSanityQuery<ContactPageQueryResult>(contactPageQuery);
+const contactLabel = computed(() => contactPage.value?.name || "Contact");
 
 // Gestion des sous-menus déroulants (un seul ouvert à la fois).
 const openKey = ref<string | null>(null);
@@ -36,7 +45,9 @@ router.afterEach(() => close());
           </span>
         </NuxtLink>
 
-        <nav v-if="menu.length || blogEnabled" class="flex items-center gap-6">
+        <nav
+          v-if="menu.length || blogEnabled || contactPage"
+          class="flex items-center gap-6">
           <template v-for="item in menu" :key="item._key">
             <!-- Entrée avec sous-menu déroulant -->
             <div
@@ -62,7 +73,7 @@ router.afterEach(() => close());
               </button>
               <div
                 v-show="openKey === item._key"
-                class="absolute left-0 top-full min-w-48 rounded-lg border border-border bg-surface p-2 shadow-lg"
+                class="absolute left-0 top-full min-w-48 rounded-lg border border-border bg-light p-2 shadow-lg"
               >
                 <ResolvedLink
                   v-for="child in item.children"
@@ -92,6 +103,15 @@ router.afterEach(() => close());
             class="text-foreground hover:text-primary transition-colors"
           >
             {{ blogLabel }}
+          </NuxtLink>
+
+          <!-- Lien vers la page Contact (à la fin, seulement si elle existe). -->
+          <NuxtLink
+            v-if="contactPage"
+            to="/contact"
+            class="text-foreground hover:text-primary transition-colors"
+          >
+            {{ contactLabel }}
           </NuxtLink>
         </nav>
       </div>

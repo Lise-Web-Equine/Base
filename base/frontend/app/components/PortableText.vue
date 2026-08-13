@@ -22,7 +22,11 @@ defineProps<{
 </script>
 
 <template>
-  <div v-if="portableText" class="prose prose-lg max-w-none">
+  <div
+    v-if="portableText"
+    class="prose prose-lg"
+    :style="{ maxWidth: 'var(--a-content-width)' }"
+  >
     <SanityContent :value="portableText" :components="components" />
   </div>
 </template>

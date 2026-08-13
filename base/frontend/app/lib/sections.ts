@@ -16,6 +16,7 @@ const coreSections: Record<string, string> = {
   contactSection: "ContactSection",
   contactDetails: "ContactDetails",
   faqSection: "FaqSection",
+  gallery: "GallerySection",
 };
 
 /**

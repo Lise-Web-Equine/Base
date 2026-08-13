@@ -29,3 +29,4 @@ Passer exclusivement par les **points d'extension**.
 1. **Périmètre** : Classifier l'action (Cœur vs Projet). En cas de doute, demander.
 2. **Scanner** : Respecter `.windsurfinstructions` (ne pas scanner tout le dépôt sans accord).
 3. **Langue** : Libellés Studio obligatoirement en **français**.
+4. **Mobile first, toujours** : écrire d'abord les styles pour mobile (classes de base sans préfixe), puis ajouter les surcouches responsive (`sm:`, `md:`, `lg:`…) pour les écrans plus grands. Ne jamais partir du desktop.
