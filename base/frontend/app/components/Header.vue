@@ -99,7 +99,7 @@ router.afterEach(() => close());
           <!-- Lien vers la rubrique blog/actualités (si activée). -->
           <NuxtLink
             v-if="blogEnabled"
-            to="/posts"
+            to="/articles"
             class="text-foreground hover:text-primary transition-colors"
           >
             {{ blogLabel }}

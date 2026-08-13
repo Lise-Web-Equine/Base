@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { fr } from "@nuxt/ui/locale";
 import { settingsQuery } from "~/sanity/queries";
 
 // Load the global theme from Sanity and inject the --theme-* CSS variables
@@ -85,7 +86,7 @@ if (consent?.enabled && consent.axeptioClientId) {
 </script>
 
 <template>
-  <UApp>
+  <UApp :locale="fr">
     <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />

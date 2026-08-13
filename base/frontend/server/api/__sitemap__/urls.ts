@@ -60,7 +60,7 @@ export default defineSitemapEventHandler(async (event) => {
         doc._type === "homePage"
           ? "/"
           : doc._type === "post"
-            ? `/posts/${doc.slug}`
+            ? `/articles/${doc.slug}`
             : `/${doc.slug}`;
       return { loc, lastmod: doc._updatedAt };
     });

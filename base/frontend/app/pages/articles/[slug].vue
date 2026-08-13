@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { stegaClean } from "@sanity/client/stega";
 import { postQuery, somePostsQuery, settingsQuery } from "~/sanity/queries";
 import { excerptFromContent } from "~/lib/excerpt";
 import { sanityImageUrl } from "~/lib/sanityImage";
@@ -39,6 +40,20 @@ const coverImageUrl = computed(() =>
   )
 );
 
+// Catégorie de l'article (nettoyée du stega), affichée en badge.
+const category = computed(
+  () => (stegaClean(post.value?.category) as string) || undefined
+);
+
+// Adresse formatée pour la carte (rue, code postal + ville).
+const contactAddress = computed(() => {
+  const a = settings.value?.address;
+  if (!a) return "";
+  return [a.street, [a.postalCode, a.city].filter(Boolean).join(" ")]
+    .filter(Boolean)
+    .join(", ");
+});
+
 // « À lire aussi » : données mises en forme pour le composant Nuxt UI <UBlogPost>.
 const relatedPosts = computed(() =>
   (posts.value ?? []).map((p) => ({
@@ -49,8 +64,9 @@ const relatedPosts = computed(() =>
       p.seoDescription ||
       excerptFromContent(p.content as any).replace(/\s*…\s*$/, "") ||
       undefined,
+    badge: (stegaClean(p.category) as string) || undefined,
     date: p.date ?? undefined,
-    to: `/posts/${p.slug?.current}`,
+    to: `/articles/${p.slug?.current}`,
     image: sanityImageUrl(
       (p.coverImage as any)?.asset?._ref,
       (sanity.config as any)?.projectId,
@@ -105,6 +121,26 @@ useSiteMetadata({
               {{ settings.description }}
             </p>
 
+            <!-- Coordonnées (tél. + adresse), affichées seulement si activé dans
+                 les Réglages → Blog (les champs proviennent d'Identité & Coordonnées). -->
+            <div
+              v-if="settings.blog?.showContact && (settings.phone || contactAddress)"
+              class="mt-4 flex flex-col gap-2 border-t border-border pt-4 text-sm">
+              <a
+                v-if="settings.phone"
+                :href="`tel:${settings.phone.replace(/\s+/g, '')}`"
+                class="inline-flex items-center gap-2 text-foreground hover:text-primary">
+                <UIcon name="i-lucide-phone" class="size-4 shrink-0 text-muted" />
+                {{ settings.phone }}
+              </a>
+              <p
+                v-if="contactAddress"
+                class="inline-flex items-start gap-2 text-muted">
+                <UIcon name="i-lucide-map-pin" class="mt-0.5 size-4 shrink-0" />
+                <span>{{ contactAddress }}</span>
+              </p>
+            </div>
+
             <template v-if="settings.socialLinks?.length" #footer>
               <SocialLinks :links="settings.socialLinks" />
             </template>
@@ -122,27 +158,57 @@ useSiteMetadata({
                 v-for="(article, i) in relatedPosts"
                 :key="i"
                 :title="article.title"
-                :description="article.description"
+                :badge="article.badge"
                 :date="article.date"
                 :image="article.image"
-                :to="article.to" />
+                :to="article.to"
+                class="group">
+                <template #description>
+                  <span v-if="article.description" class="block text-muted">
+                    {{ article.description }}
+                  </span>
+                  <span
+                    class="mt-3 flex items-center gap-1 text-sm font-medium text-primary">
+                    Lire l'article
+                    <UIcon
+                      name="i-lucide-arrow-right"
+                      class="size-4 transition-transform group-hover:translate-x-1" />
+                  </span>
+                </template>
+              </UBlogPost>
             </div>
           </div>
         </aside>
 
         <!-- Colonne gauche : contenu de l'article -->
         <div class="order-1 lg:col-span-2">
+          <!-- Retour vers la liste des articles -->
+          <UButton
+            to="/articles"
+            icon="i-lucide-arrow-left"
+            label="Retour"
+            color="neutral"
+            variant="link"
+            class="mb-6 -ml-1 px-1" />
+
           <div class="pb-6 grid gap-6 mb-6 border-b border-border">
             <h1 class="a-h1">
               {{ post.title }}
             </h1>
 
-            <!-- Date de publication : mise en avant juste sous le titre -->
-            <ClientOnly>
-              <p v-if="publishedAt" class="a-eyebrow">
-                Publié le {{ publishedAt }}
-              </p>
-            </ClientOnly>
+            <!-- Méta : date de publication + badge catégorie, sur la même ligne -->
+            <div class="flex flex-wrap items-center gap-3">
+              <ClientOnly>
+                <p v-if="publishedAt" class="a-eyebrow">
+                  Publié le {{ publishedAt }}
+                </p>
+              </ClientOnly>
+              <UBadge
+                v-if="category"
+                :label="category"
+                color="primary"
+                variant="subtle" />
+            </div>
 
             <!-- Image mise en avant, sous le titre -->
             <img
@@ -152,16 +218,6 @@ useSiteMetadata({
               :src="coverImageUrl"
               :alt="post.coverImage?.alt || ''"
               loading="eager" />
-
-            <!-- Méta : catégorie, et partage aligné à droite -->
-            <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-              <span
-                v-if="post.category"
-                class="inline-flex items-center rounded-full border border-border bg-light px-3 py-1 text-xs font-medium text-primary">
-                {{ post.category }}
-              </span>
-              <ShareArticle :title="post.title" class="ml-auto" />
-            </div>
           </div>
 
           <article class="gap-6 grid">
@@ -178,6 +234,11 @@ useSiteMetadata({
                 layout: settings?.gallery?.layout,
               }" />
           </article>
+
+          <!-- Partage : après l'article. -->
+          <div class="mt-8 border-t border-border pt-6">
+            <ShareArticle :title="post.title" />
+          </div>
         </div>
       </div>
     </div>

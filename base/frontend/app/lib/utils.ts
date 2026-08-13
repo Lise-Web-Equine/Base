@@ -28,7 +28,7 @@ export function linkResolver(link: Link | undefined) {
       return null;
     case "post":
       if (link?.post && typeof link.post === "string") {
-        return `/posts/${link.post}`;
+        return `/articles/${link.post}`;
       }
       return null;
     case "anchor":

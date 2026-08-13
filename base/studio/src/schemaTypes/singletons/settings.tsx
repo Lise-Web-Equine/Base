@@ -167,6 +167,29 @@ export const settings = defineType({
       },
     }),
     defineField({
+      name: 'shareNetworks',
+      title: 'Boutons de partage',
+      type: 'array',
+      group: 'seo',
+      description:
+        'Réseaux proposés dans les boutons « Partager » des articles. Un bouton « Copier le lien » est toujours ajouté.',
+      of: [defineArrayMember({type: 'string'})],
+      options: {
+        layout: 'grid',
+        list: [
+          {title: 'Facebook', value: 'facebook'},
+          {title: 'X (Twitter)', value: 'x'},
+          {title: 'LinkedIn', value: 'linkedin'},
+          {title: 'WhatsApp', value: 'whatsapp'},
+          {title: 'Telegram', value: 'telegram'},
+          {title: 'Email', value: 'email'},
+          {title: 'Pinterest', value: 'pinterest'},
+          {title: 'Reddit', value: 'reddit'},
+        ],
+      },
+      initialValue: ['facebook', 'linkedin', 'whatsapp', 'email'],
+    }),
+    defineField({
       name: 'socialLinks',
       title: 'Réseaux sociaux',
       type: 'array',
@@ -263,6 +286,15 @@ export const settings = defineType({
           description:
             "Catégories proposées lors de l'édition d'un article (menu déroulant du champ « Catégorie »).",
           options: {layout: 'tags'},
+          hidden: ({parent}) => !parent?.enabled,
+        }),
+        defineField({
+          name: 'showContact',
+          title: 'Afficher les coordonnées sur les articles',
+          type: 'boolean',
+          description:
+            "Affiche le téléphone et l'adresse (Identité & Coordonnées) dans la carte de présentation, à côté de chaque article.",
+          initialValue: false,
           hidden: ({parent}) => !parent?.enabled,
         }),
       ],

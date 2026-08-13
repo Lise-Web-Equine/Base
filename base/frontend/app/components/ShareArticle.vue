@@ -1,8 +1,13 @@
 <script setup lang="ts">
 /**
- * Boutons de partage d'un article : Facebook, Messenger, Message + copie du lien.
- * Icônes : @nuxt/icon (simple-icons + carbon). Couleurs via design tokens.
+ * Boutons de partage d'un article.
+ * Réseaux choisis dans les Réglages (Sanity → SEO & Partage) ; icônes
+ * @nuxt/icon (simple-icons/carbon) pour une cohérence totale avec <SocialLinks>.
+ * Le bouton « Copier le lien » complète la liste. Couleurs via design tokens.
  */
+import { stegaClean } from "@sanity/client/stega";
+import { settingsQuery } from "~/sanity/queries";
+
 const props = withDefaults(
   defineProps<{
     /** Titre de l'article (texte partagé). */
@@ -23,6 +28,77 @@ const shareUrl = computed(() => {
   return `${origin}${route.path}`;
 });
 
+// Titre nettoyé du stega (caractères invisibles du Visual Editing).
+const shareTitle = computed(() => stegaClean(props.title) || "");
+
+// Réseaux choisis dans les Réglages, nettoyés du stega, avec repli par défaut.
+const { data: settings } = useSanityQuery<SettingsQueryResult>(settingsQuery);
+const networks = computed(() => {
+  const list = stegaClean(settings.value?.shareNetworks) as string[] | undefined;
+  return list && list.length ? list : ["facebook", "linkedin", "whatsapp", "email"];
+});
+
+// Icône (même jeu que SocialLinks) + libellé + lien de partage par réseau.
+const ICONS: Record<string, string> = {
+  facebook: "simple-icons:facebook",
+  x: "simple-icons:x",
+  twitter: "simple-icons:x",
+  linkedin: "simple-icons:linkedin",
+  whatsapp: "simple-icons:whatsapp",
+  telegram: "simple-icons:telegram",
+  pinterest: "simple-icons:pinterest",
+  reddit: "simple-icons:reddit",
+  email: "carbon:email",
+};
+const LABELS: Record<string, string> = {
+  facebook: "Partager sur Facebook",
+  x: "Partager sur X",
+  twitter: "Partager sur X",
+  linkedin: "Partager sur LinkedIn",
+  whatsapp: "Partager sur WhatsApp",
+  telegram: "Partager sur Telegram",
+  pinterest: "Partager sur Pinterest",
+  reddit: "Partager sur Reddit",
+  email: "Partager par e-mail",
+};
+
+function hrefFor(network: string, u: string, t: string): string {
+  const url = encodeURIComponent(u);
+  const title = encodeURIComponent(t);
+  switch (network) {
+    case "facebook":
+      return `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    case "x":
+    case "twitter":
+      return `https://twitter.com/intent/tweet?url=${url}&text=${title}`;
+    case "linkedin":
+      return `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+    case "whatsapp":
+      return `https://wa.me/?text=${title}%20${url}`;
+    case "telegram":
+      return `https://t.me/share/url?url=${url}&text=${title}`;
+    case "pinterest":
+      return `https://pinterest.com/pin/create/button/?url=${url}&description=${title}`;
+    case "reddit":
+      return `https://www.reddit.com/submit?url=${url}&title=${title}`;
+    case "email":
+      return `mailto:?subject=${title}&body=${url}`;
+    default:
+      return u;
+  }
+}
+
+const items = computed(() =>
+  networks.value
+    .filter((n) => ICONS[n])
+    .map((n) => ({
+      network: n,
+      icon: ICONS[n]!,
+      label: LABELS[n] || `Partager sur ${n}`,
+      href: hrefFor(n, shareUrl.value, shareTitle.value),
+    }))
+);
+
 // Copie du lien de l'article dans le presse-papiers.
 const copied = ref(false);
 async function copyLink() {
@@ -34,76 +110,36 @@ async function copyLink() {
     // Presse-papiers indisponible : on ignore.
   }
 }
-
-type ShareItem = {
-  key: string;
-  type: "link" | "copy";
-  label: string;
-  icon: string;
-  href?: string;
-};
-
-const items = computed<ShareItem[]>(() => {
-  const u = encodeURIComponent(shareUrl.value);
-  const t = encodeURIComponent(props.title || "");
-  return [
-    {
-      key: "facebook",
-      type: "link",
-      label: "Partager sur Facebook",
-      icon: "simple-icons:facebook",
-      href: `https://www.facebook.com/sharer/sharer.php?u=${u}`,
-    },
-    {
-      key: "messenger",
-      type: "link",
-      label: "Partager sur Messenger",
-      icon: "simple-icons:messenger",
-      href: `fb-messenger://share/?link=${u}`,
-    },
-    {
-      key: "message",
-      type: "link",
-      label: "Partager par message",
-      icon: "carbon:chat",
-      href: `sms:?&body=${t}%20${u}`,
-    },
-    {
-      key: "copy",
-      type: "copy",
-      label: copied.value ? "Lien copié" : "Copier le lien",
-      icon: copied.value ? "carbon:checkmark" : "carbon:link",
-    },
-  ];
-});
 </script>
 
 <template>
   <div class="flex flex-wrap items-center gap-4">
     <span class="text-sm font-medium text-foreground">Partager sur</span>
-    <ul class="flex items-center gap-3">
-      <li v-for="item in items" :key="item.key">
-        <a
-          v-if="item.type === 'link'"
-          :href="item.href"
-          target="_blank"
-          rel="noopener noreferrer"
-          :aria-label="item.label"
-          class="inline-flex items-center text-muted transition-colors hover:text-primary"
-        >
-          <Icon :name="item.icon" size="1.4em" aria-hidden="true" />
-        </a>
-        <button
-          v-else
-          type="button"
-          :aria-label="item.label"
-          class="inline-flex items-center gap-1 text-muted transition-colors hover:text-primary"
-          @click="copyLink"
-        >
-          <Icon :name="item.icon" size="1.4em" aria-hidden="true" />
-          <span v-if="copied" class="text-xs">Lien copié</span>
-        </button>
-      </li>
-    </ul>
+
+    <div class="flex items-center gap-3 text-muted">
+      <a
+        v-for="item in items"
+        :key="item.network"
+        :href="item.href"
+        target="_blank"
+        rel="noopener noreferrer"
+        :aria-label="item.label"
+        class="inline-flex items-center transition-colors hover:text-primary">
+        <Icon :name="item.icon" size="1.4em" aria-hidden="true" />
+      </a>
+
+      <!-- Copier le lien -->
+      <button
+        type="button"
+        :aria-label="copied ? 'Lien copié' : 'Copier le lien'"
+        class="inline-flex items-center gap-1.5 transition-colors hover:text-primary"
+        @click="copyLink">
+        <span class="text-sm">{{ copied ? "Lien copié" : "Copier le lien" }}</span>
+        <Icon
+          :name="copied ? 'carbon:checkmark' : 'carbon:link'"
+          size="1.4em"
+          aria-hidden="true" />
+      </button>
+    </div>
   </div>
 </template>

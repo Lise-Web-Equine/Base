@@ -30,7 +30,7 @@ const thumbnailUrl = computed(() =>
   <article class="flex max-w-xl flex-col items-start justify-between">
     <nuxt-link
       v-if="thumbnailUrl"
-      :to="`/posts/${post.slug?.current}`"
+      :to="`/articles/${post.slug?.current}`"
       class="mb-4 block w-full"
     >
       <img
@@ -49,7 +49,7 @@ const thumbnailUrl = computed(() =>
     <h3 class="a-h3 mt-3">
       <nuxt-link
         class="hover:text-primary underline transition-colors"
-        :to="`/posts/${post.slug?.current}`"
+        :to="`/articles/${post.slug?.current}`"
       >
         {{ post.title }}
       </nuxt-link>

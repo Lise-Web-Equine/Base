@@ -10,7 +10,7 @@ const formattedDate: (dateString: string) => string = (dateString: string) => {
   try {
     // Parse the date in UTC to ensure consistent server/client rendering
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('fr-FR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

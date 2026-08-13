@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { stegaClean } from "@sanity/client/stega";
 import { postsQuery, settingsQuery } from "~/sanity/queries";
 import { sanityImageUrl } from "~/lib/sanityImage";
 import { excerptFromContent } from "~/lib/excerpt";
@@ -12,7 +13,7 @@ if (settings.value?.blog?.enabled !== true) {
 }
 
 const label =
-  settings.value?.blog?.label === "actualites" ? "Actualités" : "Blog";
+  stegaClean(settings.value?.blog?.label) === "actualites" ? "Actualités" : "Blog";
 
 const { data: posts } = await useSanityQuery<PostsQueryResult>(postsQuery);
 
@@ -27,8 +28,9 @@ const articles = computed(() =>
       p.seoDescription ||
       excerptFromContent(p.content as any).replace(/\s*…\s*$/, "") ||
       undefined,
+    badge: (stegaClean(p.category) as string) || undefined,
     date: p.date ?? undefined,
-    to: `/posts/${p.slug?.current}`,
+    to: `/articles/${p.slug?.current}`,
     image: sanityImageUrl(
       (p.coverImage as any)?.asset?._ref,
       (sanity.config as any)?.projectId,
@@ -55,13 +57,26 @@ useSiteMetadata({
     <UBlogPost
       v-if="featured"
       :title="featured.title"
-      :description="featured.description"
+      :badge="featured.badge"
       :date="featured.date"
       :image="featured.image"
       :to="featured.to"
       orientation="horizontal"
       variant="soft"
-      class="mb-8" />
+      class="group mb-8">
+      <template #description>
+        <span v-if="featured.description" class="block text-muted">
+          {{ featured.description }}
+        </span>
+        <span
+          class="mt-3 flex items-center gap-1 text-sm font-medium text-primary">
+          Lire l'article
+          <UIcon
+            name="i-lucide-arrow-right"
+            class="size-4 transition-transform group-hover:translate-x-1" />
+        </span>
+      </template>
+    </UBlogPost>
 
     <!-- Les autres articles : tous en horizontal (liste en une colonne). -->
     <UBlogPosts orientation="vertical">
@@ -69,11 +84,25 @@ useSiteMetadata({
         v-for="(article, i) in rest"
         :key="i"
         :title="article.title"
-        :description="article.description"
+        :badge="article.badge"
         :date="article.date"
         :image="article.image"
         :to="article.to"
-        orientation="horizontal" />
+        orientation="horizontal"
+        class="group">
+        <template #description>
+          <span v-if="article.description" class="block text-muted">
+            {{ article.description }}
+          </span>
+          <span
+            class="mt-3 flex items-center gap-1 text-sm font-medium text-primary">
+            Lire l'article
+            <UIcon
+              name="i-lucide-arrow-right"
+              class="size-4 transition-transform group-hover:translate-x-1" />
+          </span>
+        </template>
+      </UBlogPost>
     </UBlogPosts>
   </div>
 </template>

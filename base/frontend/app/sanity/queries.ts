@@ -155,6 +155,7 @@ export const settingsQuery = defineQuery(/* groq */ `
 			"logoFooter": logoFooter.asset->url,
 			"favicon": favicon.asset->url,
 			socialLinks,
+			shareNetworks,
 			cookieConsent,
 			analytics,
 			blog,

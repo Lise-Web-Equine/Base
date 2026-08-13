@@ -1,3 +1,4 @@
+import { stegaClean } from "@sanity/client/stega";
 import { settingsQuery } from "~/sanity/queries";
 
 /**
@@ -8,14 +9,14 @@ import { settingsQuery } from "~/sanity/queries";
  * - `label`   : nom affiché sur le site (« Blog » ou « Actualités »).
  *
  * Utilisé par la page liste, la page article et le menu d'en-tête pour afficher
- * la rubrique et 404 les pages `/posts` lorsque le blog est désactivé.
+ * la rubrique et 404 les pages `/articles` lorsque le blog est désactivé.
  */
 export function useBlog() {
   const { data: settings } = useSanityQuery<SettingsQueryResult>(settingsQuery);
 
   const enabled = computed(() => settings.value?.blog?.enabled === true);
   const label = computed(() =>
-    settings.value?.blog?.label === "actualites" ? "Actualités" : "Blog"
+    stegaClean(settings.value?.blog?.label) === "actualites" ? "Actualités" : "Blog"
   );
 
   return { enabled, label };

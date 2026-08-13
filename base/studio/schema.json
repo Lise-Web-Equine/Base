@@ -3385,6 +3385,16 @@
         },
         "optional": true
       },
+      "shareNetworks": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "string"
+          }
+        },
+        "optional": true
+      },
       "socialLinks": {
         "type": "objectAttribute",
         "value": {
@@ -3510,6 +3520,13 @@
                 "of": {
                   "type": "string"
                 }
+              },
+              "optional": true
+            },
+            "showContact": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "boolean"
               },
               "optional": true
             }
