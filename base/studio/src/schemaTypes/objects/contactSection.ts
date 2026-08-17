@@ -16,17 +16,33 @@ export const contactSection = defineType({
   icon: EnvelopeIcon,
   fields: [
     defineField({
+      name: 'showHeader',
+      title: 'Afficher l’en-tête',
+      type: 'boolean',
+      description:
+        'Affiche le sur-titre, le titre et l’introduction au-dessus du formulaire. À désactiver quand la section est placée sur une page qui a déjà son propre en-tête (ex: la page Contact).',
+      initialValue: true,
+    }),
+    defineField({
       name: 'eyebrow',
       title: 'Sur-titre',
       type: 'string',
       description: 'Petit texte affiché au-dessus du titre (optionnel).',
+      hidden: ({parent}) => parent?.showHeader === false,
     }),
     defineField({
       name: 'heading',
       title: 'Titre',
       type: 'string',
       initialValue: 'Contactez-nous',
-      validation: (Rule) => Rule.required(),
+      hidden: ({parent}) => parent?.showHeader === false,
+      validation: (Rule) =>
+        Rule.custom((value, context: any) => {
+          if (context.parent?.showHeader !== false && !value) {
+            return 'Un titre est requis lorsque l’en-tête est affiché.'
+          }
+          return true
+        }),
     }),
     defineField({
       name: 'intro',
@@ -34,6 +50,7 @@ export const contactSection = defineType({
       type: 'text',
       rows: 3,
       description: 'Texte affiché au-dessus du formulaire (optionnel).',
+      hidden: ({parent}) => parent?.showHeader === false,
     }),
     defineField({
       name: 'submitLabel',

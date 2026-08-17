@@ -19,5 +19,22 @@ export default defineAppConfig({
       error: "cerror",
       neutral: "gray",
     },
+    // Variantes de fond du bloc <UPageCTA> alignées sur les tokens du thème :
+    //  - solid   → fond « sombre » du thème (surface) ;
+    //  - soft    → fond « clair » du thème (light) ;
+    //  - subtle  → fond clair + bordure ;
+    //  - outline → bordure seule (fond transparent).
+    // Ces classes fusionnent avec le thème Nuxt UI (le `bg-*` remplace le défaut,
+    // le `ring` du thème fournit la bordure pour subtle/outline).
+    pageCTA: {
+      variants: {
+        variant: {
+          solid: {root: "bg-surface"},
+          soft: {root: "bg-light"},
+          subtle: {root: "bg-light"},
+          outline: {root: "bg-transparent"},
+        },
+      },
+    },
   },
 });

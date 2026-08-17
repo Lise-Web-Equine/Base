@@ -8,13 +8,20 @@ defineProps({
     type: Object as PropType<ContactSection>,
     required: true,
   },
+  // Position dans la page (fournie par PageBuilder), non utilisée ici.
+  index: {
+    type: Number,
+    default: 0,
+  },
 });
 </script>
 
 <template>
   <section class="container my-12">
     <div class="mx-auto max-w-2xl">
-      <div class="mb-8 flex flex-col gap-3">
+      <div
+        v-if="block.showHeader !== false"
+        class="mb-8 flex flex-col gap-3">
         <p v-if="block.eyebrow" class="a-eyebrow">
           {{ block.eyebrow }}
         </p>

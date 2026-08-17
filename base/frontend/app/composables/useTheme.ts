@@ -22,9 +22,15 @@ const DEFAULT_THEME = {
   fontDisplay: '"Inter", sans-serif',
   fontBody: '"Inter", sans-serif',
   fontAccent: '"Inter", sans-serif',
+  fontHeadline: '"Inter", sans-serif',
   // Mise en forme (styles atomiques calculés dans main.css).
   typeScale: "1.2",
   headingWeight: "700",
+  headlineWeight: "600",
+  accentWeight: "600",
+  displayCase: "none",
+  accentCase: "uppercase",
+  headlineCase: "none",
   radius: "0.75rem",
   contentWidth: "72ch",
   density: "1",
@@ -72,8 +78,14 @@ export async function useTheme() {
       "--theme-font-display": t?.fontDisplay || DEFAULT_THEME.fontDisplay,
       "--theme-font-body": t?.fontBody || DEFAULT_THEME.fontBody,
       "--theme-font-accent": t?.fontAccent || DEFAULT_THEME.fontAccent,
+      "--theme-font-headline": t?.fontHeadline || DEFAULT_THEME.fontHeadline,
       "--theme-type-scale": t?.typeScale || DEFAULT_THEME.typeScale,
       "--theme-heading-weight": t?.headingWeight || DEFAULT_THEME.headingWeight,
+      "--theme-headline-weight": t?.headlineWeight || DEFAULT_THEME.headlineWeight,
+      "--theme-accent-weight": t?.accentWeight || DEFAULT_THEME.accentWeight,
+      "--theme-display-case": t?.displayCase || DEFAULT_THEME.displayCase,
+      "--theme-accent-case": t?.accentCase || DEFAULT_THEME.accentCase,
+      "--theme-headline-case": t?.headlineCase || DEFAULT_THEME.headlineCase,
       "--theme-radius": t?.radius || DEFAULT_THEME.radius,
       "--theme-content-width": t?.contentWidth || DEFAULT_THEME.contentWidth,
       "--theme-density": t?.density || DEFAULT_THEME.density,
@@ -101,6 +113,7 @@ export async function useTheme() {
       familyOf(t?.fontDisplay),
       familyOf(t?.fontBody),
       familyOf(t?.fontAccent),
+      familyOf(t?.fontHeadline),
     ].filter((f, i, arr) => f && arr.indexOf(f) === i);
     if (!families.length) return "";
     const params = new URLSearchParams();

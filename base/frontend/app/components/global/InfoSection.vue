@@ -4,6 +4,11 @@ defineProps({
     type: Object as PropType<InfoSection>,
     required: true,
   },
+  // Position dans la page (fournie par PageBuilder), non utilisée ici.
+  index: {
+    type: Number,
+    default: 0,
+  },
 });
 </script>
 

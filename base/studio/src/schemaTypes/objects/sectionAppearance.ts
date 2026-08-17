@@ -1,14 +1,16 @@
 import {defineField, defineType} from '@sanity/types'
-import {colorSlotOptions} from '../../colorSlots'
 
 /**
  * Apparence commune d'une section (CŒUR, réutilisable).
  *
- * Décrit le FOND (couleur du thème, ou image + voile) et l'ESPACEMENT vertical.
- * Consommé par `<SectionWrapper>` côté frontend, qui rend le fond en pleine
- * largeur tout en contraignant le contenu à la largeur du site (token
- * `siteMaxWidth`) avec une gouttière responsive. À ajouter comme champ
- * `appearance` (type `sectionAppearance`) dans chaque section.
+ * Décrit le FOND et la LARGEUR d'une section. Consommé par <SectionShell>
+ * côté frontend.
+ *
+ * Fond : uniquement une IMAGE de fond (override), optionnelle. Sans image, la
+ * section est transparente — c'est le fond propre du composant (ex. le
+ * `variant` d'<UPageCTA>) ou du site qui s'affiche. Plus de fond clair/sombre.
+ *
+ * Ajouté automatiquement à chaque section via le helper `defineSection()`.
  */
 export const sectionAppearance = defineType({
   name: 'sectionAppearance',
@@ -17,78 +19,62 @@ export const sectionAppearance = defineType({
   options: {columns: 1},
   fields: [
     defineField({
-      name: 'background',
-      title: 'Fond',
-      type: 'object',
-      options: {columns: 1},
-      fields: [
-        defineField({
-          name: 'type',
-          title: 'Type de fond',
-          type: 'string',
-          initialValue: 'none',
-          options: {
-            list: [
-              {title: 'Aucun', value: 'none'},
-              {title: 'Couleur du thème', value: 'color'},
-              {title: 'Image', value: 'image'},
-            ],
-            layout: 'radio',
-          },
-        }),
-        defineField({
-          name: 'colorSlot',
-          title: 'Couleur',
-          type: 'string',
-          description: 'Couleur de fond, choisie parmi les couleurs du thème.',
-          initialValue: 'surface',
-          options: {list: colorSlotOptions()},
-          hidden: ({parent}) => parent?.type !== 'color',
-        }),
-        defineField({
-          name: 'image',
-          title: 'Image de fond',
-          type: 'customImage',
-          hidden: ({parent}) => parent?.type !== 'image',
-        }),
-        defineField({
-          name: 'overlay',
-          title: 'Voile (overlay)',
-          type: 'string',
-          description: 'Voile posé sur l\u2019image pour améliorer la lisibilité du texte.',
-          initialValue: 'dark',
-          options: {
-            list: [
-              {title: 'Aucun', value: 'none'},
-              {title: 'Sombre', value: 'dark'},
-              {title: 'Clair', value: 'light'},
-            ],
-            layout: 'radio',
-          },
-          hidden: ({parent}) => parent?.type !== 'image',
-        }),
-        defineField({
-          name: 'overlayOpacity',
-          title: 'Opacité du voile (%)',
-          type: 'number',
-          initialValue: 40,
-          validation: (Rule) => Rule.min(0).max(100),
-          hidden: ({parent}) => parent?.type !== 'image' || parent?.overlay === 'none',
-        }),
-      ],
+      name: 'image',
+      title: 'Image de fond',
+      type: 'customImage',
+      description:
+        'Optionnel. Si renseignée, elle sert de fond à la section (override). Sinon, fond transparent.',
+      options: {collapsible: true, collapsed: true},
     }),
     defineField({
-      name: 'spacing',
-      title: 'Espacement vertical',
+      name: 'overlayOpacity',
+      title: 'Opacité du voile (%)',
+      type: 'number',
+      description: 'Voile sombre posé sur l’image pour améliorer la lisibilité du texte.',
+      initialValue: 40,
+      validation: (Rule) => Rule.min(0).max(100),
+      hidden: ({parent}) => !parent?.image?.asset,
+    }),
+    defineField({
+      name: 'lightText',
+      title: 'Texte clair',
+      type: 'boolean',
+      description:
+        'Active un texte clair (pour une image / un voile sombre). À désactiver si l’image est claire et nécessite un texte foncé.',
+      initialValue: true,
+      hidden: ({parent}) => !parent?.image?.asset,
+    }),
+    defineField({
+      name: 'imageRatio',
+      title: 'Format',
       type: 'string',
-      description: 'Marge haute/basse de la section (module le rythme global du thème).',
-      initialValue: 'md',
+      description:
+        'Ratio d’affichage du fond image. « Auto » suit la hauteur du contenu ; un ratio fixe recadre l’image (point focal respecté).',
+      initialValue: 'auto',
       options: {
         list: [
-          {title: 'Aucun', value: 'none'},
-          {title: 'Compact', value: 'sm'},
-          {title: 'Normal', value: 'md'},
-          {title: 'Large', value: 'lg'},
+          {title: 'Auto (hauteur du contenu)', value: 'auto'},
+          {title: 'Panoramique 21:9', value: '21:9'},
+          {title: 'Large 16:9', value: '16:9'},
+          {title: 'Paysage 3:2', value: '3:2'},
+          {title: 'Standard 4:3', value: '4:3'},
+          {title: 'Carré 1:1', value: '1:1'},
+        ],
+        layout: 'dropdown',
+      },
+      hidden: ({parent}) => !parent?.image?.asset,
+    }),
+    defineField({
+      name: 'width',
+      title: 'Largeur',
+      type: 'string',
+      description:
+        'Contenu contraint à la largeur du site (Container) ou étendu sur toute la largeur.',
+      initialValue: 'container',
+      options: {
+        list: [
+          {title: 'Container', value: 'container'},
+          {title: 'Pleine largeur', value: 'full'},
         ],
         layout: 'radio',
       },

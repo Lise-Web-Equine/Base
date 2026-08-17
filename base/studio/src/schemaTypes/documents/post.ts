@@ -17,6 +17,7 @@ export const post = defineType({
     {
       name: 'content',
       title: 'Contenu',
+      default: true,
     },
     {
       name: 'seo',

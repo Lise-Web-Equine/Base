@@ -189,7 +189,7 @@ export const legalTexts = defineType({
   type: 'document',
   icon: DocumentTextIcon,
   groups: [
-    {name: 'editor', title: 'Informations éditeur'},
+    {name: 'editor', title: 'Informations éditeur', default: true},
     {name: 'host', title: 'Hébergeur'},
     {name: 'legalNotice', title: 'Mentions légales'},
     {name: 'privacy', title: 'Confidentialité'},

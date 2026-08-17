@@ -60,6 +60,15 @@ const coreSectionProjections = /* groq */ `
 // SEUL bloc à modifier pour brancher une nouvelle section.
 const projectSectionProjections = /* groq */ ``;
 
+// Projection de l'objet `pageHeader` : ses liens (boutons) sont résolus
+// pour que <PageHeader>/<UPageHeader> reçoive des cibles prêtes à l'emploi.
+const pageHeaderFields = /* groq */ `
+	pageHeader{
+		...,
+		links[]${buttonFields}
+	}
+`;
+
 // Projection complète du champ `pageBuilder`.
 const pageBuilderFields = /* groq */ `
 	"pageBuilder": pageBuilder[]{
@@ -98,6 +107,7 @@ export const postQuery = defineQuery(/* groq */ `
 export const pageQuery = defineQuery(/* groq */ `
 		*[_type == "page" && defined(slug.current) && slug.current == $slug][0]{
 			...,
+			${pageHeaderFields},
 			${pageBuilderFields}
 		}`);
 
@@ -131,8 +141,14 @@ export const themeSettingsQuery = defineQuery(/* groq */ `
 			fontDisplay,
 			fontBody,
 			fontAccent,
+			fontHeadline,
 			typeScale,
 			headingWeight,
+			headlineWeight,
+			accentWeight,
+			displayCase,
+			accentCase,
+			headlineCase,
 			radius,
 			contentWidth,
 			density,

@@ -1,9 +1,12 @@
 <script setup lang="ts">
 /**
  * Bouton réutilisable rendu à partir de l'objet Sanity `button`
- * (label + link + variant). Fin wrapper autour de <UButton> (Nuxt UI) : les
- * couleurs viennent du thème (pont de couleurs), l'arrondi suit --ui-radius.
+ * (label + link + color + variant). Fin wrapper autour de <UButton> (Nuxt UI) :
+ * `color` (primary/secondary/neutral) et `variant` (solid/outline/subtle/soft)
+ * sont passés tels quels, donc appliquent le thème du site.
  */
+import type { ButtonProps } from "@nuxt/ui";
+import { stegaClean } from "@sanity/client/stega";
 import { linkResolver } from "~/lib/utils";
 
 const props = defineProps({
@@ -19,12 +22,12 @@ const target = computed(() =>
   props.button?.link?.openInNewTab ? "_blank" : undefined
 );
 
-// Mappe le variant Sanity vers les props Nuxt UI (couleur + style).
-const color = computed<"primary" | "secondary">(() =>
-  props.button?.variant === "secondary" ? "secondary" : "primary"
+// Style Sanity → props <UButton> (le thème s'applique via `color`).
+const color = computed(
+  () => (stegaClean(props.button?.color) || "primary") as ButtonProps["color"]
 );
-const variant = computed<"solid" | "outline">(() =>
-  props.button?.variant === "outline" ? "outline" : "solid"
+const variant = computed(
+  () => (stegaClean(props.button?.variant) || "solid") as ButtonProps["variant"]
 );
 </script>
 

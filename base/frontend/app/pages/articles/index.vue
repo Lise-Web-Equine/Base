@@ -50,9 +50,10 @@ useSiteMetadata({
 </script>
 
 <template>
-  <div class="container my-12 lg:my-24">
-    <h1 class="a-h1 mb-8">{{ label }}</h1>
+  <div class="my-12 lg:my-24">
+    <PageHeader :title="label" />
 
+    <div class="container mt-8 lg:mt-12">
     <!-- Dernier article publié, mis en avant : UBlogPost horizontal, variant soft. -->
     <UBlogPost
       v-if="featured"
@@ -104,5 +105,6 @@ useSiteMetadata({
         </template>
       </UBlogPost>
     </UBlogPosts>
+    </div>
   </div>
 </template>

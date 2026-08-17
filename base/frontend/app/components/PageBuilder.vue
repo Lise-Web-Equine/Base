@@ -16,11 +16,12 @@ const isDev = import.meta.dev;
 </script>
 
 <template>
-  <template v-for="block in blocks" :key="block._key">
+  <template v-for="(block, i) in blocks" :key="block._key">
     <component
       v-if="sectionRegistry[block._type]"
       :is="resolveComponent(sectionRegistry[block._type]!)"
       :block="block"
+      :index="i"
     />
     <div
       v-else-if="isDev"

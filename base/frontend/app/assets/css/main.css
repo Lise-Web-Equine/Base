@@ -4,9 +4,12 @@
 @import "./project.css";
 
 /* Les composants Nuxt UI suivent l'arrondi défini dans le Studio (themeSettings
-   → --theme-radius). Ainsi la forme s'adapte à la charte de chaque client. */
+   → --theme-radius). Ainsi la forme s'adapte à la charte de chaque client.
+   La largeur des conteneurs Nuxt UI (--ui-container) est alignée sur la largeur
+   du site (token `siteMaxWidth` → --site-max) : « Container » = largeur du site. */
 :root {
   --ui-radius: var(--theme-radius, 0.75rem);
+  --ui-container: var(--site-max, 1280px);
 }
 
 @plugin "@tailwindcss/typography";
@@ -234,6 +237,7 @@
   --font-display: var(--theme-font-display, "Inter", "sans-serif");
   --font-sans: var(--theme-font-body, "Inter", "sans-serif");
   --font-accent: var(--theme-font-accent, "Inter", "sans-serif");
+  --font-headline: var(--theme-font-headline, "Inter", "sans-serif");
 
   --animate-gradient: gradient 2s ease-in-out infinite;
   @keyframes gradient {
@@ -325,6 +329,12 @@
   --a-radius: var(--theme-radius, 0.75rem);
   --a-content-width: var(--theme-content-width, 72ch);
   --a-heading-weight: var(--theme-heading-weight, 700);
+  --a-headline-weight: var(--theme-headline-weight, 600);
+  --a-accent-weight: var(--theme-accent-weight, 600);
+  /* Casse (text-transform) par famille : titres, accent, en-tête. */
+  --a-display-case: var(--theme-display-case, none);
+  --a-accent-case: var(--theme-accent-case, uppercase);
+  --a-headline-case: var(--theme-headline-case, none);
   --a-density: var(--theme-density, 1);
 
   /* Layout global : largeur max du site (token Sanity), gouttière latérale fluide
@@ -339,9 +349,21 @@
     font-family: var(--font-accent);
     color: var(--color-primary);
     font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
+    font-weight: var(--a-accent-weight);
+    text-transform: var(--a-accent-case);
     letter-spacing: 0.06em;
+  }
+  .a-headline {
+    font-family: var(--font-headline);
+    text-transform: var(--a-headline-case);
+  }
+  /* Casse des titres (pilotée par le thème : Titres → Style). */
+  .a-display,
+  .a-h1,
+  .a-h2,
+  .a-h3,
+  .a-h4 {
+    text-transform: var(--a-display-case);
   }
   .a-display {
     font-family: var(--font-display);

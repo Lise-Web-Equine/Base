@@ -3,7 +3,7 @@
  * Learn more: https://www.sanity.io/docs/configuration
  */
 
-import {defineConfig} from 'sanity'
+import {defineConfig, isObjectInputProps} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './src/schemaTypes'
@@ -150,5 +150,19 @@ export default defineConfig({
   // Schema configuration, imported from ./src/schemaTypes/index.ts
   schema: {
     types: schemaTypes,
+  },
+
+  // Masque l'onglet « Tous les champs » (groupe `all-fields`) ajouté
+  // automatiquement par Sanity dès qu'un schéma définit des groupes.
+  form: {
+    components: {
+      input: (props) => {
+        if (isObjectInputProps(props) && props.groups?.[0]?.name === 'all-fields') {
+          const groups = props.groups as {name: string}[]
+          groups.shift()
+        }
+        return props.renderDefault(props)
+      },
+    },
   },
 })

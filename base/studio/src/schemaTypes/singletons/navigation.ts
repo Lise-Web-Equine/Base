@@ -18,7 +18,7 @@ export const navigation = defineType({
   type: 'document',
   icon: MenuIcon,
   groups: [
-    {name: 'header', title: 'En-tête'},
+    {name: 'header', title: 'En-tête', default: true},
     {name: 'footer', title: 'Pied de page'},
   ],
   fields: [

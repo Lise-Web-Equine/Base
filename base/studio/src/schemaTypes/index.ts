@@ -7,6 +7,7 @@ import {navigation} from './singletons/navigation'
 import {redirects} from './singletons/redirects'
 import {link} from './objects/link'
 import {button} from './objects/button'
+import {pageHeader} from './objects/pageHeader'
 import {customImage} from './objects/customImage'
 import {blockContent} from './objects/blockContent'
 import {sectionAppearance} from './objects/sectionAppearance'
@@ -19,7 +20,7 @@ import {projectSchemaTypes} from './project'
 // --- CŒUR (réutilisable par tous les projets) ---
 const coreSingletons = [settings, themeSettings, homePage, navigation, redirects]
 const coreDocuments = [page, post]
-const coreObjects = [blockContent, link, button, customImage, sectionAppearance]
+const coreObjects = [blockContent, link, button, pageHeader, customImage, sectionAppearance]
 
 export const schemaTypes = [
   ...coreSingletons,

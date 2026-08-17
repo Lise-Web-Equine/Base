@@ -20,7 +20,6 @@ export const link = defineType({
       title: 'Type de lien',
       type: 'string',
       description: 'Choisissez vers quoi pointe ce lien.',
-      initialValue: 'page',
       options: {
         list: [
           {title: 'Page interne', value: 'page'},

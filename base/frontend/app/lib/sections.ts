@@ -14,7 +14,6 @@ const coreSections: Record<string, string> = {
   callToAction: "CallToAction",
   infoSection: "InfoSection",
   contactSection: "ContactSection",
-  contactDetails: "ContactDetails",
   faqSection: "FaqSection",
   gallery: "GallerySection",
 };

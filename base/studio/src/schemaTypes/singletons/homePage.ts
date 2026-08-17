@@ -15,7 +15,7 @@ export const homePage = defineType({
   type: 'document',
   icon: HomeIcon,
   groups: [
-    {name: 'content', title: 'Contenu'},
+    {name: 'content', title: 'Contenu', default: true},
     {name: 'seo', title: 'SEO'},
   ],
   fields: [

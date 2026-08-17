@@ -1,7 +1,6 @@
 import {callToAction} from '../schemaTypes/objects/callToAction'
 import {infoSection} from '../schemaTypes/objects/infoSection'
 import {contactSection} from '../schemaTypes/objects/contactSection'
-import {contactDetails} from '../schemaTypes/objects/contactDetails'
 import {faqSection} from '../schemaTypes/objects/faqSection'
 import {gallery} from '../schemaTypes/objects/gallery'
 import {projectSections} from './project'
@@ -12,7 +11,7 @@ import {projectSections} from './project'
  * CŒUR (Core) : sections génériques communes à tous les projets.
  * Ne pas modifier ici pour un client — utiliser `project.ts`.
  */
-const coreSections = [callToAction, infoSection, contactSection, contactDetails, faqSection, gallery]
+const coreSections = [callToAction, infoSection, contactSection, faqSection, gallery]
 
 /**
  * Toutes les sections disponibles dans le Page Builder

@@ -11,6 +11,11 @@ const props = defineProps({
     type: Object as PropType<FaqSection>,
     required: true,
   },
+  // Position dans la page (fournie par PageBuilder), non utilisée ici.
+  index: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const items = computed(() => props.block?.items ?? []);

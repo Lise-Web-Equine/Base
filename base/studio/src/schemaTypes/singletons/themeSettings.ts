@@ -23,16 +23,59 @@ const colorField = (name: string, title: string, description: string, initialVal
     validation: (rule) => rule.required(),
   })
 
-const fontField = (name: string, title: string, description: string) =>
+const fontField = (name: string, description: string, fieldset: string) =>
   defineField({
     name,
-    title,
+    title: 'Police',
     type: 'string',
     description,
     group: 'typography',
+    fieldset,
     // Input personnalisé : recherche Google Fonts + aperçu (voir FontInput).
     components: {input: FontInput},
     initialValue: '"Inter", sans-serif',
+    validation: (rule) => rule.required(),
+  })
+
+// Échelle d'épaisseurs (graisse) commune, de l'ultra-léger à l'extra-gras.
+const WEIGHT_OPTIONS = [
+  {title: 'Ultra-léger', value: '100'},
+  {title: 'Léger', value: '300'},
+  {title: 'Normal', value: '400'},
+  {title: 'Medium', value: '500'},
+  {title: 'Semi-gras', value: '600'},
+  {title: 'Gras', value: '700'},
+  {title: 'Extra-gras', value: '800'},
+]
+
+// Casse (text-transform) : rendu normal, tout en majuscules ou tout en minuscules.
+const CASE_OPTIONS = [
+  {title: 'Normale', value: 'none'},
+  {title: 'Majuscules', value: 'uppercase'},
+  {title: 'Minuscules', value: 'lowercase'},
+]
+
+const weightField = (name: string, fieldset: string, initialValue: string) =>
+  defineField({
+    name,
+    title: 'Épaisseur',
+    type: 'string',
+    group: 'typography',
+    fieldset,
+    options: {list: WEIGHT_OPTIONS, layout: 'dropdown'},
+    initialValue,
+    validation: (rule) => rule.required(),
+  })
+
+const caseField = (name: string, fieldset: string, initialValue: string) =>
+  defineField({
+    name,
+    title: 'Style',
+    type: 'string',
+    group: 'typography',
+    fieldset,
+    options: {list: CASE_OPTIONS, layout: 'dropdown'},
+    initialValue,
     validation: (rule) => rule.required(),
   })
 
@@ -69,21 +112,41 @@ export const themeSettings = defineType({
     {name: 'typography', title: 'Typographie'},
     {name: 'layout', title: 'Mise en forme'},
   ],
+  // Regroupement visuel de la typographie : chaque famille (Titres, Texte,
+  // Accent, En-tête) réunit Police → Épaisseur → Style.
+  fieldsets: [
+    {name: 'titres', title: 'Titres'},
+    {name: 'texte', title: 'Texte'},
+    {name: 'accent', title: 'Accent'},
+    {name: 'headline', title: 'En-tête'},
+  ],
   fields: [
     ...COLOR_SLOTS.map((slot) =>
       colorField(slot.name, slot.title, slot.description, slot.initialValue),
     ),
-    fontField('fontDisplay', 'Police des Titres', 'Famille de police utilisée pour les titres.'),
+
+    // --- Titres ---
+    fontField('fontDisplay', 'Famille de police utilisée pour les titres.', 'titres'),
+    weightField('headingWeight', 'titres', '700'),
+    caseField('displayCase', 'titres', 'none'),
+
+    // --- Texte ---
+    fontField('fontBody', 'Famille de police utilisée pour le texte courant.', 'texte'),
+
+    // --- Accent ---
+    fontField('fontAccent', "Famille de police utilisée pour les éléments d'accent.", 'accent'),
+    weightField('accentWeight', 'accent', '600'),
+    caseField('accentCase', 'accent', 'uppercase'),
+
+    // --- En-tête ---
     fontField(
-      'fontBody',
-      'Police du Texte',
-      'Famille de police utilisée pour le texte courant.',
+      'fontHeadline',
+      'Famille de police utilisée pour les en-têtes (sur-titres) de section.',
+      'headline',
     ),
-    fontField(
-      'fontAccent',
-      "Police d'Accent",
-      "Famille de police utilisée pour les éléments d'accent.",
-    ),
+    weightField('headlineWeight', 'headline', '600'),
+    caseField('headlineCase', 'headline', 'none'),
+
     layoutField(
       'typeScale',
       'Échelle typographique',
@@ -95,18 +158,6 @@ export const themeSettings = defineType({
         {title: 'Spacieuse', value: '1.333'},
       ],
       '1.2',
-    ),
-    layoutField(
-      'headingWeight',
-      'Graisse des titres',
-      'Épaisseur des titres.',
-      [
-        {title: 'Medium', value: '500'},
-        {title: 'Semi-bold', value: '600'},
-        {title: 'Bold', value: '700'},
-        {title: 'Extra-bold', value: '800'},
-      ],
-      '700',
     ),
     layoutField(
       'radius',

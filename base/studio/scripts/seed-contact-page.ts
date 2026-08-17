@@ -4,9 +4,8 @@
  * Idempotent : si une page de slug `contact` existe déjà, le script ne fait rien
  * (aucun écrasement des modifications du client). Sûr à ré-exécuter.
  *
- * La page est pré-remplie avec les 3 briques Cœur :
+ * La page est pré-remplie avec les 2 briques Cœur :
  *   - contactSection  (formulaire)
- *   - contactDetails  (coordonnées, lues depuis "Réglages du site")
  *   - faqSection      (quelques questions d'exemple)
  *
  * Utilisation (depuis studio/) :
@@ -61,8 +60,11 @@ async function run() {
     _type: 'page',
     name: 'Contact',
     slug: {_type: 'slug', current: 'contact'},
-    heading: 'Contact',
-    subheading: 'Une question ? Écrivez-nous, nous vous répondrons rapidement.',
+    pageHeader: {
+      _type: 'pageHeader',
+      title: 'Contact',
+      description: 'Une question ? Écrivez-nous, nous vous répondrons rapidement.',
+    },
     seoTitle: 'Contact',
     seoDescription: 'Contactez-nous : formulaire, coordonnées et questions fréquentes.',
     noIndex: false,
@@ -75,15 +77,6 @@ async function run() {
         submitLabel: 'Envoyer',
         successMessage:
           'Merci, votre message a bien été envoyé. Nous vous répondrons rapidement.',
-      },
-      {
-        _key: key(),
-        _type: 'contactDetails',
-        heading: 'Nos coordonnées',
-        showEmail: true,
-        showPhone: true,
-        showAddress: true,
-        showSocial: true,
       },
       {
         _key: key(),
@@ -100,7 +93,7 @@ async function run() {
             _key: key(),
             _type: 'faqItem',
             question: 'Où êtes-vous situés ?',
-            answer: [paragraph('Retrouvez notre adresse complète dans la section « Nos coordonnées » ci-dessus.')],
+            answer: [paragraph('Retrouvez notre adresse complète en bas de page, dans le pied de page du site.')],
           },
         ],
       },

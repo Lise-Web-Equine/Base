@@ -16,6 +16,7 @@ export const page = defineType({
     {
       name: 'content',
       title: 'Contenu',
+      default: true,
     },
     {
       name: 'seo',
@@ -46,16 +47,11 @@ export const page = defineType({
       group: 'content',
     }),
     defineField({
-      name: 'heading',
-      title: 'Titre affiché',
-      type: 'string',
+      name: 'pageHeader',
+      title: 'En-tête de la page',
+      type: 'pageHeader',
+      description: 'Titre affiché, en-tête, description et liens affichés en haut de la page.',
       validation: (Rule) => Rule.required(),
-      group: 'content',
-    }),
-    defineField({
-      name: 'subheading',
-      title: 'Sous-titre',
-      type: 'string',
       group: 'content',
     }),
     defineField({
@@ -105,4 +101,16 @@ export const page = defineType({
       group: 'seo',
     }),
   ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'pageHeader.title',
+    },
+    prepare({title, subtitle}) {
+      return {
+        title: title || 'Page sans nom',
+        subtitle: subtitle || undefined,
+      }
+    },
+  },
 })
