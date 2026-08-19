@@ -1,120 +1,168 @@
 <script setup lang="ts">
-import {
-  settingsQuery,
-  navigationQuery,
-  contactPageQuery,
-} from "~/sanity/queries";
+import type { NavigationMenuItem } from "@nuxt/ui";
+import { stegaClean } from "@sanity/client/stega";
+import { settingsQuery } from "~/sanity/queries";
 
 const { data: settings } = useSanityQuery<SettingsQueryResult>(settingsQuery);
-const { data: navigation } =
-  useSanityQuery<NavigationQueryResult>(navigationQuery);
 
-const menu = computed(() => navigation.value?.headerMenu ?? []);
+// Aspect sombre de l'en-tête + couleur de nav (logique centralisée, cf.
+// useSurfaceDark) : fond sombre → classe `.dark` (texte clair) + liens neutres.
+const { darkClass, navColor } = useSurfaceDark("header");
 
-// Rubrique blog/actualités : lien ajouté au menu quand elle est activée.
-const { enabled: blogEnabled, label: blogLabel } = useBlog();
+// Menu principal partagé avec le pied de page (source unique, cf. useMainMenu).
+const { navigation, menuItems, mapItem, allItems, alignOf, toTarget } =
+  useMainMenu();
 
-// Page Contact : lien ajouté à la fin du menu seulement si la page existe.
-const { data: contactPage } =
-  useSanityQuery<ContactPageQueryResult>(contactPageQuery);
-const contactLabel = computed(() => contactPage.value?.name || "Contact");
+// --- Boutons d'action (contenu Sanity : Navigation → Boutons d'en-tête) ----
+const buttons = computed(() =>
+  (navigation.value?.headerButtons ?? [])
+    .filter((b) => b?.label && b?.link)
+    .map((b) => ({
+      key: b._key,
+      label: b.label ?? "",
+      to: toTarget(b.link),
+      color: (stegaClean(b.color) as string) || "primary",
+      variant: (stegaClean(b.variant) as string) || "solid",
+      target: b.link?.openInNewTab ? "_blank" : undefined,
+    }))
+);
 
-// Gestion des sous-menus déroulants (un seul ouvert à la fois).
-const openKey = ref<string | null>(null);
-function toggle(key: string) {
-  openKey.value = openKey.value === key ? null : key;
+// --- Disposition (Navigation → En-tête → Disposition des colonnes) ---------
+// Contenu de chaque colonne de <UHeader>. La zone centrale (default) est celle
+// que UHeader replie dans le menu mobile ; les zones gauche/droite restent
+// visibles sur grand écran et sont masquées sur mobile (relais par le toggle).
+type Slot = "logo" | "nav" | "buttons" | "none";
+const cols = computed(() => ({
+  left: (stegaClean(navigation.value?.headerColLeft) as Slot) || "logo",
+  center: (stegaClean(navigation.value?.headerColCenter) as Slot) || "nav",
+  right: (stegaClean(navigation.value?.headerColRight) as Slot) || "buttons",
+}));
+
+// La nav est-elle demandée à la fois à gauche ET à droite ? Si oui, on répartit
+// les liens selon leur champ « Alignement » ; sinon une seule nav affiche tout.
+const splitNav = computed(
+  () => cols.value.left === "nav" && cols.value.right === "nav"
+);
+// Disposition « centrée » : le logo occupe la colonne centrale. Les navs
+// latérales se collent alors aux bords (gauche → début, droite → fin) pour
+// garder le logo réellement au centre.
+const centered = computed(() => cols.value.center === "logo");
+
+function navItems(column: "left" | "center" | "right"): NavigationMenuItem[] {
+  if (!splitNav.value) return allItems.value;
+  // Nav des deux côtés : on répartit le menu configuré selon l'alignement.
+  // Sans menu configuré (menu par défaut), pas d'alignement → tout à gauche.
+  if (!menuItems.value.length) {
+    return column === "left" ? allItems.value : [];
+  }
+  if (column === "left") {
+    return menuItems.value.filter((i) => alignOf(i) === "gauche").map(mapItem);
+  }
+  // Droite (et centre, cas rare) : les liens marqués « droite ».
+  return menuItems.value.filter((i) => alignOf(i) === "droite").map(mapItem);
 }
-function close() {
-  openKey.value = null;
-}
-
-// Ferme le menu ouvert lors d'un changement de page.
-const router = useRouter();
-router.afterEach(() => close());
 </script>
 
 <template>
-  <header
-    class="fixed z-50 h-24 inset-0 bg-background/80 flex items-center backdrop-blur-lg"
-  >
-    <div class="container py-6 sm:px-6">
-      <div class="flex items-center justify-between gap-5">
-        <NuxtLink class="flex items-center gap-2" to="/">
-          <span class="text-2xl pl-2 font-semibold">
-            {{ settings?.title }}
-          </span>
-        </NuxtLink>
-
-        <nav
-          v-if="menu.length || blogEnabled || contactPage"
-          class="flex items-center gap-6">
-          <template v-for="item in menu" :key="item._key">
-            <!-- Entrée avec sous-menu déroulant -->
-            <div
-              v-if="item.children && item.children.length"
-              class="relative"
-              @mouseenter="openKey = item._key"
-              @mouseleave="close"
-            >
-              <button
-                type="button"
-                class="flex items-center gap-1 text-foreground hover:text-primary transition-colors"
-                :aria-expanded="openKey === item._key"
-                aria-haspopup="true"
-                @click="toggle(item._key)"
-              >
-                {{ item.label }}
-                <span
-                  class="transition-transform"
-                  :class="{ 'rotate-180': openKey === item._key }"
-                  aria-hidden="true"
-                  >&#9662;</span
-                >
-              </button>
-              <div
-                v-show="openKey === item._key"
-                class="absolute left-0 top-full min-w-48 rounded-lg border border-border bg-light p-2 shadow-lg"
-              >
-                <ResolvedLink
-                  v-for="child in item.children"
-                  :key="child._key"
-                  :link="child.link"
-                  class-name="block rounded-md px-3 py-2 text-foreground hover:bg-background hover:text-primary transition-colors"
-                >
-                  {{ child.label }}
-                </ResolvedLink>
-              </div>
-            </div>
-
-            <!-- Entrée simple -->
-            <ResolvedLink
-              v-else-if="item.link"
-              :link="item.link"
-              class-name="text-foreground hover:text-primary transition-colors"
-            >
-              {{ item.label }}
-            </ResolvedLink>
-          </template>
-
-          <!-- Lien vers la rubrique blog/actualités (si activée). -->
-          <NuxtLink
-            v-if="blogEnabled"
-            to="/articles"
-            class="text-foreground hover:text-primary transition-colors"
-          >
-            {{ blogLabel }}
-          </NuxtLink>
-
-          <!-- Lien vers la page Contact (à la fin, seulement si elle existe). -->
-          <NuxtLink
-            v-if="contactPage"
-            to="/contact"
-            class="text-foreground hover:text-primary transition-colors"
-          >
-            {{ contactLabel }}
-          </NuxtLink>
-        </nav>
+  <UHeader :class="['bg-header', darkClass]">
+    <!-- Zone gauche : visible sur mobile (logo). -->
+    <template #left>
+      <!-- Logo « mobile » quand le logo n'occupe pas déjà cette colonne. -->
+      <NuxtLink
+        v-if="cols.left !== 'logo'"
+        to="/"
+        :aria-label="settings?.title || ''"
+        class="flex items-center lg:hidden">
+        <span class="text-2xl font-semibold">{{ settings?.title }}</span>
+      </NuxtLink>
+      <!-- Contenu desktop de la colonne gauche. -->
+      <NuxtLink
+        v-if="cols.left === 'logo'"
+        to="/"
+        :aria-label="settings?.title || ''"
+        class="flex items-center">
+        <span class="text-2xl font-semibold">{{ settings?.title }}</span>
+      </NuxtLink>
+      <UNavigationMenu
+        v-else-if="cols.left === 'nav'"
+        :items="navItems('left')"
+        :color="navColor"
+        :class="['hidden lg:flex', centered && 'w-full justify-start']" />
+      <div v-else-if="cols.left === 'buttons'" class="hidden items-center gap-2 lg:flex">
+        <UButton
+          v-for="b in buttons"
+          :key="b.key"
+          :to="b.to"
+          :label="b.label"
+          :color="b.color"
+          :variant="b.variant"
+          :target="b.target" />
       </div>
+    </template>
+
+    <!-- Zone centrale (default) : repliée dans le menu hamburger sur mobile. -->
+    <NuxtLink
+      v-if="cols.center === 'logo'"
+      to="/"
+      :aria-label="settings?.title || ''"
+      class="flex items-center">
+      <span class="text-2xl font-semibold">{{ settings?.title }}</span>
+    </NuxtLink>
+    <UNavigationMenu
+      v-else-if="cols.center === 'nav'"
+      :items="navItems('center')"
+      :color="navColor" />
+    <div v-else-if="cols.center === 'buttons'" class="flex items-center gap-2">
+      <UButton
+        v-for="b in buttons"
+        :key="b.key"
+        :to="b.to"
+        :label="b.label"
+        :color="b.color"
+        :variant="b.variant"
+        :target="b.target" />
     </div>
-  </header>
+
+    <!-- Zone droite : masquée sur mobile (le toggle prend le relais). -->
+    <template #right>
+      <NuxtLink
+        v-if="cols.right === 'logo'"
+        to="/"
+        :aria-label="settings?.title || ''"
+        class="hidden items-center lg:flex">
+        <span class="text-2xl font-semibold">{{ settings?.title }}</span>
+      </NuxtLink>
+      <UNavigationMenu
+        v-else-if="cols.right === 'nav'"
+        :items="navItems('right')"
+        :color="navColor"
+        :class="['hidden lg:flex', centered && 'w-full justify-end']" />
+      <div v-else-if="cols.right === 'buttons'" class="hidden items-center gap-2 lg:flex">
+        <UButton
+          v-for="b in buttons"
+          :key="b.key"
+          :to="b.to"
+          :label="b.label"
+          :color="b.color"
+          :variant="b.variant"
+          :target="b.target" />
+      </div>
+    </template>
+
+    <!-- Corps du menu mobile : tous les liens + boutons empilés. -->
+    <template #body>
+      <UNavigationMenu :items="allItems" orientation="vertical" class="-mx-2.5" />
+      <div v-if="buttons.length" class="mt-4 flex flex-col gap-2">
+        <UButton
+          v-for="b in buttons"
+          :key="b.key"
+          :to="b.to"
+          :label="b.label"
+          :color="b.color"
+          :variant="b.variant"
+          :target="b.target"
+          block />
+      </div>
+    </template>
+  </UHeader>
 </template>

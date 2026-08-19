@@ -102,7 +102,7 @@ export const callToAction = defineSection({
       type: 'string',
       group: 'appearance',
       description:
-        'Fond coloré du bloc (disposition « colonne » uniquement). Ignoré si une image de fond est renseignée (l’image prime).',
+        'Fond coloré du bloc (bande ou colonne). Ignoré si une image de fond est renseignée (l’image prime).',
       initialValue: 'naked',
       options: {
         list: [
@@ -114,7 +114,7 @@ export const callToAction = defineSection({
         ],
         layout: 'radio',
       },
-      hidden: ({parent}) => parent?.layout !== 'column',
+      hidden: ({parent}) => !!parent?.appearance?.image?.asset,
     }),
     defineField({
       name: 'illustration',

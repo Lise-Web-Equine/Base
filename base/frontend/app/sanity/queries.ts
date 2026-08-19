@@ -118,6 +118,16 @@ export const contactPageQuery = defineQuery(/* groq */ `
 			"slug": slug.current
 		}`);
 
+// Pages du site pour le menu par défaut (fallback quand le menu principal n'est
+// pas configuré). Exclut les pages masquées des moteurs. Triées par nom.
+export const navPagesQuery = defineQuery(/* groq */ `
+		*[_type == "page" && defined(slug.current) && noIndex != true]
+			| order(name asc){
+				_id,
+				name,
+				"slug": slug.current
+			}`);
+
 export const homeQuery = defineQuery(/* groq */ `
 		*[_type == "homePage"][0]{
 			...,
@@ -135,6 +145,12 @@ export const themeSettingsQuery = defineQuery(/* groq */ `
 			"foreground": foreground.value,
 			"muted": muted.value,
 			"border": border.value,
+			"headerColor": headerColor.value,
+			"footerColor": footerColor.value,
+			headerColorDark,
+			footerColorDark,
+			backgroundDark,
+			surfaceDark,
 			"success": success.value,
 			"warning": warning.value,
 			"error": error.value,
@@ -180,9 +196,13 @@ export const settingsQuery = defineQuery(/* groq */ `
 
 export const navigationQuery = defineQuery(/* groq */ `
 		*[_type == "navigation"][0]{
+			headerColLeft,
+			headerColCenter,
+			headerColRight,
 			headerMenu[]{
 				_key,
 				label,
+				align,
 				${linkFields},
 				children[]{
 					_key,
@@ -190,11 +210,26 @@ export const navigationQuery = defineQuery(/* groq */ `
 					${linkFields}
 				}
 			},
+			headerButtons[]${buttonFields},
 			footerLinks[]{
 				_key,
 				label,
 				${linkFields}
 			}
+		}`);
+
+// Liens légaux pour le pied de page : titres + présence de contenu (léger,
+// pas de Portable Text). Sert à lister les pages légales existantes.
+export const legalLinksQuery = defineQuery(/* groq */ `
+		*[_type == "legalTexts"][0]{
+			legalNoticeTitle,
+			"hasLegalNotice": defined(legalNoticeContent),
+			privacyTitle,
+			"hasPrivacy": defined(privacyContent),
+			termsTitle,
+			"hasTerms": defined(termsContent),
+			cookiesTitle,
+			"hasCookies": defined(cookiesContent)
 		}`);
 
 export const legalTextsQuery = defineQuery(/* groq */ `

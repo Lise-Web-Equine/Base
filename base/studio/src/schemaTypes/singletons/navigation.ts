@@ -1,5 +1,31 @@
 import {defineArrayMember, defineField, defineType} from '@sanity/types'
 import {MenuIcon, LinkIcon} from '@sanity/icons'
+import {SyncMenuField} from '../../components/SyncMenuField'
+
+/**
+ * Disposition de l'en-tête : contenu de chacune des 3 colonnes de <UHeader>
+ * (gauche / centre / droite). Lu par le composant Header pour placer logo,
+ * navigation et boutons. Sur mobile, l'affichage reste logo + menu hamburger
+ * quel que soit le réglage.
+ */
+const HEADER_COLUMN_OPTIONS = [
+  {title: 'Logo', value: 'logo'},
+  {title: 'Navigation', value: 'nav'},
+  {title: 'Boutons', value: 'buttons'},
+  {title: 'Vide', value: 'none'},
+]
+
+const columnField = (name: string, title: string, initialValue: string) =>
+  defineField({
+    name,
+    title,
+    type: 'string',
+    group: 'header',
+    fieldset: 'layout',
+    options: {list: HEADER_COLUMN_OPTIONS, layout: 'dropdown'},
+    initialValue,
+    validation: (Rule) => Rule.required(),
+  })
 
 /**
  * Singleton de navigation (CŒUR).
@@ -21,13 +47,28 @@ export const navigation = defineType({
     {name: 'header', title: 'En-tête', default: true},
     {name: 'footer', title: 'Pied de page'},
   ],
+  fieldsets: [
+    {
+      name: 'layout',
+      title: 'Disposition des colonnes',
+      description:
+        "Contenu de chaque colonne de l'en-tête (sur grand écran). Mettez « Navigation » à gauche ET à droite pour répartir les liens de part et d'autre (via leur alignement).",
+      options: {collapsible: true, collapsed: false},
+    },
+  ],
   fields: [
+    columnField('headerColLeft', 'Colonne gauche', 'logo'),
+    columnField('headerColCenter', 'Colonne centrale', 'nav'),
+    columnField('headerColRight', 'Colonne droite', 'buttons'),
     defineField({
       name: 'headerMenu',
       title: 'Menu principal (en-tête)',
       type: 'array',
       group: 'header',
       description: "Entrées affichées dans l'en-tête du site, dans l'ordre.",
+      // Bouton « Synchroniser » à côté du titre : pré-remplit avec l'accueil +
+      // les pages du site (ensuite éditable).
+      components: {field: SyncMenuField},
       of: [
         defineArrayMember({
           name: 'menuItem',
@@ -47,6 +88,21 @@ export const navigation = defineType({
               type: 'link',
               description:
                 "Cible de l'entrée. Laissez vide si l'entrée sert uniquement à ouvrir un sous-menu.",
+            }),
+            defineField({
+              name: 'align',
+              title: 'Alignement',
+              type: 'string',
+              description:
+                "Utilisé uniquement quand la navigation est présente à gauche ET à droite.",
+              options: {
+                list: [
+                  {title: 'Gauche', value: 'gauche'},
+                  {title: 'Droite', value: 'droite'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'gauche',
             }),
             defineField({
               name: 'children',
@@ -90,6 +146,16 @@ export const navigation = defineType({
           },
         }),
       ],
+    }),
+    defineField({
+      name: 'headerButtons',
+      title: "Boutons d'en-tête",
+      type: 'array',
+      group: 'header',
+      description:
+        "Boutons d'action affichés dans l'en-tête (ex. « Contact », « Devis »). Leur position est réglée dans le Thème → Mise en forme → Agencement de l'en-tête.",
+      of: [defineArrayMember({type: 'button'})],
+      validation: (Rule) => Rule.max(2),
     }),
     defineField({
       name: 'footerLinks',

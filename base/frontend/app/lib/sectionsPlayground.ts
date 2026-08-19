@@ -199,10 +199,7 @@ const coreSections: PlaygroundSection[] = [
         type: "select",
         default: "naked",
         tsType: "'outline' | 'solid' | 'soft' | 'subtle' | 'naked'",
-        help: "Fond coloré du bloc CTA (colonne uniquement). En bande (vertical), le seul fond possible est une image. Ignoré si une image de fond est renseignée (l'image prime).",
-        // En « bande » (vertical), pas de fond coloré : seule une image est
-        // proposée. Le variant n'est donc dispo qu'en « colonne » (horizontal).
-        showIf: (v) => v.orientation === "horizontal",
+        help: "Fond coloré du bloc CTA (bande ou colonne). Ignoré si une image de fond est renseignée (l'image prime).",
         options: [
           { label: "Naked (transparent)", value: "naked" },
           { label: "Outline", value: "outline" },

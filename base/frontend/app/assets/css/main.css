@@ -116,6 +116,12 @@
   --color-muted: var(--theme-muted, #727892);
   --color-border: var(--theme-border, #e3e4e8);
 
+  /* Fonds d'en-tête et de pied de page : couleur dédiée (themeSettings) avec
+     repli sur la couleur de fond du site quand aucune n'est choisie. Génèrent
+     les utilitaires bg-header / bg-footer. */
+  --color-header: var(--theme-header-bg, var(--color-background));
+  --color-footer: var(--theme-footer-bg, var(--color-background));
+
   /* Couleurs d'états (feedback UI) administrées depuis Sanity. Génèrent les
      utilitaires bg-success / text-warning / border-error, etc. */
   --color-success: var(--theme-success, #16a34a);
@@ -251,6 +257,17 @@
   }
 
   --default-transition-duration: 250ms;
+}
+
+/* Mode sombre : posé via la classe `.dark` par les éléments dont le FOND est
+   sombre (en-tête / pied de page sur couleur sombre, sections sur image
+   sombre…). On y redéfinit les tokens de texte/bordure en clair, dérivés du
+   token « clair » du thème (aucune couleur en dur). Les composants Nuxt UI
+   suivent également `.dark` pour leur propre palette. */
+.dark {
+  --color-foreground: var(--theme-light, #f6f6f8);
+  --color-muted: color-mix(in oklab, var(--theme-light, #f6f6f8), black 22%);
+  --color-border: color-mix(in oklab, var(--theme-light, #f6f6f8), transparent 82%);
 }
 
 /* Base : toute la typographie hérite des polices du thème (tokens --font-*).

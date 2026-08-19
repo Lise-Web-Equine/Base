@@ -59,13 +59,11 @@ const isHorizontal = computed(() => props.values.orientation === "horizontal");
 const bgImageUrl = computed(() => (props.values.image as string) || "");
 const hasImage = computed(() => !!bgImageUrl.value);
 
-// Fond coloré (variant) uniquement en colonne ET sans image.
-//  - Image renseignée → override → `variant: "naked"`.
-//  - Bande (vertical) → pas de fond coloré → `variant: "naked"` (seule l'image
-//    peut fournir un fond).
+// Fond coloré (variant) en bande comme en colonne ; une image renseignée prime
+// et force `variant: "naked"` (override image).
 const finalProps = computed(() => {
   const base = { ...boundProps.value };
-  if (hasImage.value || !isHorizontal.value) base.variant = "naked";
+  if (hasImage.value) base.variant = "naked";
   return base;
 });
 

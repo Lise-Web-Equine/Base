@@ -1,10 +1,13 @@
 <template>
   <div class="bg-background text-foreground font-sans">
-    <section class="min-h-screen pt-24">
-      <Header />
-      <main class=""><slot /></main>
-      <Footer />
-    </section>
+    <!-- UHeader (dans <Header>) est sticky et renseigne --ui-header-height ;
+         UMain pose le <main> et remplit la hauteur restante du viewport
+         (min-h calculé). Plus besoin de pt-24 / min-h-screen faits main. -->
+    <Header />
+    <UMain>
+      <slot />
+    </UMain>
+    <Footer />
   </div>
   <Toast />
 </template>

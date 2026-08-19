@@ -2,6 +2,8 @@ import {ColorWheelIcon} from '@sanity/icons'
 import {defineField, defineType} from '@sanity/types'
 import {COLOR_SLOTS} from '../../colorSlots'
 import {FontInput} from '../../components/FontInput'
+import {DarkToggle} from '../../components/DarkToggle'
+import {BareField} from '../../components/BareField'
 
 /**
  * Theme Settings schema Singleton.  Stores the global color theme that is applied
@@ -21,6 +23,31 @@ const colorField = (name: string, title: string, description: string, initialVal
     initialValue: {_type: 'simplerColor', value: initialValue},
     group: 'colors',
     validation: (rule) => rule.required(),
+  })
+
+// Couleur OPTIONNELLE : si laissée vide, le frontend retombe sur la couleur de
+// fond (--color-background). Utilisée pour les fonds d'en-tête / pied de page.
+const optionalColorField = (name: string, title: string, description: string) =>
+  defineField({
+    name,
+    title,
+    type: 'simplerColor',
+    description,
+    group: 'colors',
+  })
+
+// Toggle « clair / sombre » (icône soleil/lune, sans texte) associé à une
+// couleur de fond, rendu JUSTE SOUS le champ couleur. `BareField` masque le
+// titre/description du champ → seul le bouton s'affiche. NE touche PAS au
+// sélecteur de couleur, qui reste 100 % natif. Sa valeur est lue par le frontend.
+const darkToggleField = (name: string, initialValue = false) =>
+  defineField({
+    name,
+    title: 'Aspect (clair / sombre)',
+    type: 'boolean',
+    initialValue,
+    group: 'colors',
+    components: {field: BareField, input: DarkToggle},
   })
 
 const fontField = (name: string, description: string, fieldset: string) =>
@@ -121,9 +148,29 @@ export const themeSettings = defineType({
     {name: 'headline', title: 'En-tête'},
   ],
   fields: [
-    ...COLOR_SLOTS.map((slot) =>
-      colorField(slot.name, slot.title, slot.description, slot.initialValue),
+    // Couleurs du thème (sélecteurs natifs). « Fond principal » (background) et
+    // « Fond sombre » (surface) sont suivis d'un toggle clair/sombre (icône).
+    ...COLOR_SLOTS.flatMap((slot) => {
+      const field = colorField(slot.name, slot.title, slot.description, slot.initialValue)
+      if (slot.name === 'background') return [field, darkToggleField('backgroundDark')]
+      if (slot.name === 'surface') return [field, darkToggleField('surfaceDark', true)]
+      return [field]
+    }),
+
+    // Fonds d'en-tête et de pied de page (optionnels → couleur de fond si vide),
+    // chacun suivi de son toggle clair/sombre (icône).
+    optionalColorField(
+      'headerColor',
+      "Couleur de l'en-tête",
+      'Fond de la barre de navigation. Si vide, la couleur de fond du site est utilisée.',
     ),
+    darkToggleField('headerColorDark'),
+    optionalColorField(
+      'footerColor',
+      'Couleur du pied de page',
+      'Fond du pied de page. Si vide, la couleur de fond du site est utilisée.',
+    ),
+    darkToggleField('footerColorDark'),
 
     // --- Titres ---
     fontField('fontDisplay', 'Famille de police utilisée pour les titres.', 'titres'),

@@ -41,17 +41,14 @@ const builder = imageUrlBuilder({
 const isColumn = computed(() => stegaClean(props.block.layout) === "column");
 const reverse = computed(() => props.block.reverse === true);
 
-// Variante de fond du bloc <UPageCTA>. Comme dans « sections-apparence » :
+// Variante de fond du bloc <UPageCTA>, en bande comme en colonne :
 //  - une image de fond prime → "naked" ;
-//  - hors disposition colonne (bande) → "naked" (seule l'image peut faire fond) ;
 //  - sinon on applique la variante choisie.
 const hasBgImage = computed(
   () => !!(props.block.appearance as any)?.image?.asset
 );
 const ctaVariant = computed(() =>
-  hasBgImage.value || !isColumn.value
-    ? "naked"
-    : stegaClean(props.block.variant) || "naked"
+  hasBgImage.value ? "naked" : stegaClean(props.block.variant) || "naked"
 );
 
 // « Bord perdu » : l'illustration colle aux bords du bloc. On ne compense pas le

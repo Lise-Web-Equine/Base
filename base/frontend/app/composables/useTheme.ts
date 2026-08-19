@@ -90,6 +90,11 @@ export async function useTheme() {
       "--theme-content-width": t?.contentWidth || DEFAULT_THEME.contentWidth,
       "--theme-density": t?.density || DEFAULT_THEME.density,
       "--theme-site-max": t?.siteMaxWidth || DEFAULT_THEME.siteMaxWidth,
+      // Fonds d'en-tête / pied de page : injectés SEULEMENT si choisis dans le
+      // thème. Sinon la variable reste absente et main.css retombe sur la
+      // couleur de fond du site (var(--color-background)).
+      ...(t?.headerColor ? {"--theme-header-bg": t.headerColor} : {}),
+      ...(t?.footerColor ? {"--theme-footer-bg": t.footerColor} : {}),
     };
   });
 

@@ -62,17 +62,22 @@ export const link = defineType({
     }),
     defineField({
       name: 'href',
-      title: 'URL externe',
+      title: 'URL',
       type: 'url',
-      description: 'Adresse complète (ex: https://exemple.com).',
+      description: 'Adresse complète (ex: https://exemple.com) ou chemin interne (ex: /, /articles).',
       hidden: ({parent}) => parent?.linkType !== 'href',
+      // Autorise les chemins internes relatifs (« / », « /articles »…) en plus
+      // des URL absolues, pour pouvoir pointer vers l'accueil ou une route du
+      // site (ex. le blog) sans dépendre d'une référence de document.
       validation: (Rule) =>
-        Rule.custom((value, context: any) => {
-          if (context.parent?.linkType === 'href' && !value) {
-            return 'Une URL est requise lorsque le type de lien est « URL externe ».'
-          }
-          return true
-        }),
+        Rule.uri({allowRelative: true, scheme: ['http', 'https', 'mailto', 'tel']}).custom(
+          (value, context: any) => {
+            if (context.parent?.linkType === 'href' && !value) {
+              return 'Une URL est requise lorsque le type de lien est « URL ».'
+            }
+            return true
+          },
+        ),
     }),
     defineField({
       name: 'anchor',

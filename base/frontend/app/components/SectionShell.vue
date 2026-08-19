@@ -196,7 +196,22 @@ const uiConfig = computed(() => {
       "text-muted a-headline [font-weight:var(--a-headline-weight)]",
       o.headline
     ),
+    // Bloc coloré en pleine largeur → bord à bord, sans coins arrondis.
+    root: mergeSlot(
+      hasBlockBackground.value && isFull.value ? "rounded-none" : "",
+      o.root
+    ),
   };
+});
+
+// Gouttière latérale du contenu. Pour un bloc coloré (variant), on la SUPPRIME :
+// c'est le bloc lui-même qui porte la largeur (padding interne géré par le bloc),
+// donc « pleine largeur » = bord à bord et « container » = largeur du site.
+const innerPadding = computed(() => {
+  if (hasBlockBackground.value) return "px-0";
+  return isFull.value
+    ? "px-[var(--gutter)]"
+    : "px-[clamp(var(--gutter),5vw,calc(var(--gutter)*2.5))]";
 });
 const forwardedAttrs = computed(() => {
   // `ui` est consommé par uiConfig : on l'exclut des attrs re-transmis.
@@ -233,11 +248,7 @@ const forwardedAttrs = computed(() => {
     <!-- Gouttière latérale (le contenu ne colle pas aux bords de la bande).
          Container : gouttière plus généreuse, FLUIDE (mobile-first, sans palier) :
          de --gutter (mobile) jusqu'à ~2.5×--gutter (grands écrans). -->
-    <div
-      class="relative w-full"
-      :class="isFull
-        ? 'px-[var(--gutter)]'
-        : 'px-[clamp(var(--gutter),5vw,calc(var(--gutter)*2.5))]'">
+    <div class="relative w-full" :class="innerPadding">
       <component :is="BaseComponent" v-bind="forwardedAttrs" :ui="uiConfig">
         <template v-for="(_, name) in $slots" #[name]="slotProps">
           <slot :name="name" v-bind="slotProps ?? {}" />

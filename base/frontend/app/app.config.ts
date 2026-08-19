@@ -19,6 +19,25 @@ export default defineAppConfig({
       error: "cerror",
       neutral: "gray",
     },
+    // Par défaut, UHeader/UFooter n'appliquent PAS de conteneur (leur contenu est
+    // bord à bord). On y injecte le conteneur du site (largeur = --ui-container,
+    // branché sur « Largeur du site », + gouttière) pour aligner en-tête et pied
+    // de page sur la largeur du contenu. Ces classes se fusionnent avec les
+    // classes par défaut des slots (flex, py…) via tailwind-merge.
+    header: {
+      slots: {
+        container: "max-w-(--ui-container) mx-auto px-4 sm:px-6 lg:px-8",
+      },
+    },
+    footer: {
+      slots: {
+        top: "max-w-(--ui-container) mx-auto px-4 sm:px-6 lg:px-8",
+        // `border-t` : séparation entre le bandeau supérieur (4 colonnes) et la
+        // rangée basse (copyright / réseaux sociaux).
+        container:
+          "max-w-(--ui-container) mx-auto px-4 sm:px-6 lg:px-8 border-t border-default",
+      },
+    },
     // Variantes de fond du bloc <UPageCTA> alignées sur les tokens du thème :
     //  - solid   → fond « sombre » du thème (surface) ;
     //  - soft    → fond « clair » du thème (light) ;

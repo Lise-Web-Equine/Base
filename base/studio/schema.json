@@ -1606,6 +1606,81 @@
           "type": "string"
         }
       },
+      "headerColLeft": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "logo"
+            },
+            {
+              "type": "string",
+              "value": "nav"
+            },
+            {
+              "type": "string",
+              "value": "buttons"
+            },
+            {
+              "type": "string",
+              "value": "none"
+            }
+          ]
+        },
+        "optional": false
+      },
+      "headerColCenter": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "logo"
+            },
+            {
+              "type": "string",
+              "value": "nav"
+            },
+            {
+              "type": "string",
+              "value": "buttons"
+            },
+            {
+              "type": "string",
+              "value": "none"
+            }
+          ]
+        },
+        "optional": false
+      },
+      "headerColRight": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "logo"
+            },
+            {
+              "type": "string",
+              "value": "nav"
+            },
+            {
+              "type": "string",
+              "value": "buttons"
+            },
+            {
+              "type": "string",
+              "value": "none"
+            }
+          ]
+        },
+        "optional": false
+      },
       "headerMenu": {
         "type": "objectAttribute",
         "value": {
@@ -1625,6 +1700,23 @@
                 "value": {
                   "type": "inline",
                   "name": "link"
+                },
+                "optional": true
+              },
+              "align": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "union",
+                  "of": [
+                    {
+                      "type": "string",
+                      "value": "gauche"
+                    },
+                    {
+                      "type": "string",
+                      "value": "droite"
+                    }
+                  ]
                 },
                 "optional": true
               },
@@ -1691,6 +1783,28 @@
                   }
                 }
               }
+            }
+          }
+        },
+        "optional": true
+      },
+      "headerButtons": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "array",
+          "of": {
+            "type": "object",
+            "attributes": {
+              "_key": {
+                "type": "objectAttribute",
+                "value": {
+                  "type": "string"
+                }
+              }
+            },
+            "rest": {
+              "type": "inline",
+              "name": "button"
             }
           }
         },
@@ -2726,6 +2840,13 @@
         },
         "optional": false
       },
+      "backgroundDark": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
       "surface": {
         "type": "objectAttribute",
         "value": {
@@ -2733,6 +2854,13 @@
           "name": "simplerColor"
         },
         "optional": false
+      },
+      "surfaceDark": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
       },
       "light": {
         "type": "objectAttribute",
@@ -2789,6 +2917,36 @@
           "name": "simplerColor"
         },
         "optional": false
+      },
+      "headerColor": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "simplerColor"
+        },
+        "optional": true
+      },
+      "headerColorDark": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
+      },
+      "footerColor": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "inline",
+          "name": "simplerColor"
+        },
+        "optional": true
+      },
+      "footerColorDark": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "boolean"
+        },
+        "optional": true
       },
       "fontDisplay": {
         "type": "objectAttribute",
