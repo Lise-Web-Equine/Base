@@ -1,4 +1,6 @@
 import type {SchemaTypeDefinition} from 'sanity'
+import {bannerSection} from '../schemaTypes/objects/bannerSection'
+import {heroSection} from '../schemaTypes/objects/heroSection'
 
 /**
  * Sections propres au PROJET client.
@@ -10,4 +12,4 @@ import type {SchemaTypeDefinition} from 'sanity'
  *   import {harasGallery} from '../schemaTypes/objects/harasGallery'
  *   export const projectSections: SchemaTypeDefinition[] = [harasGallery]
  */
-export const projectSections: SchemaTypeDefinition[] = []
+export const projectSections: SchemaTypeDefinition[] = [bannerSection, heroSection]

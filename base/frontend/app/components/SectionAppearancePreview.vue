@@ -19,6 +19,7 @@ import type {
   PlaygroundLink,
   PropControl,
 } from "~/lib/sectionsPlayground";
+import { colorSlotToCssVar } from "~/lib/utils";
 
 const props = defineProps<{
   section: PlaygroundSection;
@@ -67,6 +68,35 @@ const finalProps = computed(() => {
   return base;
 });
 
+// --- En-tête principal (hero, base UPageHero) : fond au choix comme dans le
+// Studio (couleur du thème / image / vidéo / carrousel), rendu comme le vrai
+// composant <HeroSection> (couche de fond + <UPageHero> par-dessus).
+const isHero = computed(() => props.section.baseComponent === "UPageHero");
+const heroBgType = computed(() => (props.values.bgType as string) || "color");
+const heroColorVar = computed(() =>
+  colorSlotToCssVar((props.values.bgColor as string) || "surface")
+);
+const heroImage = computed(() => (props.values.image as string) || "");
+const heroVideo = computed(() => (props.values.video as string) || "");
+const heroCarousel = computed<string[]>(() =>
+  ((props.values.carousel as string[]) ?? []).filter(Boolean)
+);
+const heroLightText = computed(() => props.values.lightText !== false);
+// Typographie du thème (titre + sur-titre), comme dans <HeroSection>.
+const heroUi = computed(() => ({
+  title:
+    "font-display [font-weight:var(--a-heading-weight)] [text-transform:var(--a-display-case)]",
+  headline:
+    "a-headline [font-weight:var(--a-headline-weight)] " +
+    (heroLightText.value ? "text-highlighted" : "text-primary"),
+}));
+const heroIsMedia = computed(() =>
+  ["image", "video", "carousel"].includes(heroBgType.value)
+);
+const heroOverlayStyle = computed(() => ({
+  backgroundColor: `rgba(0, 0, 0, ${(Number(props.values.overlayOpacity ?? 40) || 0) / 100})`,
+}));
+
 const widthValue = computed(() => (props.values.width as string) || "container");
 const overlayStyle = computed(() => ({
   backgroundColor: `rgba(0, 0, 0, ${(Number(props.values.overlayOpacity ?? 40) || 0) / 100})`,
@@ -81,9 +111,59 @@ const bandStyle = computed(() =>
 </script>
 
 <template>
+  <!-- En-tête principal (hero) : couche de fond + <UPageHero> par-dessus. -->
+  <section
+    v-if="isHero"
+    class="relative w-full overflow-hidden"
+    :class="heroLightText ? 'dark' : ''">
+    <div class="absolute inset-0 isolate">
+      <div
+        v-if="heroBgType === 'color'"
+        class="h-full w-full"
+        :style="{ backgroundColor: heroColorVar }" />
+      <img
+        v-else-if="heroBgType === 'image' && heroImage"
+        :src="heroImage"
+        alt=""
+        class="h-full w-full object-cover" />
+      <video
+        v-else-if="heroBgType === 'video' && heroVideo"
+        :src="heroVideo"
+        class="h-full w-full object-cover"
+        autoplay
+        muted
+        loop
+        playsinline />
+      <swiper-container
+        v-else-if="heroBgType === 'carousel' && heroCarousel.length"
+        class="h-full w-full"
+        slides-per-view="1"
+        effect="fade"
+        loop="true"
+        autoplay="true"
+        speed="1200">
+        <swiper-slide v-for="(src, i) in heroCarousel" :key="i">
+          <img :src="src" alt="" class="h-full w-full object-cover" />
+        </swiper-slide>
+      </swiper-container>
+      <div v-if="heroIsMedia" class="absolute inset-0 z-[2]" :style="heroOverlayStyle" />
+    </div>
+    <div class="relative z-10">
+      <UPageHero v-bind="boundProps" :ui="heroUi">
+        <template v-if="isHorizontal" #default>
+          <img
+            src="https://picsum.photos/704/540"
+            alt=""
+            class="w-full rounded-[var(--ui-radius)]"
+            loading="lazy" />
+        </template>
+      </UPageHero>
+    </div>
+  </section>
+
   <!-- Override image : image de fond + voile, variant forcé naked -->
   <div
-    v-if="hasImage"
+    v-else-if="hasImage"
     class="relative overflow-hidden"
     :class="useLightText ? 'dark' : ''"
     :style="bandStyle">

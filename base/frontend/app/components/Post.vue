@@ -46,7 +46,7 @@ const thumbnailUrl = computed(() =>
       <Date :dateString="post.date" />
     </div>
 
-    <h3 class="a-h3 mt-3">
+    <h3 class="a-title-3 mt-3">
       <nuxt-link
         class="hover:text-primary underline transition-colors"
         :to="`/articles/${post.slug?.current}`"

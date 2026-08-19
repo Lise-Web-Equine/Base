@@ -57,6 +57,15 @@ export const navigation = defineType({
     },
   ],
   fields: [
+    defineField({
+      name: 'headerOverlay',
+      title: 'En-tête superposé au contenu',
+      type: 'boolean',
+      group: 'header',
+      description:
+        "Si activé, l'en-tête devient transparent et se superpose au contenu (hero de l'accueil, bandeau des autres pages) au lieu d'occuper sa propre bande. Idéal avec un hero en image ou vidéo (texte clair).",
+      initialValue: false,
+    }),
     columnField('headerColLeft', 'Colonne gauche', 'logo'),
     columnField('headerColCenter', 'Colonne centrale', 'nav'),
     columnField('headerColRight', 'Colonne droite', 'buttons'),

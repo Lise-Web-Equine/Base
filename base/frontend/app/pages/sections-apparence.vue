@@ -147,6 +147,24 @@ function clearImage(section: PlaygroundSection, key: string) {
   state[section.id]![key] = "";
 }
 
+// Carrousel : liste d'images locales (URLs d'objet). Ajout / retrait.
+function sectionImages(section: PlaygroundSection, key: string): string[] {
+  return (state[section.id]?.[key] as string[]) ?? [];
+}
+function onImagesPick(section: PlaygroundSection, key: string, event: Event) {
+  const input = event.target as HTMLInputElement;
+  const files = Array.from(input.files ?? []);
+  if (!files.length) return;
+  const list = sectionImages(section, key);
+  for (const file of files) list.push(URL.createObjectURL(file));
+  input.value = "";
+}
+function removeImageAt(section: PlaygroundSection, key: string, index: number) {
+  const list = sectionImages(section, key);
+  const [removed] = list.splice(index, 1);
+  if (removed?.startsWith("blob:")) URL.revokeObjectURL(removed);
+}
+
 // --- Gestion des liens (contrôle "links") : ajout / suppression.
 function sectionLinks(section: PlaygroundSection): PlaygroundLink[] {
   return (state[section.id]?.links as PlaygroundLink[]) ?? [];
@@ -364,9 +382,16 @@ watch([selectedId, state], () => postState(), { deep: true });
       v-if="selected && drawerOpen"
       class="w-1/3 shrink-0 self-stretch border-l border-border bg-elevated">
       <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-elevated px-5 py-4">
-        <div>
-          <h2 class="text-sm font-semibold">{{ selected.label }}</h2>
-          <p class="text-xs text-muted">
+        <div class="min-w-0 flex-1">
+          <label class="mb-1 block text-[10px] font-semibold uppercase tracking-widest text-muted">
+            Section builder
+          </label>
+          <USelect
+            v-model="selectedId"
+            :items="sectionItems"
+            class="w-full"
+            :icon="'i-lucide-layout-template'" />
+          <p class="mt-1 text-xs text-muted">
             Props de
             <code class="font-mono">{{ selected.baseComponent }}</code>
           </p>
@@ -485,6 +510,84 @@ watch([selectedId, state], () => postState(), { deep: true });
                 accept="image/*"
                 class="hidden"
                 @change="onImagePick(selected, control.key, $event)" />
+            </label>
+          </div>
+
+          <!-- Vidéo (upload local) -->
+          <div v-else-if="control.type === 'video'" class="space-y-2">
+            <div
+              v-if="state[selected.id][control.key]"
+              class="flex items-center gap-3 rounded-lg border border-border p-2">
+              <video
+                :src="state[selected.id][control.key]"
+                class="h-16 w-24 shrink-0 rounded object-cover"
+                muted
+                autoplay
+                loop
+                playsinline />
+              <div class="flex flex-1 flex-wrap gap-2">
+                <label
+                  class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-border px-2 py-1 text-xs text-muted transition-colors hover:border-primary/50">
+                  <UIcon name="i-lucide-refresh-cw" class="size-3.5" />
+                  Remplacer
+                  <input
+                    type="file"
+                    accept="video/*"
+                    class="hidden"
+                    @change="onImagePick(selected, control.key, $event)" />
+                </label>
+                <UButton
+                  size="xs"
+                  color="error"
+                  variant="ghost"
+                  icon="i-lucide-trash-2"
+                  @click="clearImage(selected, control.key)">
+                  Retirer
+                </UButton>
+              </div>
+            </div>
+            <label
+              v-else
+              class="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted transition-colors hover:border-primary/50">
+              <UIcon name="i-lucide-clapperboard" class="size-6" />
+              <span>Téléverser une vidéo</span>
+              <span class="text-xs">MP4, WebM…</span>
+              <input
+                type="file"
+                accept="video/*"
+                class="hidden"
+                @change="onImagePick(selected, control.key, $event)" />
+            </label>
+          </div>
+
+          <!-- Carrousel (plusieurs images locales) -->
+          <div v-else-if="control.type === 'images'" class="space-y-2">
+            <div
+              v-if="sectionImages(selected, control.key).length"
+              class="grid grid-cols-3 gap-2">
+              <div
+                v-for="(src, i) in sectionImages(selected, control.key)"
+                :key="i"
+                class="group relative overflow-hidden rounded-md border border-border">
+                <img :src="src" alt="" class="h-16 w-full object-cover" />
+                <button
+                  type="button"
+                  class="absolute right-1 top-1 rounded bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  @click="removeImageAt(selected, control.key, i)">
+                  <UIcon name="i-lucide-x" class="size-3.5" />
+                </button>
+              </div>
+            </div>
+            <label
+              class="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border p-4 text-center text-sm text-muted transition-colors hover:border-primary/50">
+              <UIcon name="i-lucide-image-up" class="size-5" />
+              <span>Ajouter des images</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                class="hidden"
+                @change="onImagesPick(selected, control.key, $event)" />
             </label>
           </div>
 

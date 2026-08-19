@@ -5,9 +5,31 @@ import { settingsQuery } from "~/sanity/queries";
 
 const { data: settings } = useSanityQuery<SettingsQueryResult>(settingsQuery);
 
+// Mode « superposé » (piloté par Navigation → En-tête superposé) : l'en-tête est
+// transparent, sorti du flux (absolute) et posé PAR-DESSUS le contenu (hero /
+// bandeau). Texte clair (classe `.dark` + nav neutre) car il surplombe en
+// général un média sombre. Le positionnement en flux vient du layout.
+const props = defineProps<{ overlay?: boolean }>();
+
 // Aspect sombre de l'en-tête + couleur de nav (logique centralisée, cf.
 // useSurfaceDark) : fond sombre → classe `.dark` (texte clair) + liens neutres.
 const { darkClass, navColor } = useSurfaceDark("header");
+
+// Classe + `ui` du <UHeader> selon le mode.
+const headerClass = computed(() =>
+  props.overlay ? ["dark"] : ["bg-header", darkClass.value]
+);
+const headerUi = computed(() =>
+  props.overlay
+    ? {
+        root: "absolute inset-x-0 top-0 z-50 bg-transparent border-b-0 backdrop-blur-none",
+      }
+    : undefined
+);
+// En superposé : liens toujours clairs (neutre) pour le contraste sur le média.
+const effectiveNavColor = computed(() =>
+  props.overlay ? "neutral" : navColor.value
+);
 
 // Menu principal partagé avec le pied de page (source unique, cf. useMainMenu).
 const { navigation, menuItems, mapItem, allItems, alignOf, toTarget } =
@@ -64,7 +86,7 @@ function navItems(column: "left" | "center" | "right"): NavigationMenuItem[] {
 </script>
 
 <template>
-  <UHeader :class="['bg-header', darkClass]">
+  <UHeader :class="headerClass" :ui="headerUi">
     <!-- Zone gauche : visible sur mobile (logo). -->
     <template #left>
       <!-- Logo « mobile » quand le logo n'occupe pas déjà cette colonne. -->
@@ -86,7 +108,7 @@ function navItems(column: "left" | "center" | "right"): NavigationMenuItem[] {
       <UNavigationMenu
         v-else-if="cols.left === 'nav'"
         :items="navItems('left')"
-        :color="navColor"
+        :color="effectiveNavColor"
         :class="['hidden lg:flex', centered && 'w-full justify-start']" />
       <div v-else-if="cols.left === 'buttons'" class="hidden items-center gap-2 lg:flex">
         <UButton
@@ -111,7 +133,7 @@ function navItems(column: "left" | "center" | "right"): NavigationMenuItem[] {
     <UNavigationMenu
       v-else-if="cols.center === 'nav'"
       :items="navItems('center')"
-      :color="navColor" />
+      :color="effectiveNavColor" />
     <div v-else-if="cols.center === 'buttons'" class="flex items-center gap-2">
       <UButton
         v-for="b in buttons"
@@ -135,7 +157,7 @@ function navItems(column: "left" | "center" | "right"): NavigationMenuItem[] {
       <UNavigationMenu
         v-else-if="cols.right === 'nav'"
         :items="navItems('right')"
-        :color="navColor"
+        :color="effectiveNavColor"
         :class="['hidden lg:flex', centered && 'w-full justify-end']" />
       <div v-else-if="cols.right === 'buttons'" class="hidden items-center gap-2 lg:flex">
         <UButton

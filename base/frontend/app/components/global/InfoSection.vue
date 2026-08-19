@@ -15,7 +15,7 @@ defineProps({
 <template>
   <div class="container my-12">
     <div class="max-w-3xl">
-      <h2 v-if="block?.heading" class="a-h1">
+      <h2 v-if="block?.heading" class="a-title-1">
         {{ block.heading }}
       </h2>
       <span

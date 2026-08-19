@@ -8,26 +8,20 @@ const { data: page } = await useSanityQuery<HomeQueryResult>(homeQuery);
 const runtimeConfig = useRuntimeConfig();
 
 useSiteMetadata({
-  title: page?.value?.seoTitle || page?.value?.heading,
-  description: page?.value?.seoDescription || page?.value?.subheading,
+  title: page?.value?.seoTitle,
+  description: page?.value?.seoDescription,
   noIndex: page?.value?.noIndex ?? false,
 });
+
+// La 1re section est-elle un hero ? Si oui, on supprime la marge haute pour que
+// le hero (pleine largeur) colle au header — en mode normal comme superposé.
+const firstIsHero = computed(
+  () => page.value?.pageBuilder?.[0]?._type === "heroSection"
+);
 </script>
 
 <template>
-  <div class="my-12 lg:my-24" v-if="page">
-    <div class="container" v-if="page.heading || page.subheading">
-      <div class="pb-6 border-b border-border">
-        <div class="max-w-3xl">
-          <h2 v-if="page.heading" class="a-display">
-            {{ page.heading }}
-          </h2>
-          <p v-if="page.subheading" class="a-lead mt-4 uppercase">
-            {{ page.subheading }}
-          </p>
-        </div>
-      </div>
-    </div>
+  <div :class="firstIsHero ? 'mb-12 lg:mb-24' : 'my-12 lg:my-24'" v-if="page">
     <PageBuilder
       v-if="page.pageBuilder && page.pageBuilder.length > 0"
       :blocks="page.pageBuilder" />

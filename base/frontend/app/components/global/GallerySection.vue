@@ -21,7 +21,7 @@ defineProps({
 
 <template>
   <div class="container my-12">
-    <h2 v-if="block?.heading" class="a-h1 mb-8">
+    <h2 v-if="block?.heading" class="a-title-1 mb-8">
       {{ block.heading }}
     </h2>
     <Gallery

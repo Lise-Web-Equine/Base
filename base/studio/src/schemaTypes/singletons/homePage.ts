@@ -20,18 +20,6 @@ export const homePage = defineType({
   ],
   fields: [
     defineField({
-      name: 'heading',
-      title: 'Titre',
-      type: 'string',
-      group: 'content',
-    }),
-    defineField({
-      name: 'subheading',
-      title: 'Sous-titre',
-      type: 'string',
-      group: 'content',
-    }),
-    defineField({
       name: 'pageBuilder',
       title: 'Sections de la page',
       type: 'array',
@@ -77,12 +65,8 @@ export const homePage = defineType({
     }),
   ],
   preview: {
-    select: {title: 'heading'},
-    prepare({title}) {
-      return {
-        title: 'Accueil',
-        subtitle: title || undefined,
-      }
+    prepare() {
+      return {title: 'Accueil'}
     },
   },
 })

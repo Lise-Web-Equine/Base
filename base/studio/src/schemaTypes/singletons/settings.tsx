@@ -2,6 +2,7 @@ import {CogIcon} from '@sanity/icons'
 import {defineArrayMember, defineField, defineType} from '@sanity/types'
 
 import * as demo from '../../lib/initialValues'
+import {bannerContentFields, bannerAppearanceFields} from '../objects/bannerFields'
 
 /**
  * Settings schema Singleton.  Singletons are single documents that are displayed not in a collection, handy for things like site settings and other global configurations.
@@ -322,6 +323,26 @@ export const settings = defineType({
           },
         }),
       ],
+    }),
+    defineField({
+      name: 'showBanner',
+      title: 'Afficher la bannière',
+      type: 'boolean',
+      group: 'appearance',
+      description:
+        "Affiche la bannière globale ci-dessous, en haut du site (avant l'en-tête). Sans effet sur les sections « Bannière » ajoutées dans les pages.",
+      initialValue: false,
+    }),
+    defineField({
+      name: 'banner',
+      title: 'Bannière (globale)',
+      type: 'object',
+      group: 'appearance',
+      description:
+        "Contenu de la bannière affichée en haut du site (avant l'en-tête) lorsque « Afficher la bannière » est activé.",
+      options: {collapsible: true, collapsed: true, columns: 1},
+      hidden: ({parent}) => parent?.showBanner !== true,
+      fields: [...bannerContentFields(), ...bannerAppearanceFields()],
     }),
     defineField({
       name: 'cookieConsent',

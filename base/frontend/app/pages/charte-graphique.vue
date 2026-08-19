@@ -459,9 +459,9 @@ const layoutTokens = computed(() => [
         <div class="grid gap-6 md:grid-cols-2">
           <div class="rounded-xl border border-border p-6 space-y-4">
             <p class="a-eyebrow">Sur-titre</p>
-            <h2 class="a-h2">Titre 2 — a-h2</h2>
-            <h3 class="a-h3">Titre 3 — a-h3</h3>
-            <h4 class="a-h4">Titre 4 — a-h4</h4>
+            <h2 class="a-title-2">Titre 2 — a-title-2</h2>
+            <h3 class="a-title-3">Titre 3 — a-title-3</h3>
+            <h4 class="a-title-4">Titre 4 — a-title-4</h4>
             <p class="a-lead">
               Chapô : phrase d'introduction mise en avant (a-lead).
             </p>

@@ -58,7 +58,25 @@ const coreSectionProjections = /* groq */ `
 
 // PROJET : projections des sections propres au client (références, images...).
 // SEUL bloc à modifier pour brancher une nouvelle section.
-const projectSectionProjections = /* groq */ ``;
+const projectSectionProjections = /* groq */ `
+	_type == "bannerSection" => {
+		${linkFields},
+		buttons[]{
+			...,
+			${linkFields}
+		}
+	},
+	_type == "heroSection" => {
+		buttons[]{
+			...,
+			${linkFields}
+		},
+		background{
+			...,
+			"videoUrl": video.asset->url
+		}
+	},
+`;
 
 // Projection de l'objet `pageHeader` : ses liens (boutons) sont résolus
 // pour que <PageHeader>/<UPageHeader> reçoive des cibles prêtes à l'emploi.
@@ -188,6 +206,15 @@ export const settingsQuery = defineQuery(/* groq */ `
 			"favicon": favicon.asset->url,
 			socialLinks,
 			shareNetworks,
+			showBanner,
+			banner{
+				...,
+				${linkFields},
+				buttons[]{
+					...,
+					${linkFields}
+				}
+			},
 			cookieConsent,
 			analytics,
 			blog,
@@ -196,6 +223,7 @@ export const settingsQuery = defineQuery(/* groq */ `
 
 export const navigationQuery = defineQuery(/* groq */ `
 		*[_type == "navigation"][0]{
+			headerOverlay,
 			headerColLeft,
 			headerColCenter,
 			headerColRight,

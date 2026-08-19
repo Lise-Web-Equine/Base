@@ -24,7 +24,10 @@ const coreSections: Record<string, string> = {
  *
  * Exemple : harasGallery: "HarasGallery"
  */
-const projectSections: Record<string, string> = {};
+const projectSections: Record<string, string> = {
+  bannerSection: "BannerSection",
+  heroSection: "HeroSection",
+};
 
 /**
  * Registre complet consommé par `PageBuilder.vue`.

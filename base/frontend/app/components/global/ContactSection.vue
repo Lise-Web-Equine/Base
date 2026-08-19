@@ -25,7 +25,7 @@ defineProps({
         <p v-if="block.eyebrow" class="a-eyebrow">
           {{ block.eyebrow }}
         </p>
-        <h2 v-if="block.heading" class="a-h1">
+        <h2 v-if="block.heading" class="a-title-1">
           {{ block.heading }}
         </h2>
         <p v-if="block.intro" class="a-lead">

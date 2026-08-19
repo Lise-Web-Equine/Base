@@ -72,13 +72,13 @@ useSiteMetadata({
 
 <template>
   <div class="container my-12 lg:my-24" :style="{ maxWidth: 'var(--a-content-width)' }">
-    <h1 class="a-h1 mb-6">{{ title }}</h1>
+    <h1 class="a-title-1 mb-6">{{ title }}</h1>
     <p v-if="intro" class="a-lead mb-10">{{ intro }}</p>
 
     <!-- Éditeur / hébergeur (mentions légales uniquement). -->
     <template v-if="editorRows.length || hostRows.length">
       <section v-if="editorRows.length" class="mb-10">
-        <h2 class="a-h3 mb-4">Éditeur du site</h2>
+        <h2 class="a-title-3 mb-4">Éditeur du site</h2>
         <dl class="grid gap-2 text-sm">
           <div v-for="row in editorRows" :key="row.label" class="flex flex-wrap gap-x-2">
             <dt class="font-semibold text-foreground">{{ row.label }} :</dt>
@@ -88,7 +88,7 @@ useSiteMetadata({
       </section>
 
       <section v-if="hostRows.length" class="mb-10">
-        <h2 class="a-h3 mb-4">Hébergement</h2>
+        <h2 class="a-title-3 mb-4">Hébergement</h2>
         <dl class="grid gap-2 text-sm">
           <div v-for="row in hostRows" :key="row.label" class="flex flex-wrap gap-x-2">
             <dt class="font-semibold text-foreground">{{ row.label }} :</dt>

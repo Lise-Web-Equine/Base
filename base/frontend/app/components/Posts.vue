@@ -21,7 +21,7 @@ defineProps({
 
 <template>
   <div>
-    <component :is="headingTag" v-if="heading" class="a-h2">
+    <component :is="headingTag" v-if="heading" class="a-title-2">
       {{ heading }}
     </component>
     <p v-if="subHeading" class="a-lead mt-2">

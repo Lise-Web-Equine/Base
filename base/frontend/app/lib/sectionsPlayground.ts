@@ -17,7 +17,7 @@
  * (widget, libellé, défaut, aide) restent, elles, écrites à la main : elles
  * n'existent pas dans les types (effacés à l'exécution).
  */
-import type { PageCTAProps } from "@nuxt/ui";
+import type { PageCTAProps, PageHeroProps } from "@nuxt/ui";
 
 /** Type de contrôle affiché dans le formulaire du drawer. */
 export type ControlType =
@@ -28,6 +28,8 @@ export type ControlType =
   | "icon"
   | "links"
   | "image"
+  | "video"
+  | "images"
   | "range";
 
 export interface ControlOption {
@@ -263,9 +265,186 @@ const coreSections: PlaygroundSection[] = [
 
 /**
  * PROJET : ajouter ici les sections propres au site client pour les tester
- * dans l'atelier. (Aucune par défaut.)
+ * dans l'atelier.
+ *
+ * En-tête principal (heroSection) : construit sur <UPageHero>. On expose les
+ * props documentées d'<UPageHero> (contenu + orientation) et, côté « Apparence »,
+ * l'image de fond de l'enveloppe <SectionShell> (couleur/vidéo/carrousel étant
+ * gérés par le contenu réel dans le Studio, hors de cet atelier de props).
  */
-const projectSections: PlaygroundSection[] = [];
+const projectSections: PlaygroundSection[] = [
+  {
+    id: "heroSection",
+    label: "En-tête principal",
+    component: "HeroSection",
+    baseComponent: "UPageHero",
+    docUrl: "https://ui.nuxt.com/docs/components/page-hero",
+    controls: [
+      ...([
+        {
+          key: "headline",
+          label: "Sur-titre (headline)",
+          type: "text",
+          default: "Nouveau",
+          tsType: "string",
+          help: "Petit texte affiché au-dessus du titre.",
+          placeholder: "Sur-titre…",
+        },
+        {
+          key: "title",
+          label: "Titre (title)",
+          type: "text",
+          default: "Un titre qui capte l'attention",
+          tsType: "string",
+          help: "Le titre principal de l'en-tête.",
+          placeholder: "Titre…",
+        },
+        {
+          key: "description",
+          label: "Description (description)",
+          type: "textarea",
+          default:
+            "Une phrase d'introduction claire qui présente votre offre et invite à passer à l'action.",
+          tsType: "string",
+          help: "Le texte affiché sous le titre.",
+          placeholder: "Description…",
+        },
+        {
+          key: "orientation",
+          label: "Orientation (orientation)",
+          type: "select",
+          default: "vertical",
+          tsType: "'vertical' | 'horizontal'",
+          help: "Verticale (centré) ou horizontale (illustration à côté du texte).",
+          options: [
+            { label: "Verticale (centré)", value: "vertical" },
+            { label: "Horizontale (illustration)", value: "horizontal" },
+          ],
+        },
+        {
+          key: "reverse",
+          label: "Inverser (reverse)",
+          type: "boolean",
+          default: false,
+          tsType: "boolean",
+          help: "Inverse l'ordre du slot par défaut (illustration à gauche/droite).",
+          showIf: (v) => v.orientation === "horizontal",
+        },
+        {
+          key: "links",
+          label: "Boutons (links)",
+          type: "links",
+          default: [
+            {
+              label: "Commencer",
+              to: "/contact",
+              color: "primary",
+              variant: "solid",
+            },
+            {
+              label: "En savoir plus",
+              to: "/",
+              color: "neutral",
+              variant: "subtle",
+            },
+          ] as PlaygroundLink[],
+          tsType: "ButtonProps[]",
+          help: "Liste de boutons (<UButton>) affichés sous la description.",
+        },
+      ] satisfies ComponentControl<PageHeroProps>[]),
+      // --- Apparence : FOND, au choix comme dans le Studio Sanity
+      // (couleur du thème / image / vidéo / carrousel).
+      {
+        key: "bgType",
+        target: "appearance",
+        label: "Type de fond",
+        type: "select",
+        default: "color",
+        tsType: "'color' | 'image' | 'video' | 'carousel'",
+        help: "Fond de l'en-tête : couleur, image, vidéo ou carrousel.",
+        options: [
+          { label: "Couleur", value: "color" },
+          { label: "Image", value: "image" },
+          { label: "Vidéo", value: "video" },
+          { label: "Carrousel", value: "carousel" },
+        ],
+      },
+      {
+        key: "bgColor",
+        target: "appearance",
+        label: "Couleur de fond",
+        type: "select",
+        default: "surface",
+        tsType: "string",
+        help: "Couleur du thème utilisée comme fond.",
+        showIf: (v) => (v.bgType ?? "color") === "color",
+        options: [
+          { label: "Accent", value: "accent" },
+          { label: "Fond principal", value: "background" },
+          { label: "Fond sombre", value: "surface" },
+          { label: "Fond clair", value: "light" },
+          { label: "Primaire", value: "primary" },
+          { label: "Secondaire", value: "secondary" },
+          { label: "Succès", value: "success" },
+          { label: "Avertissement", value: "warning" },
+          { label: "Erreur", value: "error" },
+        ],
+      },
+      {
+        key: "image",
+        target: "appearance",
+        label: "Image de fond",
+        type: "image",
+        default: "",
+        tsType: "SanityImage",
+        help: "Téléversée localement (non envoyée à Sanity).",
+        showIf: (v) => v.bgType === "image",
+      },
+      {
+        key: "video",
+        target: "appearance",
+        label: "Vidéo de fond",
+        type: "video",
+        default: "",
+        tsType: "SanityFile",
+        help: "Vidéo lue en boucle, sans son. Téléversée localement.",
+        showIf: (v) => v.bgType === "video",
+      },
+      {
+        key: "carousel",
+        target: "appearance",
+        label: "Images du carrousel",
+        type: "images",
+        default: [] as string[],
+        tsType: "SanityImage[]",
+        help: "Plusieurs images enchaînées en fondu. Téléversées localement.",
+        showIf: (v) => v.bgType === "carousel",
+      },
+      {
+        key: "overlayOpacity",
+        target: "appearance",
+        label: "Voile (opacité %)",
+        type: "range",
+        default: 40,
+        min: 0,
+        max: 100,
+        step: 5,
+        tsType: "number",
+        help: "Assombrit le média pour la lisibilité du texte.",
+        showIf: (v) => ["image", "video", "carousel"].includes(v.bgType),
+      },
+      {
+        key: "lightText",
+        target: "appearance",
+        label: "Texte clair",
+        type: "boolean",
+        default: true,
+        tsType: "boolean",
+        help: "Texte clair (sur fond sombre / média).",
+      },
+    ],
+  },
+];
 
 export const playgroundSections: PlaygroundSection[] = [
   ...coreSections,

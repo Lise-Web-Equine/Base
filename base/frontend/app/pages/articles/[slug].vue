@@ -114,7 +114,7 @@ useSiteMetadata({
                alimenté par les données Sanity). -->
           <UCard v-if="settings?.title">
             <template #header>
-              <p class="a-h3 text-foreground">{{ settings.title }}</p>
+              <p class="a-title-3 text-foreground">{{ settings.title }}</p>
             </template>
 
             <p v-if="settings.description" class="text-sm text-muted">
@@ -152,7 +152,7 @@ useSiteMetadata({
           <div
             v-if="relatedPosts.length"
             class="border-t border-border pt-8">
-            <h2 class="a-h3 mb-6">À lire aussi</h2>
+            <h2 class="a-title-3 mb-6">À lire aussi</h2>
             <div class="space-y-6">
               <UBlogPost
                 v-for="(article, i) in relatedPosts"
@@ -192,7 +192,7 @@ useSiteMetadata({
             class="mb-6 -ml-1 px-1" />
 
           <div class="pb-6 grid gap-6 mb-6 border-b border-border">
-            <h1 class="a-h1">
+            <h1 class="a-title-1">
               {{ post.title }}
             </h1>
 

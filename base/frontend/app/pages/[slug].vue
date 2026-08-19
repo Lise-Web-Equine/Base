@@ -19,10 +19,18 @@ useSiteMetadata({
   description: page?.value?.seoDescription || page?.value?.pageHeader?.description,
   noIndex: page?.value?.noIndex ?? false,
 });
+
+// Hero collé au header : uniquement s'il n'y a pas de bandeau (pageHeader) au-
+// dessus ET que la 1re section est un hero → on supprime la marge haute.
+const firstIsHero = computed(
+  () =>
+    !page.value?.pageHeader?.title &&
+    page.value?.pageBuilder?.[0]?._type === "heroSection"
+);
 </script>
 
 <template>
-  <div class="my-12 lg:my-24" v-if="page">
+  <div :class="firstIsHero ? 'mb-12 lg:mb-24' : 'my-12 lg:my-24'" v-if="page">
     <PageHeader :value="page.pageHeader" />
     <div>
       <div v-if="page.pageBuilder && page.pageBuilder.length > 0">

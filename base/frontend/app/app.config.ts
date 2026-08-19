@@ -8,6 +8,24 @@
  *
  * `info` et `neutral` réutilisent des échelles déjà présentes (blue / gray).
  */
+/**
+ * Titres des sections Nuxt UI (hero / CTA / section / header) alignés sur
+ * l'échelle typographique du thème (tokens `--a-*`, cf. `.a-display` / `.a-title-1`
+ * dans `main.css`). Objectif : une seule hiérarchie de titres, identique pour
+ * les sections « maison » (`<h2 class="a-title-1">`) et les sections Nuxt UI.
+ *
+ * On neutralise les tailles fixes de Nuxt UI (`text-3xl`, `sm:text-4xl`,
+ * `lg:text-5xl`, `text-5xl`, `sm:text-7xl`) en imposant la taille du thème à
+ * CHAQUE palier (base/sm/lg) — la valeur est déjà fluide (`clamp`), donc
+ * identique partout. tailwind-merge retire alors les tailles conflictuelles.
+ * La COULEUR n'est pas touchée : Nuxt UI gère le contraste selon le fond
+ * (`text-highlighted` / `text-inverted`, bascule `.dark` sur média sombre).
+ */
+const displayTitle =
+  "font-display text-[length:var(--a-display)] sm:text-[length:var(--a-display)] lg:text-[length:var(--a-display)] leading-[1.05] tracking-[-0.02em] [font-weight:var(--a-heading-weight)] [text-transform:var(--a-display-case)]"
+const sectionTitle =
+  "font-display text-[length:var(--a-title-1)] sm:text-[length:var(--a-title-1)] lg:text-[length:var(--a-title-1)] leading-[1.1] tracking-[-0.015em] [font-weight:var(--a-heading-weight)] [text-transform:var(--a-display-case)]"
+
 export default defineAppConfig({
   ui: {
     colors: {
@@ -46,6 +64,7 @@ export default defineAppConfig({
     // Ces classes fusionnent avec le thème Nuxt UI (le `bg-*` remplace le défaut,
     // le `ring` du thème fournit la bordure pour subtle/outline).
     pageCTA: {
+      slots: {title: sectionTitle},
       variants: {
         variant: {
           solid: {root: "bg-surface"},
@@ -54,6 +73,17 @@ export default defineAppConfig({
           outline: {root: "bg-transparent"},
         },
       },
+    },
+    // Titres de section/hero/en-tête alignés sur l'échelle du thème (voir plus
+    // haut) : une seule hiérarchie de titres sur tout le site.
+    pageHero: {
+      slots: {title: displayTitle},
+    },
+    pageSection: {
+      slots: {title: sectionTitle},
+    },
+    pageHeader: {
+      slots: {title: sectionTitle},
     },
   },
 });

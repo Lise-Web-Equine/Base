@@ -3,8 +3,9 @@
  * Learn more: https://www.sanity.io/docs/configuration
  */
 
-import {defineConfig, isObjectInputProps} from 'sanity'
+import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
+import {StudioFormInput} from './src/components/StudioFormInput'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './src/schemaTypes'
 import {structure} from './src/structure'
@@ -152,17 +153,12 @@ export default defineConfig({
     types: schemaTypes,
   },
 
-  // Masque l'onglet « Tous les champs » (groupe `all-fields`) ajouté
-  // automatiquement par Sanity dès qu'un schéma définit des groupes.
+  // Rendu des champs de formulaire (voir StudioFormInput) :
+  //  - masque l'onglet « Tous les champs » (groupe `all-fields`) ;
+  //  - ajoute l'aide « Mise en forme » (tooltip) en haut de chaque document.
   form: {
     components: {
-      input: (props) => {
-        if (isObjectInputProps(props) && props.groups?.[0]?.name === 'all-fields') {
-          const groups = props.groups as {name: string}[]
-          groups.shift()
-        }
-        return props.renderDefault(props)
-      },
+      input: StudioFormInput,
     },
   },
 })

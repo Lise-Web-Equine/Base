@@ -19,7 +19,7 @@ import imageUrlBuilder from "@sanity/image-url";
 // Références directes aux composants (auto-importés). `resolveComponent(nom)`
 // échoue à l'exécution pour les composants Nuxt UI (auto-import = compile-time),
 // d'où l'import explicite depuis `#components`.
-import { UPageSection, UPageCTA } from "#components";
+import { UPageSection, UPageCTA, UPageHero } from "#components";
 
 interface Appearance {
   // Conservé pour compat (ignoré) : le fond est désormais déterminé par la
@@ -54,7 +54,7 @@ const props = defineProps<{
 }>();
 
 // Composant de base résolu (nom → référence de composant).
-const BASE_COMPONENTS = { UPageSection, UPageCTA } as const;
+const BASE_COMPONENTS = { UPageSection, UPageCTA, UPageHero } as const;
 const BaseComponent = computed(
   () => BASE_COMPONENTS[props.base as keyof typeof BASE_COMPONENTS] || UPageSection
 );
@@ -185,12 +185,9 @@ const uiConfig = computed(() => {
         .join(" "),
       o.container
     ),
-    // Titre : police + graisse + casse « Titres » du thème (remplace le
-    // font-bold / police par défaut de Nuxt UI).
-    title: mergeSlot(
-      "font-display [font-weight:var(--a-heading-weight)] [text-transform:var(--a-display-case)]",
-      o.title
-    ),
+    // Titre : géré globalement (app.config → pageSection/pageCTA/pageHeader),
+    // aligné sur l'échelle typographique du thème. Un éventuel override par
+    // instance (`o.title`) reste transmis via le spread `...o` ci-dessus.
     // En-tête : police + graisse + casse « En-tête » du thème.
     headline: mergeSlot(
       "text-muted a-headline [font-weight:var(--a-headline-weight)]",
