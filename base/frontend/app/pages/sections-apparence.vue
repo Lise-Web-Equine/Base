@@ -20,6 +20,7 @@ import {
   type PlaygroundSection,
   type PropControl,
   type PlaygroundLink,
+  type PlaygroundFeature,
 } from "~/lib/sectionsPlayground";
 
 // Gabarit réutilisable d'un contrôle de formulaire (rendu par groupe).
@@ -98,6 +99,11 @@ function appearanceControls(section: PlaygroundSection): PropControl[] {
     (c) => c.target === "appearance" && isVisible(section, c)
   );
 }
+function contentControls(section: PlaygroundSection): PropControl[] {
+  return section.controls.filter(
+    (c) => c.target === "content" && isVisible(section, c)
+  );
+}
 
 // --- Aperçu : props du composant transmises à <UPageSection> via <SectionShell>.
 // On nettoie les chaînes vides et les tableaux vides pour coller au rendu réel.
@@ -117,6 +123,16 @@ function boundProps(section: PlaygroundSection): Record<string, unknown> {
           to: l.to || undefined,
           color: l.color || undefined,
           variant: l.variant || undefined,
+        }));
+      if (cleaned.length) out[c.key] = cleaned;
+    } else if (c.type === "features") {
+      const features = (v as PlaygroundFeature[]) ?? [];
+      const cleaned = features
+        .filter((f) => f.title?.trim())
+        .map((f) => ({
+          title: f.title,
+          description: f.description || undefined,
+          icon: f.icon || undefined,
         }));
       if (cleaned.length) out[c.key] = cleaned;
     } else if (typeof v === "string") {
@@ -179,6 +195,24 @@ function addLink(section: PlaygroundSection) {
 }
 function removeLink(section: PlaygroundSection, index: number) {
   sectionLinks(section).splice(index, 1);
+}
+
+// --- Gestion des fonctionnalités (contrôle "features") : ajout / suppression.
+function sectionFeatures(
+  section: PlaygroundSection,
+  key: string
+): PlaygroundFeature[] {
+  return (state[section.id]?.[key] as PlaygroundFeature[]) ?? [];
+}
+function addFeature(section: PlaygroundSection, key: string) {
+  sectionFeatures(section, key).push({
+    title: "Fonctionnalité",
+    description: "",
+    icon: "",
+  });
+}
+function removeFeature(section: PlaygroundSection, key: string, index: number) {
+  sectionFeatures(section, key).splice(index, 1);
 }
 
 function selectItems(control: PropControl) {
@@ -256,7 +290,7 @@ function onCodeInput(value: string) {
   for (const c of componentControls(selected.value)) {
     if (c.key in parsed) values[c.key] = parsed[c.key];
     else if (c.type === "boolean") values[c.key] = false;
-    else if (c.type === "links") values[c.key] = [];
+    else if (c.type === "links" || c.type === "features") values[c.key] = [];
     else if (typeof c.default === "string") values[c.key] = "";
   }
   nextTick(() => {
@@ -622,6 +656,44 @@ watch([selectedId, state], () => postState(), { deep: true });
               Ajouter un bouton
             </UButton>
           </div>
+
+          <!-- Liste de fonctionnalités -->
+          <div v-else-if="control.type === 'features'" class="space-y-3">
+            <div
+              v-for="(feature, i) in sectionFeatures(selected, control.key)"
+              :key="i"
+              class="space-y-2 rounded-lg border border-border p-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-medium text-muted">
+                  Fonctionnalité {{ i + 1 }}
+                </span>
+                <UButton
+                  size="xs"
+                  color="error"
+                  variant="ghost"
+                  icon="i-lucide-trash-2"
+                  @click="removeFeature(selected, control.key, i)" />
+              </div>
+              <UInput v-model="feature.title" placeholder="Titre" class="w-full" />
+              <UTextarea
+                v-model="feature.description"
+                placeholder="Description (optionnel)"
+                :rows="2"
+                class="w-full" />
+              <UInput
+                v-model="feature.icon"
+                placeholder="Icône (i-lucide-rocket)"
+                class="w-full" />
+            </div>
+            <UButton
+              size="xs"
+              color="neutral"
+              variant="outline"
+              icon="i-lucide-plus"
+              @click="addFeature(selected, control.key)">
+              Ajouter une fonctionnalité
+            </UButton>
+          </div>
         </UFormField>
       </DefineControl>
 
@@ -630,6 +702,17 @@ watch([selectedId, state], () => postState(), { deep: true });
         <section class="space-y-4">
           <ReuseControl
             v-for="control in componentControls(selected)"
+            :key="control.key"
+            :control="control" />
+        </section>
+
+        <!-- Contenu rendu via un slot (ex. citation) -->
+        <section v-if="contentControls(selected).length" class="space-y-4">
+          <h3 class="text-xs font-semibold uppercase tracking-widest text-muted">
+            Contenu
+          </h3>
+          <ReuseControl
+            v-for="control in contentControls(selected)"
             :key="control.key"
             :control="control" />
         </section>

@@ -27,6 +27,8 @@ const coreSections: Record<string, string> = {
 const projectSections: Record<string, string> = {
   bannerSection: "BannerSection",
   heroSection: "HeroSection",
+  pageSection: "PageSection",
+  referencesSection: "ReferencesSection",
 };
 
 /**

@@ -1,3 +1,6 @@
+---
+trigger: model_decision
+---
 # Référence : Ajout de champ Sanity
 
 ## ⚠️ Contrainte obligatoire : libellés en français

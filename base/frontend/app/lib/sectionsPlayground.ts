@@ -17,7 +17,7 @@
  * (widget, libellé, défaut, aide) restent, elles, écrites à la main : elles
  * n'existent pas dans les types (effacés à l'exécution).
  */
-import type { PageCTAProps, PageHeroProps } from "@nuxt/ui";
+import type { PageCTAProps, PageHeroProps, PageSectionProps } from "@nuxt/ui";
 
 /** Type de contrôle affiché dans le formulaire du drawer. */
 export type ControlType =
@@ -27,6 +27,7 @@ export type ControlType =
   | "select"
   | "icon"
   | "links"
+  | "features"
   | "image"
   | "video"
   | "images"
@@ -43,8 +44,10 @@ export interface ControlOption {
  *    dans l'objet de props éditable).
  *  - `appearance` : réglage de l'enveloppe <SectionShell> (prop `appearance`),
  *    hors de l'objet de props du composant.
+ *  - `content` : contenu rendu via un SLOT (pas une prop du composant) — ex.
+ *    la citation. Exclu de l'objet de props / du code généré.
  */
-export type ControlTarget = "component" | "appearance";
+export type ControlTarget = "component" | "appearance" | "content";
 
 /** Définition d'une prop réglable (1 contrôle de formulaire). */
 export interface PropControl {
@@ -93,6 +96,13 @@ export interface PlaygroundLink {
   to?: string;
   color?: string;
   variant?: string;
+}
+
+/** Une fonctionnalité éditable (mappée sur `PageFeatureProps` de Nuxt UI). */
+export interface PlaygroundFeature {
+  title: string;
+  description?: string;
+  icon?: string;
 }
 
 export interface PlaygroundSection {
@@ -441,6 +451,214 @@ const projectSections: PlaygroundSection[] = [
         default: true,
         tsType: "boolean",
         help: "Texte clair (sur fond sombre / média).",
+      },
+    ],
+  },
+  {
+    id: "pageSection",
+    label: "Section de page",
+    component: "PageSection",
+    baseComponent: "UPageSection",
+    docUrl: "https://ui.nuxt.com/docs/components/page-section",
+    controls: [
+      ...([
+        {
+          key: "headline",
+          label: "Sur-titre (headline)",
+          type: "text",
+          default: "Nos services",
+          tsType: "string",
+          help: "Petit texte affiché au-dessus du titre.",
+          placeholder: "Sur-titre…",
+        },
+        {
+          key: "title",
+          label: "Titre (title)",
+          type: "text",
+          default: "Une section riche et modulable",
+          tsType: "string",
+          help: "Le titre principal de la section.",
+          placeholder: "Titre…",
+        },
+        {
+          key: "description",
+          label: "Description (description)",
+          type: "textarea",
+          default:
+            "Présentez votre contenu avec des fonctionnalités, une citation et des boutons d'action.",
+          tsType: "string",
+          help: "Le texte affiché sous le titre.",
+          placeholder: "Description…",
+        },
+        {
+          key: "orientation",
+          label: "Disposition (orientation)",
+          type: "select",
+          default: "vertical",
+          tsType: "'vertical' | 'horizontal'",
+          help: "Bande (vertical) ou illustration en colonne (horizontal).",
+          options: [
+            { label: "Bande (vertical)", value: "vertical" },
+            { label: "Illustration en colonne (horizontal)", value: "horizontal" },
+          ],
+        },
+        {
+          key: "reverse",
+          label: "Inverser (reverse)",
+          type: "boolean",
+          default: false,
+          tsType: "boolean",
+          help: "Inverse l'ordre du slot par défaut (illustration à gauche/droite).",
+          showIf: (v) => v.orientation === "horizontal",
+        },
+        {
+          key: "features",
+          label: "Fonctionnalités (features)",
+          type: "features",
+          default: [
+            {
+              title: "Rapide",
+              description: "Des performances optimisées de bout en bout.",
+              icon: "i-lucide-rocket",
+            },
+            {
+              title: "Accessible",
+              description: "Pensé pour tous les utilisateurs.",
+              icon: "i-lucide-accessibility",
+            },
+          ] as PlaygroundFeature[],
+          tsType: "PageFeatureProps[]",
+          help: "Liste de fonctionnalités (<UPageFeature>) affichées sous la description.",
+        },
+        {
+          key: "links",
+          label: "Boutons (links)",
+          type: "links",
+          default: [
+            {
+              label: "Découvrir",
+              to: "/contact",
+              color: "primary",
+              variant: "solid",
+            },
+          ] as PlaygroundLink[],
+          tsType: "ButtonProps[]",
+          help: "Liste de boutons (<UButton>) affichés sous la description.",
+        },
+      ] satisfies ComponentControl<PageSectionProps>[]),
+      // --- Contenu rendu via un slot (pas une prop UPageSection).
+      {
+        key: "citation",
+        target: "content",
+        label: "Citation",
+        type: "textarea",
+        default: "« Un outil qui a transformé notre façon de travailler. »",
+        tsType: "string",
+        help: "Citation mise en avant sous la description (slot #body).",
+        placeholder: "Citation…",
+      },
+      // --- Apparence : FOND au choix comme dans le Studio Sanity
+      // (couleur du thème / image / vidéo / carrousel), identique à l'en-tête.
+      {
+        key: "bgType",
+        target: "appearance",
+        label: "Type de fond",
+        type: "select",
+        default: "color",
+        tsType: "'color' | 'image' | 'video' | 'carousel'",
+        help: "Fond de la section : couleur, image, vidéo ou carrousel.",
+        options: [
+          { label: "Couleur", value: "color" },
+          { label: "Image", value: "image" },
+          { label: "Vidéo", value: "video" },
+          { label: "Carrousel", value: "carousel" },
+        ],
+      },
+      {
+        key: "bgColor",
+        target: "appearance",
+        label: "Couleur de fond",
+        type: "select",
+        default: "surface",
+        tsType: "string",
+        help: "Couleur du thème utilisée comme fond.",
+        showIf: (v) => (v.bgType ?? "color") === "color",
+        options: [
+          { label: "Accent", value: "accent" },
+          { label: "Fond principal", value: "background" },
+          { label: "Fond sombre", value: "surface" },
+          { label: "Fond clair", value: "light" },
+          { label: "Primaire", value: "primary" },
+          { label: "Secondaire", value: "secondary" },
+          { label: "Succès", value: "success" },
+          { label: "Avertissement", value: "warning" },
+          { label: "Erreur", value: "error" },
+        ],
+      },
+      {
+        key: "image",
+        target: "appearance",
+        label: "Image de fond",
+        type: "image",
+        default: "",
+        tsType: "SanityImage",
+        help: "Téléversée localement (non envoyée à Sanity).",
+        showIf: (v) => v.bgType === "image",
+      },
+      {
+        key: "video",
+        target: "appearance",
+        label: "Vidéo de fond",
+        type: "video",
+        default: "",
+        tsType: "SanityFile",
+        help: "Vidéo lue en boucle, sans son. Téléversée localement.",
+        showIf: (v) => v.bgType === "video",
+      },
+      {
+        key: "carousel",
+        target: "appearance",
+        label: "Images du carrousel",
+        type: "images",
+        default: [] as string[],
+        tsType: "SanityImage[]",
+        help: "Plusieurs images enchaînées en fondu. Téléversées localement.",
+        showIf: (v) => v.bgType === "carousel",
+      },
+      {
+        key: "overlayOpacity",
+        target: "appearance",
+        label: "Voile (opacité %)",
+        type: "range",
+        default: 40,
+        min: 0,
+        max: 100,
+        step: 5,
+        tsType: "number",
+        help: "Assombrit le média pour la lisibilité du texte.",
+        showIf: (v) => ["image", "video", "carousel"].includes(v.bgType),
+      },
+      {
+        key: "lightText",
+        target: "appearance",
+        label: "Texte clair",
+        type: "boolean",
+        default: true,
+        tsType: "boolean",
+        help: "Texte clair (sur fond sombre / média).",
+      },
+      {
+        key: "width",
+        target: "appearance",
+        label: "Largeur (width)",
+        type: "select",
+        default: "container",
+        tsType: "'container' | 'full'",
+        help: "Contenu contraint à la largeur du site, ou bande pleine largeur.",
+        options: [
+          { label: "Conteneur (contraint)", value: "container" },
+          { label: "Pleine largeur", value: "full" },
+        ],
       },
     ],
   },

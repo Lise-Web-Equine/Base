@@ -76,6 +76,32 @@ const projectSectionProjections = /* groq */ `
 			"videoUrl": video.asset->url
 		}
 	},
+	_type == "referencesSection" => {
+		"references": *[_type == "referenceItem" && type == ^.category] | order(name asc){
+			_id,
+			name,
+			"logoUrl": logo.asset->url,
+			"logoAlt": logo.alt,
+			${linkFields}
+		}
+	},
+	_type == "pageSection" => {
+		description[]{
+			${portableTextFields}
+		},
+		features[]{
+			...,
+			${linkFields}
+		},
+		buttons[]{
+			...,
+			${linkFields}
+		},
+		background{
+			...,
+			"videoUrl": video.asset->url
+		}
+	},
 `;
 
 // Projection de l'objet `pageHeader` : ses liens (boutons) sont résolus

@@ -17,9 +17,12 @@
 import type {
   PlaygroundSection,
   PlaygroundLink,
+  PlaygroundFeature,
   PropControl,
 } from "~/lib/sectionsPlayground";
 import { colorSlotToCssVar } from "~/lib/utils";
+// Composants de base à fond auto-géré (auto-importés → import explicite requis).
+import { UPageHero, UPageSection } from "#components";
 
 const props = defineProps<{
   section: PlaygroundSection;
@@ -47,6 +50,15 @@ const boundProps = computed(() => {
           variant: l.variant || undefined,
         }));
       if (cleaned.length) out[c.key] = cleaned;
+    } else if (c.type === "features") {
+      const cleaned = ((v as PlaygroundFeature[]) ?? [])
+        .filter((f) => f.title?.trim())
+        .map((f) => ({
+          title: f.title,
+          description: f.description || undefined,
+          icon: f.icon || undefined,
+        }));
+      if (cleaned.length) out[c.key] = cleaned;
     } else if (typeof v === "string") {
       if (v.trim()) out[c.key] = v;
     } else if (v != null) {
@@ -57,6 +69,15 @@ const boundProps = computed(() => {
 });
 
 const isHorizontal = computed(() => props.values.orientation === "horizontal");
+// Citation : contenu rendu via un slot (#body), pas une prop du composant.
+const citation = computed(() => (props.values.citation as string)?.trim() || "");
+// Alignement calé sur la section : centré en bande (vertical), barre latérale
+// alignée à gauche en colonne (horizontal).
+const citationClass = computed(() =>
+  isHorizontal.value
+    ? "border-s-4 border-primary ps-4 text-lg italic text-muted text-start"
+    : "text-lg italic text-muted text-center"
+);
 const bgImageUrl = computed(() => (props.values.image as string) || "");
 const hasImage = computed(() => !!bgImageUrl.value);
 
@@ -68,10 +89,37 @@ const finalProps = computed(() => {
   return base;
 });
 
-// --- En-tête principal (hero, base UPageHero) : fond au choix comme dans le
-// Studio (couleur du thème / image / vidéo / carrousel), rendu comme le vrai
-// composant <HeroSection> (couche de fond + <UPageHero> par-dessus).
-const isHero = computed(() => props.section.baseComponent === "UPageHero");
+// --- Sections à FOND AUTO-GÉRÉ (base UPageHero ou UPageSection) : fond au
+// choix comme dans le Studio (couleur du thème / image / vidéo / carrousel),
+// rendu comme les vrais composants <HeroSection> / <PageSection> (couche de
+// fond + composant de base par-dessus).
+const isHero = computed(() =>
+  ["UPageHero", "UPageSection"].includes(props.section.baseComponent)
+);
+// Composant de base à rendre par-dessus la couche de fond.
+const SelfBgComponent = computed(() =>
+  props.section.baseComponent === "UPageSection" ? UPageSection : UPageHero
+);
+// La largeur et le rythme vertical (--section-space) ne sont pilotés que pour
+// <UPageSection> (le hero est toujours pleine largeur et garde son propre py).
+// Container = contrainte à la largeur du site.
+const selfBgStyle = computed(() => {
+  if (props.section.baseComponent !== "UPageSection") return {};
+  const s: Record<string, string> = { paddingBlock: "var(--section-space)" };
+  if (props.values.width !== "full") {
+    s.width = "min(100% - 2 * var(--gutter), var(--site-max))";
+    s.marginInline = "auto";
+  }
+  return s;
+});
+// Override `ui` : pour <UPageSection>, le conteneur remplit la bande (largeur
+// portée par `selfBgStyle`) et son padding vertical natif est neutralisé
+// (rythme porté par --section-space), comme dans le vrai <PageSection>.
+const selfBgUi = computed(() =>
+  props.section.baseComponent === "UPageSection"
+    ? { ...heroUi.value, container: "max-w-none mx-0 w-full py-0 sm:py-0 lg:py-0" }
+    : heroUi.value
+);
 const heroBgType = computed(() => (props.values.bgType as string) || "color");
 const heroColorVar = computed(() =>
   colorSlotToCssVar((props.values.bgColor as string) || "surface")
@@ -115,7 +163,8 @@ const bandStyle = computed(() =>
   <section
     v-if="isHero"
     class="relative w-full overflow-hidden"
-    :class="heroLightText ? 'dark' : ''">
+    :class="heroLightText ? 'dark' : ''"
+    :style="selfBgStyle">
     <div class="absolute inset-0 isolate">
       <div
         v-if="heroBgType === 'color'"
@@ -149,7 +198,12 @@ const bandStyle = computed(() =>
       <div v-if="heroIsMedia" class="absolute inset-0 z-[2]" :style="heroOverlayStyle" />
     </div>
     <div class="relative z-10">
-      <UPageHero v-bind="boundProps" :ui="heroUi">
+      <component :is="SelfBgComponent" v-bind="boundProps" :ui="selfBgUi">
+        <template v-if="citation" #body>
+          <blockquote :class="citationClass">
+            {{ citation }}
+          </blockquote>
+        </template>
         <template v-if="isHorizontal" #default>
           <img
             src="https://picsum.photos/704/540"
@@ -157,7 +211,7 @@ const bandStyle = computed(() =>
             class="w-full rounded-[var(--ui-radius)]"
             loading="lazy" />
         </template>
-      </UPageHero>
+      </component>
     </div>
   </section>
 

@@ -1,3 +1,6 @@
+---
+trigger: model_decision
+---
 # Référence : Extension du Page Builder
 
 ## 🔍 Checklist de vérification
