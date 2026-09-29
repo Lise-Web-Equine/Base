@@ -1,0 +1,3 @@
+# Polices AUTO-HÉBERGÉES servies sur le site public (à la racine /fonts/).
+# Déposer ici les .woff2 de chaque police locale, ex. fonts/haras-sans/regular.woff2
+# puis déclarer la police dans frontend/shared/localFonts.ts (bloc PROJET).

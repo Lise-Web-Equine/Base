@@ -1,5 +1,6 @@
 import { stegaClean } from "@sanity/client/stega";
 import { themeSettingsQuery } from "~/sanity/queries";
+import { LOCAL_FONT_FAMILIES } from "#shared/localFonts";
 
 /**
  * Default theme used before Sanity data is available (SSR/first paint) or when a
@@ -104,27 +105,45 @@ export async function useTheme() {
       .join(" "),
   );
 
-  // Chargement dynamique des polices choisies dans Sanity via le proxy local
-  // (/api/fonts/css). Les polices sont donc servies depuis notre domaine — pas
-  // d'appel client vers Google (RGPD) — et n'importe quelle police du thème
-  // fonctionne sans rebuild. On n'extrait que le nom de famille (avant la
-  // virgule de repli) et on dédoublonne.
+  // Chargement dynamique des polices choisies dans Sanity, servies depuis notre
+  // domaine (pas d'appel client vers Google : RGPD). On n'extrait que le nom de
+  // famille (avant la virgule de repli) et on dédoublonne, puis on aiguille :
+  //  - familles AUTO-HÉBERGÉES (registre `#shared/localFonts`) → /api/fonts/local
+  //    (génère le @font-face à partir des fichiers de `public/fonts/`) ;
+  //  - autres familles → /api/fonts/css (proxy Google RGPD).
+  // N'importe quelle police du thème fonctionne ainsi sans rebuild.
   const familyOf = (v?: string) =>
     (v?.split(",")[0] ?? "").replace(/["']/g, "").trim();
 
-  const fontsHref = computed(() => {
+  const buildHref = (base: string, families: string[]) => {
+    if (!families.length) return "";
+    const params = new URLSearchParams();
+    for (const f of families) params.append("family", f);
+    return `${base}?${params.toString()}`;
+  };
+
+  const usedFamilies = computed(() => {
     const t = cleanTheme.value;
-    const families = [
+    return [
       familyOf(t?.fontDisplay),
       familyOf(t?.fontBody),
       familyOf(t?.fontAccent),
       familyOf(t?.fontHeadline),
     ].filter((f, i, arr) => f && arr.indexOf(f) === i);
-    if (!families.length) return "";
-    const params = new URLSearchParams();
-    for (const f of families) params.append("family", f);
-    return `/api/fonts/css?${params.toString()}`;
   });
+
+  const googleHref = computed(() =>
+    buildHref(
+      "/api/fonts/css",
+      usedFamilies.value.filter((f) => !LOCAL_FONT_FAMILIES.has(f)),
+    ),
+  );
+  const localHref = computed(() =>
+    buildHref(
+      "/api/fonts/local",
+      usedFamilies.value.filter((f) => LOCAL_FONT_FAMILIES.has(f)),
+    ),
+  );
 
   useHead({
     style: [
@@ -135,12 +154,18 @@ export async function useTheme() {
     ],
   });
 
-  // Lien séparé (forme fonction) pour ne rien émettre tant qu'aucune police
+  // Liens séparés (forme fonction) pour ne rien émettre tant qu'aucune police
   // n'est déterminée (évite un <link href=""> qui recharge la page courante).
+  // Deux feuilles distinctes : Google (proxy) et polices locales (@font-face).
   useHead(() => ({
-    link: fontsHref.value
-      ? [{key: "theme-fonts", rel: "stylesheet", href: fontsHref.value}]
-      : [],
+    link: [
+      ...(googleHref.value
+        ? [{ key: "theme-fonts", rel: "stylesheet", href: googleHref.value }]
+        : []),
+      ...(localHref.value
+        ? [{ key: "theme-fonts-local", rel: "stylesheet", href: localHref.value }]
+        : []),
+    ],
   }));
 
   // useHead est déjà enregistré (contexte de setup préservé) : on peut enfin

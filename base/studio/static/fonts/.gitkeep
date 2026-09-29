@@ -1,0 +1,3 @@
+# Copie des polices AUTO-HÉBERGÉES pour l'APERÇU dans le Studio (servi sous /static/fonts/).
+# Déposer ici les mêmes .woff2 que dans frontend/public/fonts/ pour chaque police locale,
+# puis déclarer la police dans studio/src/localFonts.ts (bloc PROJET).

@@ -55,6 +55,16 @@ export const reference = defineType({
         ),
     }),
     defineField({
+      name: 'logoScale',
+      title: 'Ajustement de taille (%)',
+      type: 'number',
+      description:
+        'Ajuste la taille de CE logo par rapport aux autres (100 % = taille normale). ' +
+        'À utiliser pour harmoniser un logo qui paraît trop grand ou trop petit.',
+      initialValue: 100,
+      validation: (Rule) => Rule.min(50).max(200),
+    }),
+    defineField({
       name: 'link',
       title: 'Lien',
       type: 'link',

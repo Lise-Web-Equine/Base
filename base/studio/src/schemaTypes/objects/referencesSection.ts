@@ -53,19 +53,36 @@ export const referencesSection = defineType({
     // faire défiler ou non les logos.
     defineField({
       name: 'useMarquee',
-      title: 'Défilement continu (marquee)',
+      title: 'Animer les logos',
       type: 'boolean',
       group: 'appearance',
       description:
-        'Fait défiler les logos en boucle (<UMarquee>). Sinon, ils sont alignés statiquement.',
+        'Anime les logos (défilement ou carrousel). Sinon, ils sont alignés statiquement.',
       initialValue: false,
+    }),
+    defineField({
+      name: 'animationStyle',
+      title: 'Type d’animation',
+      type: 'string',
+      group: 'appearance',
+      description:
+        'Défilement continu (ruban qui glisse) ou carrousel automatique (avance par pas, en boucle).',
+      initialValue: 'marquee',
+      options: {
+        list: [
+          {title: 'Défilement continu', value: 'marquee'},
+          {title: 'Carrousel automatique', value: 'carousel'},
+        ],
+        layout: 'radio',
+      },
+      hidden: ({parent}) => parent?.useMarquee !== true,
     }),
     defineField({
       name: 'pauseOnHover',
       title: 'Pause au survol',
       type: 'boolean',
       group: 'appearance',
-      description: 'Met le défilement en pause quand la souris survole les logos.',
+      description: 'Met l’animation en pause quand la souris survole les logos.',
       initialValue: true,
       hidden: ({parent}) => parent?.useMarquee !== true,
     }),
@@ -74,9 +91,33 @@ export const referencesSection = defineType({
       title: 'Sens inversé',
       type: 'boolean',
       group: 'appearance',
-      description: 'Inverse le sens du défilement.',
+      description: 'Inverse le sens du défilement continu.',
       initialValue: false,
-      hidden: ({parent}) => parent?.useMarquee !== true,
+      // Propre au défilement continu (pas au carrousel).
+      hidden: ({parent}) =>
+        parent?.useMarquee !== true || parent?.animationStyle === 'carousel',
+    }),
+    defineField({
+      name: 'showArrows',
+      title: 'Afficher les flèches',
+      type: 'boolean',
+      group: 'appearance',
+      description: 'Affiche les flèches de navigation (précédent / suivant).',
+      initialValue: false,
+      // Pertinent uniquement pour le carrousel par pas (pas le défilement continu).
+      hidden: ({parent}) =>
+        parent?.useMarquee !== true || parent?.animationStyle !== 'carousel',
+    }),
+    defineField({
+      name: 'showDots',
+      title: 'Afficher les puces',
+      type: 'boolean',
+      group: 'appearance',
+      description: 'Affiche les puces de navigation sous les logos.',
+      initialValue: false,
+      // Pertinent uniquement pour le carrousel par pas (pas le défilement continu).
+      hidden: ({parent}) =>
+        parent?.useMarquee !== true || parent?.animationStyle !== 'carousel',
     }),
     defineField({
       name: 'width',

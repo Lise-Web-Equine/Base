@@ -36,3 +36,14 @@
    :root {
      --a-scale: 1.28;
    }                                                                            */
+
+/* -----------------------------------------------------------------------------
+   3) SECTION « RÉFÉRENCES » — taille des logos
+   -----------------------------------------------------------------------------
+   Baseline commun à TOUS les logos de la section (cohérence). Chaque logo peut
+   ensuite être ajusté individuellement via son champ « Ajustement de taille (%) »
+   dans Sanity (multiplie ces valeurs). Régler ici pour tout le site : */
+:root {
+  --logo-height: 4.5rem;     /* hauteur normalisée des logos */
+  --logo-max-w: 220px;     /* largeur maxi (logos « mots » très larges) */
+}

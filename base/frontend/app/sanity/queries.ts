@@ -82,6 +82,7 @@ const projectSectionProjections = /* groq */ `
 			name,
 			"logoUrl": logo.asset->url,
 			"logoAlt": logo.alt,
+			logoScale,
 			${linkFields}
 		}
 	},

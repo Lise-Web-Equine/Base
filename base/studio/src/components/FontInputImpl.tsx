@@ -2,6 +2,12 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {set, unset, type StringInputProps} from 'sanity'
 import {Autocomplete, Card, Stack, Text, Box} from '@sanity/ui'
 import {FONT_OPTIONS} from '../fonts'
+import {
+  LOCAL_FONT_FAMILIES,
+  LOCAL_FONT_FALLBACK,
+  STUDIO_LOCAL_FONTS,
+  ensureLocalFontLoaded,
+} from '../localFonts'
 
 /**
  * Implémentation du champ de choix de police (voir FontInput.tsx pour le wrapper).
@@ -58,10 +64,17 @@ function loadGoogleFonts(): Promise<GFont[]> {
   return fontsPromise
 }
 
-// Charge une police depuis le CDN Google pour l'aperçu (Studio uniquement).
+// Charge une police pour l'aperçu (Studio uniquement) : depuis les fichiers
+// locaux (`/static/fonts/`) pour les polices auto-hébergées, sinon depuis le CDN
+// Google. Aucune incidence RGPD (le Studio n'est pas le site public).
 const loaded = new Set<string>()
 function ensureFontLoaded(family: string) {
   if (!family || loaded.has(family) || typeof document === 'undefined') return
+  if (LOCAL_FONT_FAMILIES.has(family)) {
+    loaded.add(family)
+    ensureLocalFontLoaded(family)
+    return
+  }
   loaded.add(family)
   const link = document.createElement('link')
   link.rel = 'stylesheet'
@@ -107,10 +120,16 @@ export default function FontInputImpl(props: StringInputProps) {
   }, [currentFamily])
 
   const options = useMemo(() => {
+    const localFamilies = STUDIO_LOCAL_FONTS.map((f) => f.family)
     const all = fonts.length ? fonts.map((f) => f.family) : RECOMMENDED.map((f) => f.family)
     const q = query.trim().toLowerCase()
+    const localMatches = q
+      ? localFamilies.filter((f) => f.toLowerCase().includes(q))
+      : localFamilies
     let list = q ? all.filter((f) => f.toLowerCase().includes(q)) : RECOMMENDED.map((f) => f.family)
     list = list.slice(0, 25)
+    // Polices locales (auto-hébergées) toujours en tête du menu.
+    list = [...localMatches, ...list.filter((f) => !localMatches.includes(f))]
     if (currentFamily && !list.includes(currentFamily)) list = [currentFamily, ...list]
     return list.map((family) => ({value: family}))
   }, [fonts, query, currentFamily])
@@ -119,6 +138,12 @@ export default function FontInputImpl(props: StringInputProps) {
     (family?: string) => {
       if (!family) {
         onChange(unset())
+        return
+      }
+      // Police locale : repli générique déclaré dans le registre local.
+      const localFallback = LOCAL_FONT_FALLBACK.get(family)
+      if (localFallback) {
+        onChange(set(`"${family}", ${localFallback}`))
         return
       }
       const cat = categoryByFamily.get(family) || 'sans-serif'
