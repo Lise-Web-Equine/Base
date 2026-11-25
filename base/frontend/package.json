@@ -38,5 +38,8 @@
     "@nuxt/image": "^2.2.1",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.19"
+  },
+  "engines": {
+    "node": "26.x"
   }
 }

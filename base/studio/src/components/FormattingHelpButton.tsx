@@ -38,7 +38,7 @@ export function FormattingHelpButton() {
                 <Code>_mot_</Code> → italique
               </Text>
               <Text size={1}>
-                <Code>//</Code> → saut de ligne
+                <Code>{'//'}</Code> → saut de ligne
               </Text>
               <Text size={1} muted>
                 Ex. <Code>Pour une communication//**alignée** et rentable</Code>
