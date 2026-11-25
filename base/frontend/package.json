@@ -17,7 +17,7 @@
     "@nuxtjs/sanity": "^2.5.0",
     "@nuxtjs/seo": "^6.1.0",
     "@portabletext/types": "^4.0.2",
-    "@sanity/client": "^7.22.0",
+    "@sanity/client": "^8.17.0",
     "@sanity/image-url": "^2.0.3",
     "@tailwindcss/vite": "^4.3.5",
     "@takumi-rs/core": "^1.8.6",
