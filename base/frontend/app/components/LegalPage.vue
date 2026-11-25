@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PortableTextBlock } from "sanity";
+import type { PortableTextBlock } from "@portabletext/types";
 import { legalTextsQuery } from "~/sanity/queries";
 import { legalPageByType, type LegalType } from "~/lib/legalPages";
 

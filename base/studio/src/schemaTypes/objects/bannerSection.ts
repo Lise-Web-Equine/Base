@@ -1,4 +1,4 @@
-import {BellIcon} from '@sanity/icons'
+import {BellIcon} from '@sanity/icons/Bell'
 import {defineSection} from '../../sections/defineSection'
 import {bannerContentFields, bannerAppearanceFields} from './bannerFields'
 

@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {LinkIcon} from '@sanity/icons'
+import {LinkIcon} from '@sanity/icons/Link'
 
 /**
  * Objet de schéma "link" (lien). Brique réutilisable : l'utilisateur choisit d'abord

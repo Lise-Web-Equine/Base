@@ -1,4 +1,4 @@
-import {ColorWheelIcon} from '@sanity/icons'
+import {ColorWheelIcon} from '@sanity/icons/ColorWheel'
 import {defineField, defineType} from '@sanity/types'
 import {COLOR_SLOTS} from '../../colorSlots'
 import {FontInput} from '../../components/FontInput'

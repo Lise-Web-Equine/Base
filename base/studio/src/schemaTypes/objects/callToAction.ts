@@ -1,5 +1,6 @@
 import {defineField} from '@sanity/types'
-import {BulbOutlineIcon, ChevronRightIcon} from '@sanity/icons'
+import {BulbOutlineIcon} from '@sanity/icons/BulbOutline'
+import {ChevronRightIcon} from '@sanity/icons/ChevronRight'
 import {defineSection} from '../../sections/defineSection'
 import {buttonColorOptions, buttonVariantOptions} from './button'
 

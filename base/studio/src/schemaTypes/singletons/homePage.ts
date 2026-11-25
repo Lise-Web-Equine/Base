@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {HomeIcon} from '@sanity/icons'
+import {HomeIcon} from '@sanity/icons/Home'
 import {pageBuilderTypeNames} from '../../sections'
 
 /**

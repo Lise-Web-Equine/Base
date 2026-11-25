@@ -1,5 +1,6 @@
 import type {StructureBuilder, ListItemBuilder} from 'sanity/structure'
-import {DocumentTextIcon, DocumentsIcon} from '@sanity/icons'
+import {DocumentTextIcon} from '@sanity/icons/DocumentText'
+import {DocumentsIcon} from '@sanity/icons/Documents'
 
 /**
  * Extensions de la structure du Studio propres au PROJET.

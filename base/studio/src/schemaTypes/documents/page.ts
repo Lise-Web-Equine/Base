@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {DocumentIcon} from '@sanity/icons'
+import {DocumentIcon} from '@sanity/icons/Document'
 import {pageBuilderTypeNames} from '../../sections'
 
 /**

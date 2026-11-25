@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {ChevronRightIcon} from '@sanity/icons'
+import {ChevronRightIcon} from '@sanity/icons/ChevronRight'
 
 /**
  * Objet bouton réutilisable. S'appuie sur l'objet `link` (la cible) et y ajoute

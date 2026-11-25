@@ -23,7 +23,7 @@ export function StudioFormInput(props: InputProps) {
   if (!isDocumentRoot) return rendered
 
   return (
-    <Stack space={3}>
+    <Stack gap={3}>
       {/* Aligné à gauche, sur la même largeur que le formulaire. */}
       <Flex justify="flex-start" style={{width: '100%'}}>
         <FormattingHelpButton />

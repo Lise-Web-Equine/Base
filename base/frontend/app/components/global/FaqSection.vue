@@ -4,7 +4,7 @@
  * Affiche une liste de questions/réponses (accordéon accessible via <details>)
  * et génère les données structurées Schema.org (FAQPage) pour le SEO.
  */
-import type { PortableTextBlock } from "sanity";
+import type { PortableTextBlock } from "@portabletext/types";
 
 const props = defineProps({
   block: {

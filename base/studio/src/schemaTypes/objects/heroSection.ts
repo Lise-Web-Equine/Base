@@ -1,5 +1,6 @@
 import {defineField, defineType} from '@sanity/types'
-import {StarIcon, ChevronRightIcon} from '@sanity/icons'
+import {StarIcon} from '@sanity/icons/Star'
+import {ChevronRightIcon} from '@sanity/icons/ChevronRight'
 import {CompactSectionInput} from '../../components/CompactSectionInput'
 import {appearanceReadOnly} from '../../lib/appearanceAccess'
 import {buttonColorOptions, buttonVariantOptions} from './button'

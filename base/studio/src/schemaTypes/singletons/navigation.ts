@@ -1,5 +1,6 @@
 import {defineArrayMember, defineField, defineType} from '@sanity/types'
-import {MenuIcon, LinkIcon} from '@sanity/icons'
+import {MenuIcon} from '@sanity/icons/Menu'
+import {LinkIcon} from '@sanity/icons/Link'
 import {SyncMenuField} from '../../components/SyncMenuField'
 
 /**

@@ -1,5 +1,7 @@
-import {Tooltip, Button, Box, Stack, Text, Code} from '@sanity/ui'
-import {HelpCircleIcon} from '@sanity/icons'
+import {Button, Box, Stack, Text} from '@sanity/ui'
+import {Code} from '@sanity/ui/code'
+import {Tooltip} from '@sanity/ui/tooltip'
+import {HelpCircleIcon} from '@sanity/icons/HelpCircle'
 
 /**
  * Bouton « Mise en forme » avec tooltip (CŒUR).
@@ -16,8 +18,8 @@ export function FormattingHelpButton() {
       portal
       content={
         <Box padding={3} style={{maxWidth: 320}}>
-          <Stack space={4}>
-            <Stack space={2}>
+          <Stack gap={4}>
+            <Stack gap={2}>
               <Text size={1} weight="semibold">
                 Mise en forme des champs texte
               </Text>
@@ -25,7 +27,7 @@ export function FormattingHelpButton() {
                 Dans les champs simples (titres, descriptions…) :
               </Text>
             </Stack>
-            <Stack space={2}>
+            <Stack gap={2}>
               <Text size={1}>
                 <Code>**mot**</Code> → gras
               </Text>
@@ -42,7 +44,7 @@ export function FormattingHelpButton() {
                 Ex. <Code>Pour une communication//**alignée** et rentable</Code>
               </Text>
             </Stack>
-            <Stack space={2}>
+            <Stack gap={2}>
               <Text size={1} weight="semibold">
                 Champs « Contenu enrichi »
               </Text>

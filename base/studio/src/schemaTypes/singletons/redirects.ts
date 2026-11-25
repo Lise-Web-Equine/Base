@@ -1,5 +1,5 @@
 import {defineArrayMember, defineField, defineType} from '@sanity/types'
-import {TransferIcon} from '@sanity/icons'
+import {TransferIcon} from '@sanity/icons/Transfer'
 
 /**
  * Singleton des redirections (CŒUR).

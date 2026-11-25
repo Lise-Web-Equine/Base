@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {ImagesIcon} from '@sanity/icons'
+import {ImagesIcon} from '@sanity/icons/Images'
 import {CompactSectionInput} from '../../components/CompactSectionInput'
 import {appearanceReadOnly} from '../../lib/appearanceAccess'
 import {referenceTypeOptions} from '../documents/reference'

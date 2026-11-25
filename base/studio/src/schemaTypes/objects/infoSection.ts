@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {TextIcon} from '@sanity/icons'
+import {TextIcon} from '@sanity/icons/Text'
 
 export const infoSection = defineType({
   name: 'infoSection',

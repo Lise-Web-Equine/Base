@@ -1,13 +1,11 @@
-import {
-  CogIcon,
-  ColorWheelIcon,
-  ControlsIcon,
-  DocumentsIcon,
-  DocumentTextIcon,
-  HomeIcon,
-  MenuIcon,
-  TransferIcon,
-} from '@sanity/icons'
+import {CogIcon} from '@sanity/icons/Cog'
+import {ColorWheelIcon} from '@sanity/icons/ColorWheel'
+import {ControlsIcon} from '@sanity/icons/Controls'
+import {DocumentsIcon} from '@sanity/icons/Documents'
+import {DocumentTextIcon} from '@sanity/icons/DocumentText'
+import {HomeIcon} from '@sanity/icons/Home'
+import {MenuIcon} from '@sanity/icons/Menu'
+import {TransferIcon} from '@sanity/icons/Transfer'
 import type {StructureResolver} from 'sanity/structure'
 import pluralize from 'pluralize-esm'
 import {projectExcludedTypes, projectContentItems, projectAdminItems} from './project'

@@ -1,4 +1,4 @@
-import type { PortableTextBlock } from "sanity";
+import type { PortableTextBlock } from "@portabletext/types";
 
 /** Concatène le texte brut d'un contenu Portable Text (blocs de texte). */
 function toPlainText(blocks?: PortableTextBlock[] | null): string {

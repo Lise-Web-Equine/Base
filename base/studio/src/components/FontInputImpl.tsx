@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import {set, unset, type StringInputProps} from 'sanity'
-import {Autocomplete, Card, Stack, Text, Box} from '@sanity/ui'
+import {Card, Stack, Text, Box} from '@sanity/ui'
+import {Autocomplete} from '@sanity/ui/autocomplete'
 import {FONT_OPTIONS} from '../fonts'
 import {
   LOCAL_FONT_FAMILIES,
@@ -153,7 +154,7 @@ export default function FontInputImpl(props: StringInputProps) {
   )
 
   return (
-    <Stack space={3}>
+    <Stack gap={3}>
       <Autocomplete
         {...elementProps}
         id={props.id || 'font-input'}
@@ -178,7 +179,7 @@ export default function FontInputImpl(props: StringInputProps) {
       />
       {currentFamily ? (
         <Card padding={4} radius={2} border tone="transparent">
-          <Stack space={3}>
+          <Stack gap={3}>
             <Text size={1} muted>
               Aperçu — {currentFamily}
             </Text>

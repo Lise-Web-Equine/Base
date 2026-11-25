@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {EnvelopeIcon} from '@sanity/icons'
+import {EnvelopeIcon} from '@sanity/icons/Envelope'
 
 /**
  * Section "Formulaire de contact". Bloc de page builder affichant un formulaire

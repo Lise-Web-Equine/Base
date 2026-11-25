@@ -1,5 +1,5 @@
 import {defineField} from '@sanity/types'
-import {ChevronRightIcon} from '@sanity/icons'
+import {ChevronRightIcon} from '@sanity/icons/ChevronRight'
 import type {FieldDefinition} from '@sanity/types'
 import {buttonColorOptions, buttonVariantOptions} from './button'
 

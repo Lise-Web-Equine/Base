@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {DocumentTextIcon} from '@sanity/icons'
+import {DocumentTextIcon} from '@sanity/icons/DocumentText'
 
 /**
  * Singleton des textes légaux (PROJET).

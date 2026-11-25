@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {ImageIcon} from '@sanity/icons'
+import {ImageIcon} from '@sanity/icons/Image'
 
 /**
  * Objet image réutilisable. Brique de fondation utilisée par les sections

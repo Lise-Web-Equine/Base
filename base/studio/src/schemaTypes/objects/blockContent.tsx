@@ -1,11 +1,9 @@
 import {defineArrayMember, defineType, defineField} from '@sanity/types'
-import {
-  BoldIcon,
-  ItalicIcon,
-  UnderlineIcon,
-  StrikethroughIcon,
-  CodeIcon,
-} from '@sanity/icons'
+import {BoldIcon} from '@sanity/icons/Bold'
+import {ItalicIcon} from '@sanity/icons/Italic'
+import {UnderlineIcon} from '@sanity/icons/Underline'
+import {StrikethroughIcon} from '@sanity/icons/Strikethrough'
+import {CodeIcon} from '@sanity/icons/Code'
 import {colorSlotOptions} from '../../colorSlots'
 
 /**

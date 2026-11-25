@@ -26,5 +26,12 @@
   ],
   "devDependencies": {
     "npm-run-all2": "^8.0.4"
+  },
+  "overrides": {
+    "js-yaml@<3.15.2": "^3.15.2",
+    "smol-toml@<1.8.1": "^1.9.1",
+    "@nuxtjs/sanity": {
+      "@sanity/visual-editing-standalone": "^2.0.4"
+    }
   }
 }

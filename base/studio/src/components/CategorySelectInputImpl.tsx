@@ -40,7 +40,7 @@ export default function CategorySelectInputImpl(props: StringInputProps) {
 
   if (!loading && categories.length === 0) {
     return (
-      <Stack space={2}>
+      <Stack gap={2}>
         <Text size={1} muted>
           Aucune catégorie définie. Ajoutez-en dans « Réglages du site » → Blog / Actualités.
         </Text>

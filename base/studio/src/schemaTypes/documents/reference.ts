@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {UsersIcon} from '@sanity/icons'
+import {UsersIcon} from '@sanity/icons/Users'
 
 /**
  * Document "Référence" (PROJET) : une entité mise en avant sous forme de logo

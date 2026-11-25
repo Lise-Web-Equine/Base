@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import {useClient, useFormValue, type ArrayFieldProps} from 'sanity'
-import {Box, Button, Flex, Stack, Text, useToast} from '@sanity/ui'
-import {SyncIcon} from '@sanity/icons'
+import {Box, Button, Flex, Stack, Text} from '@sanity/ui'
+import {useToast} from '@sanity/ui/toast'
+import {SyncIcon} from '@sanity/icons/Sync'
 
 /**
  * Implémentation du champ « Menu principal » (voir SyncMenuField.tsx pour le
@@ -94,7 +95,7 @@ export default function SyncMenuFieldImpl(props: ArrayFieldProps) {
   }
 
   return (
-    <Stack space={3}>
+    <Stack gap={3}>
       <Flex align="center" gap={2}>
         <Box flex={1}>
           <Text size={1} weight="semibold">

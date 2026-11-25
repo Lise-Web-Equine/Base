@@ -1,5 +1,5 @@
 import {defineField, defineType} from '@sanity/types'
-import {TextIcon} from '@sanity/icons'
+import {TextIcon} from '@sanity/icons/Text'
 
 /**
  * Objet "pageHeader" (en-tête de page). Brique réutilisable qui alimente le
