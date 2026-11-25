@@ -1,0 +1,58 @@
+# CI du Cœur — vérifie que le studio et le frontend se construisent.
+# Déclenchée à chaque push sur main et sur chaque PR (dont celles de Dependabot).
+# Aucun secret nécessaire : les builds n'interrogent pas Sanity.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Lint et build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: base
+    env:
+      # Valeurs factices : uniquement pour que la config se charge au build.
+      SANITY_STUDIO_PROJECT_ID: ci000000
+      SANITY_STUDIO_DATASET: production
+      NUXT_SANITY_PROJECT_ID: ci000000
+      NUXT_SANITY_DATASET: production
+      NUXT_PUBLIC_SITE_URL: https://example.com
+      NUXT_PUBLIC_SITE_NAME: CI
+      NUXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: base/.node-version
+          cache: npm
+          cache-dependency-path: base/package-lock.json
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Lint du studio
+        working-directory: base/studio
+        run: npx eslint .
+
+      - name: Build du studio (inclut l'extraction du schéma)
+        run: npm run build --workspace=studio
+
+      - name: Build du frontend
+        run: npm run build --workspace=frontend

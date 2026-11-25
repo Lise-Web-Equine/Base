@@ -1,0 +1,62 @@
+# Dependabot — veille des mises à jour MAJEURES des dépendances structurantes du Cœur.
+#
+# - Seuls les paquets listés dans `allow` sont surveillés.
+# - Les mises à jour mineures et patch sont ignorées (gérées via l'agent npm-updater).
+# - Les alertes de sécurité sont un réglage GitHub séparé (Settings > Code security)
+#   et restent actives pour TOUTES les dépendances.
+# - Chaque PR est un signal : lire le guide de migration avant de merger.
+#
+# Volontairement non suivis : vue, vue-router, unhead (dictés par Nuxt) ;
+# react, react-dom, styled-components (dictés par Sanity) — ne jamais les monter seuls.
+# Node (.node-version / engines) n'est pas suivi : vérifier à chaque nouvelle LTS (octobre).
+
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /base
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps(major)"
+    allow:
+      # Niveau 1 — socles (migration à prévoir)
+      - dependency-name: "nuxt"
+      - dependency-name: "sanity"
+      - dependency-name: "@sanity/vision"
+      - dependency-name: "@sanity/types"
+      - dependency-name: "groq"
+      - dependency-name: "@nuxtjs/sanity"
+      - dependency-name: "@sanity/client"
+      - dependency-name: "@nuxt/ui"
+      - dependency-name: "tailwindcss"
+      - dependency-name: "@tailwindcss/vite"
+      # Niveau 2 — impact limité mais réel
+      - dependency-name: "@nuxtjs/seo"
+      - dependency-name: "@nuxt/image"
+      - dependency-name: "resend"
+      - dependency-name: "swiper"
+      - dependency-name: "typescript"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"
+    groups:
+      sanity-major:
+        patterns: ["sanity", "@sanity/vision", "@sanity/types", "groq"]
+      tailwind-major:
+        patterns: ["tailwindcss", "@tailwindcss/vite"]
+
+  # Actions utilisées par la CI (.github/workflows) — majeures uniquement.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci(deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-minor"
+          - "version-update:semver-patch"

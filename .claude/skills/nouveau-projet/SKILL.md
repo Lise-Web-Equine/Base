@@ -43,10 +43,26 @@ frontend dans `Base/frontend`).
   `docs/core-workflow.md` §2 et §3.
 - Noter le tag du Cœur d'origine (`git describe --tags`).
 
-### 2. Node et dépendances
+### 2. Node, dépendances et Dependabot
 - Vérifier `node -v` par rapport à `Base/.node-version` et au champ
   `engines` de `Base/package.json`.
 - Lancer `npm install` dans `Base/`.
+- **Dependabot** : le fichier `.github/dependabot.yml` hérité du Cœur
+  surveille les majeures des dépendances du Cœur, qui sont migrées dans le
+  Cœur puis redescendent par `upstream`. Sur le projet il ferait doublon :
+  - par défaut, le supprimer : `git rm .github/dependabot.yml` puis commit
+    `chore: désactive Dependabot versions (suivi via le Cœur)` ;
+  - exception : si le projet a une dépendance importante qui lui est propre
+    (une majeure casserait une fonctionnalité), remplacer le contenu par une
+    config qui ne surveille que cette dépendance (même format que le Cœur :
+    `allow` limité à ces paquets, mineures et patch ignorées, rythme
+    mensuel).
+  - Lors des merges `upstream` ultérieurs, en cas de conflit sur ce fichier,
+    garder la version du projet (`git rm` s'il avait été supprimé, sinon
+    `git checkout --ours .github/dependabot.yml`).
+- L'utilisatrice active les **alertes de sécurité Dependabot** sur le dépôt
+  GitHub : Settings → Code security → Dependabot alerts. Elles couvrent
+  toutes les dépendances, Cœur comme projet.
 
 ### 3. Projet Sanity
 - L'utilisatrice crée le projet et le dataset sur https://www.sanity.io/manage
@@ -84,6 +100,11 @@ frontend dans `Base/frontend`).
   - document / objet : `Base/studio/src/schemaTypes/project.ts`
   - structure du studio : `Base/studio/src/structure/project.ts`
 - Libellés du studio en français, styles mobile first.
+- Si une section ajoute une dépendance npm importante (une majeure
+  casserait la fonctionnalité), l'ajouter au `allow` de
+  `.github/dependabot.yml` du projet (voir étape 2). Si la même
+  fonctionnalité sert déjà à un autre client, proposer plutôt de la remonter
+  dans le template métier ou le Cœur.
 
 ### 7. Stratégie de rendu
 - Poser une par une les 5 questions de la section « Nouveau projet : choisir
