@@ -71,6 +71,12 @@ export default defineNuxtConfig({
   ogImage: {
     enabled: false,
   },
+  // Modules intégrés à @nuxtjs/seo depuis la v6 et actifs par défaut.
+  // Désactivés pour garder le comportement de la v5 ; à réévaluer :
+  // - aiReady : llms.txt et versions Markdown des pages pour les IA ;
+  // - skewProtection : détection côté navigateur d'un nouveau déploiement.
+  aiReady: false,
+  skewProtection: false,
   sanity: {
     projectId: process.env.NUXT_SANITY_PROJECT_ID,
     dataset: process.env.NUXT_SANITY_DATASET,
